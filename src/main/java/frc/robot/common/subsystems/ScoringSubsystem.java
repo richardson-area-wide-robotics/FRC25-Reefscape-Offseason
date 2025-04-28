@@ -24,11 +24,13 @@ public class ScoringSubsystem extends SubsystemBase {
     private static final double BOTTOM_POSITION = 0.1;
     private static final double FULLBACK_POSITION =  5.3;
 
-    DigitalInput breakBeam;
+    DigitalInput breakBeamFront;
+    DigitalInput breakBeamBack;
 
     public ScoringSubsystem(int drawbridgeMotorId, int outtakeMotorId) {
        SparkFlexConfig config = new SparkFlexConfig();
-       breakBeam = new DigitalInput(1);
+       breakBeamFront = new DigitalInput(0);
+       breakBeamBack = new DigitalInput(1);
 
        config.closedLoop.p(0.1).i(0).d(0).outputRange(-1, 1);
 
@@ -59,10 +61,10 @@ public class ScoringSubsystem extends SubsystemBase {
     }
 
     private void outtakeUntilBroken() {
-        if (breakBeam.get()) {
-            outtakeMotor.set(0.2);
-        }
-        outtakeMotor.set(0.0);
+        //if (breakBeam.get()) {
+        //    outtakeMotor.set(0.2);
+        //}
+        //outtakeMotor.set(0.0);
     }
 
     public Command score() {
@@ -91,6 +93,7 @@ public class ScoringSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic(){
-        SmartDashboard.putBoolean("BreakBeam", breakBeam.get());
+        SmartDashboard.putBoolean("BreakBeamFront", breakBeamFront.get());
+        SmartDashboard.putBoolean("BreakBeamBack", breakBeamBack.get());
     }
 }
