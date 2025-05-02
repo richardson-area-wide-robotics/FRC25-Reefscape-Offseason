@@ -56,15 +56,16 @@ public class ScoringSubsystem extends SubsystemBase {
     }
 
     public Command outtake() { 
-        return Commands.run(() -> outtakeMotor.set(0.2), this);
-        //return Commands.run(() -> outtakeUntilBroken(), this);
+        //return Commands.run(() -> outtakeMotor.set(0.2), this);
+        return Commands.runOnce(() -> outtakeUntilBroken(), this);
     }
 
     private void outtakeUntilBroken() {
-        //if (breakBeam.get()) {
-        //    outtakeMotor.set(0.2);
-        //}
-        //outtakeMotor.set(0.0);
+        while (breakBeamFront.get() && !breakBeamBack.get()) {
+            outtakeMotor.set(0.2);
+            Commands.waitSeconds(0.1);
+        }
+        outtakeMotor.set(0.0);
     }
 
     public Command score() {
