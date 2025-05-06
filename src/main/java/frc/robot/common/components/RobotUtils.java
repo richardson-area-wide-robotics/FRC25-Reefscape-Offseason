@@ -83,4 +83,8 @@ public class RobotUtils  {
       // Set the target position using the built-in PID controller
       motor.getClosedLoopController().setReference(targetPosition, ControlType.kPosition);
   }
+
+  public static Command cancelCommand(Command command) {
+    return Commands.runOnce(() -> command.cancel());
+  }
 }
