@@ -18,7 +18,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final double BOTTOM_POSITION = 0.2;
     private static final double L1_POSITION =  16.0;
     private static final double L2_POSITION = 25.3;
-    private static final double L3_POSITION = 40.5;
+    private static final double L3_POSITION = 52.0;
     private static final double INTAKE_POSITION = 13.6;
 
     public ElevatorSubsystem(int motorID) {
