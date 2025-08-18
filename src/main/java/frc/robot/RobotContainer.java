@@ -51,7 +51,7 @@ public class RobotContainer implements IRobotContainer {
 
   private static SendableChooser<Command> automodeChooser; 
 
-  public static RobotContainer createContainer(){
+  public static IRobotContainer createContainer(){
         // Set drive command
         // LeftY is the xRequest and LeftX is the yRequest for some reason
         DRIVE_SUBSYSTEM.setDefaultCommand(
