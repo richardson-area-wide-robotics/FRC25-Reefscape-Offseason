@@ -3,6 +3,8 @@ package frc.robot.common.subsystems.drive;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
+
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.common.components.EasyMotor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
  * @author Hudson Strub
  * @since 2025
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class TankDriveSubsystem {
     SparkMax leftMotor;
     SparkMax rightMotor;
@@ -25,4 +27,11 @@ public class TankDriveSubsystem {
 
     }
 
+    public void setMotorSpeed(double speed) {
+        Commands.run(() -> leftMotor.set(speed));
+    }
+
+    public SparkMax getLeftMotor() {
+        return leftMotor;
+    }
 }
