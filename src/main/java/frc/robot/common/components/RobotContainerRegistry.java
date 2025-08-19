@@ -1,5 +1,6 @@
 package frc.robot.common.components;
 
+import frc.robot.PracticumInStemContainer;
 import frc.robot.RobotContainer;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.interfaces.IRobotContainer;
@@ -35,7 +36,7 @@ public class RobotContainerRegistry {
 
         // If not found, use the default container
         if (containerClass == null) {
-            return RobotContainer.createContainer(); 
+            return PracticumInStemContainer.createContainer(); 
         }
 
         try { //Create the container
