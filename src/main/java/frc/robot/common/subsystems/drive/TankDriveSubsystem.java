@@ -22,13 +22,14 @@ public class TankDriveSubsystem {
     SparkMax rightMotor;
 
     public TankDriveSubsystem(int leftMotorId, int rightMotorId) {
+        System.out.println("LEft MOTRER:" +leftMotorId);
         leftMotor = EasyMotor.createEasySparkMax(leftMotorId, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast);
         rightMotor = EasyMotor.createEasySparkMax(rightMotorId, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast);
 
     }
 
     public void setMotorSpeed(double speed) {
-        Commands.run(() -> leftMotor.set(speed));
+         leftMotor.set(speed);
     }
 
     public SparkMax getLeftMotor() {
