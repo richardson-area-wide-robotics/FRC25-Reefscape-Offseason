@@ -24,7 +24,13 @@ public class PracticumInStemContainer implements IRobotContainer {
     }
 
     private static void configureBindings() {
-      RobotUtils.bindControl(HIDConstants.DRIVER_CONTROLLER.a(), Commands.run(() -> DRIVE_SUBSYSTEM.setMotorSpeed(1)), Commands.none());
+      DRIVE_SUBSYSTEM.setDefaultCommand(
+              DRIVE_SUBSYSTEM.arcadeDriveCommand(
+                      HIDConstants.DRIVER_CONTROLLER::getLeftY,  // forward/back
+                      HIDConstants.DRIVER_CONTROLLER::getRightX  // turning
+              )
+      );
+
     }
     
     
