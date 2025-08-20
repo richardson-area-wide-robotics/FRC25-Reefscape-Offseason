@@ -1,16 +1,10 @@
 package frc.robot.common.subsystems.drive;
 
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.common.components.EasyMotor;
-import lombok.AccessLevel;
+import frc.robot.common.components.hardware.TankHardware;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.function.DoubleSupplier;
 
@@ -21,27 +15,24 @@ import java.util.function.DoubleSupplier;
  * @author Hudson Strub
  * @since 2025
  */
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class TankDriveSubsystem extends SubsystemBase {
-    @Getter SparkMax leftMotor;
-    @Getter SparkMax rightMotor;
+@Getter
+public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
+    private final TankHardware hardware;
 
-    public TankDriveSubsystem(int leftMotorId, int rightMotorId) {
-        leftMotor = EasyMotor.createEasySparkMax(leftMotorId, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast);
-        rightMotor = EasyMotor.createEasySparkMax(rightMotorId, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast);
-
+    public TankDriveSubsystem(TankHardware hardware) {
+        this.hardware = hardware;
     }
 
     /**
      * Control both motors of the tank drive
      */
     public void tankDrive(double leftSpeed, double rightSpeed) {
-        leftMotor.set(leftSpeed);
-        rightMotor.set(rightSpeed);
+        hardware.lMotor().set(leftSpeed);
+        hardware.rMotor().set(rightSpeed);
     }
 
     /**
-     * Like that one Wii game 
+     * Like that one Wii game
      */
     public void arcadeDrive(double forward, double rotation) {
         double leftSpeed = forward + rotation;
@@ -54,5 +45,10 @@ public class TankDriveSubsystem extends SubsystemBase {
                 () -> arcadeDrive(-forward.getAsDouble(), rotation.getAsDouble()), // negative if forward stick is inverted
                 this
         );
+    }
+
+    @Override
+    public void close() {
+        hardware.close();
     }
 }

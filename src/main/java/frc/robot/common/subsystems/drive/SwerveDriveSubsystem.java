@@ -51,7 +51,7 @@ import frc.robot.Constants;
 import frc.robot.common.components.RobotUtils;
 import frc.robot.common.swerve.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
-import frc.robot.common.components.SwerveHardware;
+import frc.robot.common.components.hardware.SwerveHardware;
 
 /**
  * Drive Subsystem for Swerve Drive bots with 4 motors in each corner

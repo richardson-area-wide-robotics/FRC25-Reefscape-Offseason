@@ -1,4 +1,4 @@
-package frc.robot.common.components;
+package frc.robot.common.components.hardware;
 
 
 import frc.robot.common.swerve.RAWRNavX2;

@@ -32,8 +32,6 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutLinearAcceleration;
 import edu.wpi.first.units.measure.MutLinearVelocity;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
 /** NavX2 */
