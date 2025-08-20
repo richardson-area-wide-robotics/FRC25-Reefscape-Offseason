@@ -143,16 +143,14 @@ task(replayWatch, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-
 tasks.register("exportMermaidGraph") {
     group = "documentation"
-    description = "Exports a Mermaid class diagram of the project's Java code."
+    description = "Exports a Mermaid flowchart of the project's Java code."
 
     doLast {
         def srcDir = file("src/main/java")
         def outFile = file("$buildDir/reports/code-graph.md")
 
-        // Collect class metadata
         def classInfo = [:]  // fqcn -> [name, pkg, type, extends, implements, associations]
 
         srcDir.eachFileRecurse { f ->
@@ -162,7 +160,6 @@ tasks.register("exportMermaidGraph") {
                 def pkgMatch = (text =~ /package\s+([\w\.]+);/)
                 def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
 
-                // Match class/interface/record definitions
                 def match = (text =~ /\b(class|interface|record)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
                 if (match.find()) {
                     def type = match[0][1]
@@ -180,7 +177,6 @@ tasks.register("exportMermaidGraph") {
                             associations: []
                     ]
 
-                    // Associations: fields referencing other classes
                     def fieldMatches = (text =~ /\b(\w+)\s+\w+\s*;/)
                     fieldMatches.each { m ->
                         def refType = m[1]
@@ -190,32 +186,30 @@ tasks.register("exportMermaidGraph") {
             }
         }
 
-        // Group classes by package
         def grouped = [:].withDefault { [] }
         classInfo.each { fqcn, meta ->
             grouped[meta.pkg] << meta
         }
 
-        // --- Write Mermaid file ---
+        // --- Write Mermaid Flowchart ---
         outFile.parentFile.mkdirs()
         outFile.withWriter { writer ->
-            writer.writeLine("# Code Structure Diagram\n")
+            writer.writeLine("# Code Structure Flowchart\n")
             writer.writeLine("```mermaid")
-            writer.writeLine("classDiagram")
+            writer.writeLine("flowchart TD")
 
-            // Packages as safe identifiers (dots replaced with underscores)
+            // Group classes in subgraphs per package
             grouped.each { pkg, classes ->
                 if (pkg) {
                     def safePkg = pkg.replaceAll("\\.", "_")
-                    writer.writeLine("    class ${safePkg} {")
+                    writer.writeLine("    subgraph ${safePkg}[${pkg}]")
                     classes.each { c ->
-                        writer.writeLine("        ${c.name}")
+                        writer.writeLine("        ${c.name}[${c.name}]")
                     }
-                    writer.writeLine("    }")
+                    writer.writeLine("    end")
                 } else {
-                    // default package
                     classes.each { c ->
-                        writer.writeLine("    class ${c.name}")
+                        writer.writeLine("    ${c.name}[${c.name}]")
                     }
                 }
             }
@@ -223,14 +217,14 @@ tasks.register("exportMermaidGraph") {
             // Inheritance
             classInfo.each { fqcn, meta ->
                 if (meta.extends) {
-                    writer.writeLine("    ${meta.extends} <|-- ${meta.name}")
+                    writer.writeLine("    ${meta.extends} -->|extends| ${meta.name}")
                 }
             }
 
             // Interfaces
             classInfo.each { fqcn, meta ->
                 meta.implements.each { impl ->
-                    writer.writeLine("    ${impl} <|.. ${meta.name}")
+                    writer.writeLine("    ${impl} -.implements.-> ${meta.name}")
                 }
             }
 
@@ -246,6 +240,6 @@ tasks.register("exportMermaidGraph") {
             writer.writeLine("```")
         }
 
-        println "✅ Recursive Mermaid graph written to ${outFile}"
+        println "✅ Mermaid flowchart written to ${outFile}"
     }
 }
