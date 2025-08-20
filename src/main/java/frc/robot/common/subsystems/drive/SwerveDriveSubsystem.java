@@ -115,7 +115,7 @@ public class SwerveDriveSubsystem extends SubsystemBase implements AutoCloseable
         this.DRIVETRAIN_HARDWARE = drivetrainHardware;
 
         // Drivetrain constants
-        DRIVE_MAX_LINEAR_SPEED = DRIVETRAIN_HARDWARE.lFrontModule.getMaxLinearVelocity();
+        DRIVE_MAX_LINEAR_SPEED = DRIVETRAIN_HARDWARE.lFrontModule().getMaxLinearVelocity();
         DRIVE_AUTO_ACCELERATION = DRIVE_MAX_LINEAR_SPEED
             .per(Units.Second)
             .minus(Units.MetersPerSecondPerSecond.of(1.0));
@@ -133,22 +133,22 @@ public class SwerveDriveSubsystem extends SubsystemBase implements AutoCloseable
         );
     
         // NavX calibration
-        while (DRIVETRAIN_HARDWARE.navx.isCalibrating()) DRIVETRAIN_HARDWARE.stop();
+        while (DRIVETRAIN_HARDWARE.navx().isCalibrating()) DRIVETRAIN_HARDWARE.stop();
 
-        DRIVETRAIN_HARDWARE.navx.reset();
+        DRIVETRAIN_HARDWARE.navx().reset();
     
         // Swerve drive kinematics and pose estimator
         KINEMATICS = new SwerveDriveKinematics(
-            DRIVETRAIN_HARDWARE.lFrontModule.getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.rFrontModule.getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.lRearModule.getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.rRearModule.getModuleCoordinate()
+            DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
+            DRIVETRAIN_HARDWARE.rFrontModule().getModuleCoordinate(),
+            DRIVETRAIN_HARDWARE.lRearModule().getModuleCoordinate(),
+            DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate()
         );
     
-        advancedKinematics = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.lFrontModule.getModuleCoordinate(),
-                                                          DRIVETRAIN_HARDWARE.rFrontModule.getModuleCoordinate(),
-                                                          DRIVETRAIN_HARDWARE.lRearModule.getModuleCoordinate(),
-                                                          DRIVETRAIN_HARDWARE.rRearModule.getModuleCoordinate());
+        advancedKinematics = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
+                                DRIVETRAIN_HARDWARE.rFrontModule().getModuleCoordinate(),
+                                DRIVETRAIN_HARDWARE.lRearModule().getModuleCoordinate(),
+                                DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate());
 
       POSE_ESTIMATOR = new SwerveDrivePoseEstimator(
           KINEMATICS,
@@ -223,10 +223,10 @@ public static SwerveHardware initializeHardware() {
    * @param moduleStates Array of calculated module states
    */
   private void setSwerveModules(SwerveModuleState[] moduleStates) {
-    DRIVETRAIN_HARDWARE.lFrontModule.set(moduleStates);
-    DRIVETRAIN_HARDWARE.rFrontModule.set(moduleStates);
-    DRIVETRAIN_HARDWARE.lRearModule.set(moduleStates);
-    DRIVETRAIN_HARDWARE.rRearModule.set(moduleStates);
+    DRIVETRAIN_HARDWARE.lFrontModule().set(moduleStates);
+    DRIVETRAIN_HARDWARE.rFrontModule().set(moduleStates);
+    DRIVETRAIN_HARDWARE.lRearModule().set(moduleStates);
+    DRIVETRAIN_HARDWARE.rRearModule().set(moduleStates);
     Logger.recordOutput(getName() + Constants.DriveConstants.DESIRED_SWERVE_STATE_LOG_ENTRY, moduleStates);
   }
 
@@ -274,10 +274,10 @@ public static SwerveHardware initializeHardware() {
    */
   private SwerveModuleState[] getModuleStates() {
      return new SwerveModuleState[] {
-      DRIVETRAIN_HARDWARE.lFrontModule.getState(),
-      DRIVETRAIN_HARDWARE.rFrontModule.getState(),
-      DRIVETRAIN_HARDWARE.lRearModule.getState(),
-      DRIVETRAIN_HARDWARE.rRearModule.getState()
+      DRIVETRAIN_HARDWARE.lFrontModule().getState(),
+      DRIVETRAIN_HARDWARE.rFrontModule().getState(),
+      DRIVETRAIN_HARDWARE.lRearModule().getState(),
+      DRIVETRAIN_HARDWARE.rRearModule().getState()
     };
   }
 
@@ -287,10 +287,10 @@ public static SwerveHardware initializeHardware() {
    */
   private SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
-      DRIVETRAIN_HARDWARE.lFrontModule.getPosition(),
-      DRIVETRAIN_HARDWARE.rFrontModule.getPosition(),
-      DRIVETRAIN_HARDWARE.lRearModule.getPosition(),
-      DRIVETRAIN_HARDWARE.rRearModule.getPosition()
+      DRIVETRAIN_HARDWARE.lFrontModule().getPosition(),
+      DRIVETRAIN_HARDWARE.rFrontModule().getPosition(),
+      DRIVETRAIN_HARDWARE.lRearModule().getPosition(),
+      DRIVETRAIN_HARDWARE.rRearModule().getPosition()
     };
   }
 
@@ -469,15 +469,15 @@ public static SwerveHardware initializeHardware() {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    DRIVETRAIN_HARDWARE.navx.updateInputs();
+    DRIVETRAIN_HARDWARE.navx().updateInputs();
 
 
     // Filter inertial velocity
-    DRIVETRAIN_HARDWARE.navx.getInputs().velocityX = (Units.MetersPerSecond.of(
-      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx.getInputs().velocityX.in(Units.MetersPerSecond))
+    DRIVETRAIN_HARDWARE.navx().getInputs().velocityX = (Units.MetersPerSecond.of(
+      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond))
     )).mutableCopy();
-    DRIVETRAIN_HARDWARE.navx.getInputs().velocityY = (Units.MetersPerSecond.of(
-      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx.getInputs().velocityY.in(Units.MetersPerSecond))
+    DRIVETRAIN_HARDWARE.navx().getInputs().velocityY = (Units.MetersPerSecond.of(
+      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond))
 
     )).mutableCopy();
 
@@ -636,14 +636,14 @@ public static SwerveHardware initializeHardware() {
    * @return Command to enable traction control
    */
   public Command enableTractionControlCommand() {
-    return runOnce(() -> DRIVETRAIN_HARDWARE.enableTractionControl());  }
+    return runOnce(DRIVETRAIN_HARDWARE::enableTractionControl);  }
 
   /**
    * Disable traction control
    * @return Command to disable traction control
    */
   public Command disableTractionControlCommand() {
-    return runOnce(() -> DRIVETRAIN_HARDWARE.disableTractionControl());  }
+    return runOnce(DRIVETRAIN_HARDWARE::disableTractionControl);  }
 
   /**
    * Reset pose estimator
@@ -743,7 +743,7 @@ public static SwerveHardware initializeHardware() {
    */
   public LinearVelocity getInertialVelocity() {
     return Units.MetersPerSecond.of(
-      Math.hypot(DRIVETRAIN_HARDWARE.navx.getInputs().velocityX.in(Units.MetersPerSecond), DRIVETRAIN_HARDWARE.navx.getInputs().velocityY.in(Units.MetersPerSecond))
+      Math.hypot(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond), DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond))
     );
   }
 
@@ -753,7 +753,7 @@ public static SwerveHardware initializeHardware() {
    */
   public Angle getPitch() {
     // Robot pitch axis is navX pitch axis
-    return DRIVETRAIN_HARDWARE.navx.getInputs().pitchAngle;
+    return DRIVETRAIN_HARDWARE.navx().getInputs().pitchAngle;
   }
 
   /**
@@ -762,7 +762,7 @@ public static SwerveHardware initializeHardware() {
    */
   public Angle getRoll() {
     // Robot roll axis is navX roll axis
-    return DRIVETRAIN_HARDWARE.navx.getInputs().rollAngle;
+    return DRIVETRAIN_HARDWARE.navx().getInputs().rollAngle;
   }
 
   /**
@@ -770,9 +770,9 @@ public static SwerveHardware initializeHardware() {
    * @return Current heading of the robot in degrees
    */
   public Angle getAngle() {
-    //System.out.println("NAVX ANGLE: " + DRIVETRAIN_HARDWARE.navx.getYaw().magnitude());
+    //System.out.println("NAVX ANGLE: " + DRIVETRAIN_HARDWARE.navx().getYaw().magnitude());
 
-    return DRIVETRAIN_HARDWARE.navx.getYaw();
+    return DRIVETRAIN_HARDWARE.navx().getYaw();
   }
 
   /**
@@ -780,7 +780,7 @@ public static SwerveHardware initializeHardware() {
    * @return Current rotate rate of robot
    */
   public AngularVelocity getRotateRate() {
-    return DRIVETRAIN_HARDWARE.navx.getInputs().yawRate;
+    return DRIVETRAIN_HARDWARE.navx().getInputs().yawRate;
   }
 
   /**
@@ -792,17 +792,12 @@ public static SwerveHardware initializeHardware() {
    * @return Current heading of the robot as a Rotation2d.
    */
   public Rotation2d getRotation2d() {
-    return DRIVETRAIN_HARDWARE.navx.getInputs().rotation2d;
+    return DRIVETRAIN_HARDWARE.navx().getInputs().rotation2d;
 
   }
 
   @Override
   public void close() {
-    DRIVETRAIN_HARDWARE.navx.close();
-    DRIVETRAIN_HARDWARE.lFrontModule.close();
-    DRIVETRAIN_HARDWARE.rFrontModule.close();
-    DRIVETRAIN_HARDWARE.lRearModule.close();
-    DRIVETRAIN_HARDWARE.rRearModule.close();
-
+    DRIVETRAIN_HARDWARE.close();
   }
 }

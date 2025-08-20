@@ -36,6 +36,7 @@ public class RobotContainerRegistry {
 
         // If not found, use the default container
         if (containerClass == null) {
+            System.out.println("We cant find a container for " + teamNumber + "! Using default");
             return PracticumInStemContainer.createContainer(); 
         }
 

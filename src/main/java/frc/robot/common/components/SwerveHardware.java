@@ -3,17 +3,10 @@ package frc.robot.common.components;
 
 import frc.robot.common.swerve.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public class SwerveHardware {
-    public final RAWRNavX2 navx;
-    public final RAWRSwerveModule lFrontModule;
-    public final RAWRSwerveModule rFrontModule;
-    public final RAWRSwerveModule lRearModule;
-    public final RAWRSwerveModule rRearModule;
 
 
+public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
+                             RAWRSwerveModule lRearModule, RAWRSwerveModule rRearModule) {
     public void lock() {
         lFrontModule.lock();
         rFrontModule.lock();
@@ -47,5 +40,13 @@ public class SwerveHardware {
         rFrontModule.disableTractionControl();
         lRearModule.disableTractionControl();
         rRearModule.disableTractionControl();
+    }
+
+    public void close() {
+        navx.close();
+        lFrontModule.close();
+        rFrontModule.close();
+        lRearModule.close();
+        rRearModule.close();
     }
 }
