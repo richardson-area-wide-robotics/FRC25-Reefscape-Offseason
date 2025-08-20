@@ -5,6 +5,15 @@ import frc.robot.common.swerve.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
 
 
+/**
+ * Drive hardware for a robot with swerve drive
+ *
+ * @author PurpleLib
+ * @author Alan Trinh
+ * @author Hudson Strub
+ *
+ * @since 2025
+ */
 public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
                              RAWRSwerveModule lRearModule, RAWRSwerveModule rRearModule) {
     public void lock() {
