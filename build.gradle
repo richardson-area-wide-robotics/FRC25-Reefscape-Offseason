@@ -142,3 +142,91 @@ task(replayWatch, type: JavaExec) {
     mainClass = "org.littletonrobotics.junction.ReplayWatch"
     classpath = sourceSets.main.runtimeClasspath
 }
+
+
+tasks.register("exportMermaidGraph") {
+    group = "documentation"
+    description = "Exports a Mermaid class diagram of the project's Java code."
+
+    doLast {
+        def srcDir = file("src/main/java")
+        def outFile = file("$buildDir/reports/code-graph.md")
+
+        // Collect class metadata
+        def classInfo = [:]  // fqcn -> [name, pkg, type, extends, implements, associations]
+
+        srcDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".java")) {
+                def text = f.text
+
+                def pkg = (text =~ /package\s+([\w\.]+);/).find() ? (text =~ /package\s+([\w\.]+);/)[0][1] : ""
+
+                // Capture class/interface/record definition
+                def match = (text =~ /\b(class|interface|record)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?/)
+                if (match.find()) {
+                    def type = match[0][1]
+                    def name = match[0][2]
+                    def ext = match[0][3]
+                    def impls = match[0][4]?.split(",")*.trim() ?: []
+
+                    def fqcn = pkg ? "${pkg}.${name}" : name
+                    classInfo[fqcn] = [
+                            name        : name,
+                            pkg         : pkg,
+                            type        : type,
+                            extends     : ext,
+                            implements  : impls,
+                            associations: []
+                    ]
+
+                    // Associations: look for field declarations that use other known classes
+                    def fieldMatches = (text =~ /\b(\w+)\s+(\w+)\s*;/)
+                    fieldMatches.each { m ->
+                        def refType = m[1]
+                        classInfo[fqcn].associations << refType
+                    }
+                }
+            }
+        }
+
+        // Write Mermaid diagram
+        outFile.parentFile.mkdirs()
+        outFile.withWriter { writer ->
+            writer.writeLine("# Code Structure Diagram\n")
+            writer.writeLine("```mermaid")
+            writer.writeLine("classDiagram")
+
+            // Classes
+            classInfo.each { fqcn, meta ->
+                writer.writeLine("    class ${meta.name}")
+            }
+
+            // Inheritance (extends)
+            classInfo.each { fqcn, meta ->
+                if (meta.extends) {
+                    writer.writeLine("    ${meta.extends} <|-- ${meta.name}")
+                }
+            }
+
+            // Interfaces
+            classInfo.each { fqcn, meta ->
+                meta.implements.each { impl ->
+                    writer.writeLine("    ${impl} <|.. ${meta.name}")
+                }
+            }
+
+            // Associations (fields referencing other classes)
+            classInfo.each { fqcn, meta ->
+                meta.associations.each { assoc ->
+                    if (classInfo.values().any { it.name == assoc }) {
+                        writer.writeLine("    ${meta.name} --> ${assoc}")
+                    }
+                }
+            }
+
+            writer.writeLine("```")
+        }
+
+        println "✅ Recursive Mermaid graph written to ${outFile}"
+    }
+}
