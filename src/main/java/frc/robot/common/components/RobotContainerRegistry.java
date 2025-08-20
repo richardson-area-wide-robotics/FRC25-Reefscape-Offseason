@@ -1,18 +1,14 @@
 package frc.robot.common.components;
 
-import frc.robot.PracticumInStemContainer;
-import frc.robot.RobotContainer;
+import frc.robot.practicum.PracticumInStemContainer;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.interfaces.IRobotContainer;
 import lombok.experimental.UtilityClass;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 @UtilityClass
 public class RobotContainerRegistry {
