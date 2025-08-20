@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.common.components.EasyBreakBeam;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.RobotUtils;
 
@@ -24,11 +25,11 @@ public class ScoringSubsystem extends SubsystemBase {
     private static final double BOTTOM_POSITION = 0.1;
     private static final double FULLBACK_POSITION =  5.3;
 
-    DigitalInput breakBeam;
+    EasyBreakBeam breakBeam;
 
     public ScoringSubsystem(int drawbridgeMotorId, int outtakeMotorId) {
        SparkFlexConfig config = new SparkFlexConfig();
-       breakBeam = new DigitalInput(1);
+       breakBeam = new EasyBreakBeam(1);
 
        config.closedLoop.p(0.1).i(0).d(0).outputRange(-1, 1);
 
@@ -59,7 +60,7 @@ public class ScoringSubsystem extends SubsystemBase {
     }
 
     private void outtakeUntilBroken() {
-        if (breakBeam.get()) {
+        if (breakBeam.isClear()) {
             outtakeMotor.set(0.2);
         }
         outtakeMotor.set(0.0);
@@ -91,6 +92,6 @@ public class ScoringSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic(){
-        SmartDashboard.putBoolean("BreakBeam", breakBeam.get());
+        SmartDashboard.putBoolean("BreakBeamBroken", breakBeam.isBroken());
     }
 }
