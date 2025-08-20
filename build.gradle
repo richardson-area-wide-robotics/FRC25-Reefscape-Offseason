@@ -159,10 +159,11 @@ tasks.register("exportMermaidGraph") {
             if (f.name.endsWith(".java")) {
                 def text = f.text
 
-                def pkg = (text =~ /package\s+([\w\.]+);/).find() ? (text =~ /package\s+([\w\.]+);/)[0][1] : ""
+                def pkgMatch = (text =~ /package\s+([\w\.]+);/)
+                def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
 
-                // Capture class/interface/record definition
-                def match = (text =~ /\b(class|interface|record)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?/)
+                // Match class/interface/record definitions
+                def match = (text =~ /\b(class|interface|record)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
                 if (match.find()) {
                     def type = match[0][1]
                     def name = match[0][2]
@@ -179,8 +180,8 @@ tasks.register("exportMermaidGraph") {
                             associations: []
                     ]
 
-                    // Associations: look for field declarations that use other known classes
-                    def fieldMatches = (text =~ /\b(\w+)\s+(\w+)\s*;/)
+                    // Associations: fields referencing other classes
+                    def fieldMatches = (text =~ /\b(\w+)\s+\w+\s*;/)
                     fieldMatches.each { m ->
                         def refType = m[1]
                         classInfo[fqcn].associations << refType
@@ -189,19 +190,37 @@ tasks.register("exportMermaidGraph") {
             }
         }
 
-        // Write Mermaid diagram
+        // Group classes by package
+        def grouped = [:].withDefault { [] }
+        classInfo.each { fqcn, meta ->
+            grouped[meta.pkg] << meta
+        }
+
+        // --- Write Mermaid file ---
         outFile.parentFile.mkdirs()
         outFile.withWriter { writer ->
             writer.writeLine("# Code Structure Diagram\n")
             writer.writeLine("```mermaid")
             writer.writeLine("classDiagram")
 
-            // Classes
-            classInfo.each { fqcn, meta ->
-                writer.writeLine("    class ${meta.name}")
+            // Packages as safe identifiers (dots replaced with underscores)
+            grouped.each { pkg, classes ->
+                if (pkg) {
+                    def safePkg = pkg.replaceAll("\\.", "_")
+                    writer.writeLine("    class ${safePkg} {")
+                    classes.each { c ->
+                        writer.writeLine("        ${c.name}")
+                    }
+                    writer.writeLine("    }")
+                } else {
+                    // default package
+                    classes.each { c ->
+                        writer.writeLine("    class ${c.name}")
+                    }
+                }
             }
 
-            // Inheritance (extends)
+            // Inheritance
             classInfo.each { fqcn, meta ->
                 if (meta.extends) {
                     writer.writeLine("    ${meta.extends} <|-- ${meta.name}")
@@ -215,7 +234,7 @@ tasks.register("exportMermaidGraph") {
                 }
             }
 
-            // Associations (fields referencing other classes)
+            // Associations
             classInfo.each { fqcn, meta ->
                 meta.associations.each { assoc ->
                     if (classInfo.values().any { it.name == assoc }) {

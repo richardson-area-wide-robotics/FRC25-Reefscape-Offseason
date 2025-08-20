@@ -2,31 +2,50 @@
 
 ```mermaid
 classDiagram
-    class BuildConstants
-    class Robot
-    class EasyBreakBeam
-    class EasyMotor
-    class SwerveHardware
-    class TankHardware
-    class RobotContainerRegistry
-    class RobotExceptionHandler
-    class RobotUtils
-    class IRobotContainer
-    class LocalADStarAK
-    class SwerveDriveSubsystem
-    class TankDriveSubsystem
-    class SingleMotorSubsystem
-    class RAWRNavX2
-    class RAWRSwerveModule
-    class provides
-    class Main
-    class is
-    class CBSSubsystem
-    class DeepClimbSubsystem
-    class ElevatorSubsystem
-    class ScoringSubsystem
-    class PracticumInStemContainer
-    class Robot
+    class frc_robot {
+        BuildConstants
+        Constants
+        Main
+        Robot
+    }
+    class frc_robot_common_annotations {
+        Robot
+    }
+    class frc_robot_common_components {
+        EasyBreakBeam
+        EasyMotor
+        RobotContainerRegistry
+        RobotUtils
+    }
+    class frc_robot_common_interfaces {
+        IRobotContainer
+    }
+    class frc_robot_common {
+        LocalADStarAK
+    }
+    class frc_robot_common_subsystems_drive {
+        SwerveDriveSubsystem
+        TankDriveSubsystem
+    }
+    class frc_robot_common_subsystems {
+        SingleMotorSubsystem
+    }
+    class frc_robot_common_swerve {
+        RAWRNavX2
+        RAWRSwerveModule
+    }
+    class frc_robot_pearce {
+        RobotContainer
+    }
+    class frc_robot_pearce_subsystems {
+        CBSSubsystem
+        DeepClimbSubsystem
+        ElevatorSubsystem
+        ScoringSubsystem
+    }
+    class frc_robot_practicum {
+        PracticumInStemContainer
+    }
     SubsystemBase <|-- SwerveDriveSubsystem
     SubsystemBase <|-- TankDriveSubsystem
     SubsystemBase <|-- SingleMotorSubsystem
@@ -37,15 +56,13 @@ classDiagram
     SubsystemBase <|-- ElevatorSubsystem
     SubsystemBase <|-- ScoringSubsystem
     LoggedRobot <|-- Robot
-    Thread <|.. RobotExceptionHandler
     Pathfinder <|.. LocalADStarAK
     AutoCloseable <|.. SwerveDriveSubsystem
     AutoCloseable <|.. TankDriveSubsystem
     IMU <|.. RAWRNavX2
     Sendable <|.. RAWRSwerveModule
+    IRobotContainer <|.. RobotContainer
     IRobotContainer <|.. PracticumInStemContainer
-    SwerveDriveSubsystem --> SwerveHardware
-    TankDriveSubsystem --> TankHardware
     ScoringSubsystem --> EasyBreakBeam
     Robot --> IRobotContainer
 ```
