@@ -152,7 +152,7 @@ public class SwerveDriveSubsystem extends SubsystemBase implements AutoCloseable
 
       POSE_ESTIMATOR = new SwerveDrivePoseEstimator(
           KINEMATICS,
-          getRotation2d(),
+          DRIVETRAIN_HARDWARE.navx().getRotation2d(),
           getModulePositions(),
           new Pose2d(),
           Constants.DriveConstants.ODOMETRY_STDDEV,
@@ -257,7 +257,7 @@ public static SwerveHardware initializeHardware() {
       // Convert speeds to module states, correcting for 2nd order kinematics
       SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
           desiredChassisSpeeds,
-          getRotation2d(),
+              DRIVETRAIN_HARDWARE.navx().getRotation2d(), 
           controlCentricity
       );
 
@@ -302,7 +302,7 @@ public static SwerveHardware initializeHardware() {
     m_previousPose = getPose();
 
     // Update pose based on odometry
-    POSE_ESTIMATOR.update(getRotation2d(), getModulePositions());
+    POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.navx().getRotation2d(), getModulePositions());
 
     // Update current heading
     currentHeading = new Rotation2d(getPose().getX() - m_previousPose.getX(), getPose().getY() - m_previousPose.getY());
@@ -329,7 +329,7 @@ public static SwerveHardware initializeHardware() {
    */
   private void antiTip() {
     // Calculate direction of tip
-    double direction = Math.atan2(getRoll().in(Units.Degrees), getPitch().in(Units.Degrees));
+    double direction = Math.atan2(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees), DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees));
 
     // Drive to counter tipping motion
     drive(
@@ -356,7 +356,7 @@ public static SwerveHardware initializeHardware() {
 
     // Drive normally and return if invalid point
     if (point == null) {
-      AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(getAngle(), getRotateRate(), rotateRequest).unaryMinus();
+      AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), rotateRequest).unaryMinus();
       drive(
         velocityOutput.unaryMinus().times(Math.cos(moveDirection)),
         velocityOutput.unaryMinus().times(Math.sin(moveDirection)),
@@ -442,7 +442,7 @@ public static SwerveHardware initializeHardware() {
 
     // Get throttle and rotate output
     LinearVelocity velocityOutput = THROTTLE_MAP.throttleLookup(moveRequest);
-    AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(getAngle(), getRotateRate(), rotateRequest).unaryMinus();
+    AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), rotateRequest).unaryMinus();
 
     // Drive robot
     drive(
@@ -460,7 +460,7 @@ public static SwerveHardware initializeHardware() {
    */
   private void resetPose(Pose2d pose) {
     POSE_ESTIMATOR.resetPosition(
-      getRotation2d(),
+      DRIVETRAIN_HARDWARE.navx().getRotation2d(),
       getModulePositions(),
       pose
     );
@@ -507,7 +507,7 @@ public static SwerveHardware initializeHardware() {
     // Convert speeds to module states, correcting for 2nd order kinematics
     SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
             desiredChassisSpeeds,
-      getRotation2d(),
+      DRIVETRAIN_HARDWARE.navx().getRotation2d(),
       ControlCentricity.ROBOT_CENTRIC
     );
 
@@ -518,16 +518,16 @@ public static SwerveHardware initializeHardware() {
     setSwerveModules(moduleStates);
 
     // Update turn PID
-    ROTATE_PID_CONTROLLER.calculate(getAngle(), getRotateRate(), 0.0);
+    ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), 0.0);
 
     // Update auto-aim controllers
     AUTO_AIM_PID_CONTROLLER_FRONT.calculate(
-      getRotation2d().getDegrees(),
-      getRotation2d().getDegrees()
+      DRIVETRAIN_HARDWARE.navx().getRotation2d().getDegrees(),
+      DRIVETRAIN_HARDWARE.navx().getRotation2d().getDegrees()
     );
     AUTO_AIM_PID_CONTROLLER_BACK.calculate(
-      getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees(),
-      getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees()
+      DRIVETRAIN_HARDWARE.navx().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees(),
+      DRIVETRAIN_HARDWARE.navx().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees()
     );
   }
 
@@ -678,7 +678,7 @@ public static SwerveHardware initializeHardware() {
    * Reset SwerveDriveSubsystem turn PID
    */
   public void resetRotatePID() {
-    ROTATE_PID_CONTROLLER.setSetpoint(getAngle());
+    ROTATE_PID_CONTROLLER.setSetpoint(DRIVETRAIN_HARDWARE.navx().getYaw());
     ROTATE_PID_CONTROLLER.reset();
   }
 
@@ -716,8 +716,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is tipping
    */
   public boolean isTipping() {
-    return Math.abs(getPitch().in(Units.Degrees)) > Constants.DriveConstants.TIP_THRESHOLD ||
-           Math.abs(getRoll().in(Units.Degrees)) > Constants.DriveConstants.TIP_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) > Constants.DriveConstants.TIP_THRESHOLD ||
+           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) > Constants.DriveConstants.TIP_THRESHOLD;
   }
 
   /**
@@ -725,8 +725,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is (nearly) balanced
    */
   public boolean isBalanced() {
-    return Math.abs(getPitch().in(Units.Degrees)) < Constants.DriveConstants.BALANCED_THRESHOLD &&
-           Math.abs(getRoll().in(Units.Degrees)) < Constants.DriveConstants.BALANCED_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) < Constants.DriveConstants.BALANCED_THRESHOLD &&
+           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) < Constants.DriveConstants.BALANCED_THRESHOLD;
   }
 
   /**
@@ -734,7 +734,7 @@ public static SwerveHardware initializeHardware() {
    * @return True if aimed
    */
   public boolean isAimed() {
-    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && getRotateRate().lt(Constants.DriveConstants.AIM_VELOCITY_THRESHOLD);
+    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.navx().getYawRate().lt(Constants.DriveConstants.AIM_VELOCITY_THRESHOLD);
   }
 
   /**
@@ -745,55 +745,6 @@ public static SwerveHardware initializeHardware() {
     return Units.MetersPerSecond.of(
       Math.hypot(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond), DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond))
     );
-  }
-
-  /**
-   * Get pitch of robot
-   * @return Current pitch angle of robot in degrees
-   */
-  public Angle getPitch() {
-    // Robot pitch axis is navX pitch axis
-    return DRIVETRAIN_HARDWARE.navx().getInputs().pitchAngle;
-  }
-
-  /**
-   * Get roll of robot
-   * @return Current roll angle of robot in degrees
-   */
-  public Angle getRoll() {
-    // Robot roll axis is navX roll axis
-    return DRIVETRAIN_HARDWARE.navx().getInputs().rollAngle;
-  }
-
-  /**
-   * Return the heading of the robot in degrees
-   * @return Current heading of the robot in degrees
-   */
-  public Angle getAngle() {
-    //System.out.println("NAVX ANGLE: " + DRIVETRAIN_HARDWARE.navx().getYaw().magnitude());
-
-    return DRIVETRAIN_HARDWARE.navx().getYaw();
-  }
-
-  /**
-   * Get rotate rate of robot
-   * @return Current rotate rate of robot
-   */
-  public AngularVelocity getRotateRate() {
-    return DRIVETRAIN_HARDWARE.navx().getInputs().yawRate;
-  }
-
-  /**
-   * Return the heading of the robot as a Rotation2d.
-   *
-   * <p>The angle is expected to increase as the gyro turns counterclockwise when looked at from the
-   * top. It needs to follow the NWU axis convention.
-   *
-   * @return Current heading of the robot as a Rotation2d.
-   */
-  public Rotation2d getRotation2d() {
-    return DRIVETRAIN_HARDWARE.navx().getInputs().rotation2d;
-
   }
 
   @Override

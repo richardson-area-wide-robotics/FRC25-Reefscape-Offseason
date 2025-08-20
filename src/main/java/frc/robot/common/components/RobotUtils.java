@@ -1,8 +1,8 @@
 package frc.robot.common.components;
 
 import com.pathplanner.lib.config.RobotConfig;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkFlex;
 
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,7 +79,7 @@ public class RobotUtils  {
    * @author Hudson Strub
    * @since 2025
    */
-  public void moveToPosition(SparkFlex motor, double targetPosition) {
+  public void moveToPosition(SparkBase motor, double targetPosition) {
       // Set the target position using the built-in PID controller
       motor.getClosedLoopController().setReference(targetPosition, ControlType.kPosition);
   }

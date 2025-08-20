@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.HIDConstants;
 import frc.robot.common.annotations.Robot;
 
+import java.util.Collections;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Robot(team = 9991)
 public class PracticumInStemContainer implements IRobotContainer {
@@ -21,8 +23,8 @@ public class PracticumInStemContainer implements IRobotContainer {
   public static final TankDriveSubsystem DRIVE_SUBSYSTEM = new TankDriveSubsystem(
           new TankHardware(
                   new RAWRNavX2(Constants.DriveHardwareConstants.NAVX_ID),
-                  EasyMotor.createEasySparkMax(1, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast),
-                  EasyMotor.createEasySparkMax(2, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast)));
+                  Collections.singletonList(EasyMotor.createEasySparkMax(1, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast)),
+                  Collections.singletonList(EasyMotor.createEasySparkMax(2, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast))));
 
     
     public static IRobotContainer createContainer(){

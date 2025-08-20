@@ -24,17 +24,6 @@ public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     /**
-     * Control both motors of the tank drive
-     *
-     * @param leftSpeed The speed of the left motor
-     * @param rightSpeed The speed of the right motor
-     */
-    public void tankDrive(double leftSpeed, double rightSpeed) {
-        hardware.lMotor().set(leftSpeed);
-        hardware.rMotor().set(rightSpeed);
-    }
-
-    /**
      * Like that one Wii game
      *
      * @param forward  The speed to go forward
@@ -43,7 +32,7 @@ public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
     public void arcadeDrive(double forward, double rotation) {
         double leftSpeed = forward + rotation;
         double rightSpeed = forward - rotation;
-        tankDrive(leftSpeed, rightSpeed);
+        hardware.set(leftSpeed, rightSpeed);
     }
 
     public Command arcadeDriveCommand(DoubleSupplier forward, DoubleSupplier rotation) {

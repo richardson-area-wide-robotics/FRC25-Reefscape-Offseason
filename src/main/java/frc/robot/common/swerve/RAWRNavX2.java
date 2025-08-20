@@ -71,41 +71,40 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
 
   private static final AngularVelocity NAVX2_YAW_DRIFT_RATE = Units.DegreesPerSecond.of(0.5 / 60);
 
-  private AHRS m_navx;
-  private ChassisSpeeds m_previousSpeeds;
-  private Instant m_lastUpdateTime;
+  private final AHRS navx;
+  private ChassisSpeeds previousSpeeds;
+  private Instant lastUpdateTime;
 
-  private final SimDouble m_simPitch;
-  private final SimDouble m_simRoll;
-  private final SimDouble m_simYaw;
-  private final SimDouble m_simAccelX;
-  private final SimDouble m_simAccelY;
-  private final SimDouble m_simAccelZ;
+  private final SimDouble simPitch;
+  private final SimDouble simRoll;
+  private final SimDouble simYaw;
+  private final SimDouble simAccelX;
+  private final SimDouble simAccelY;
 
-  private String m_name;
-  private NavX2InputsAutoLogged m_inputs;
+  private final String name;
+  private final NavX2InputsAutoLogged inputs;
 
-  private boolean m_fieldCentricVelocities;
+  private final boolean fieldCentricVelocities;
 
   /**
    * Create a NavX2 object with built-in logging
    * @param id NavX2 ID
    */
   public RAWRNavX2(ID id) {
-    this.m_name = id.name;
-    this.m_navx = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k200Hz);
-    this.m_inputs = new NavX2InputsAutoLogged();
-    this.m_fieldCentricVelocities = false;
+    this.name = id.name;
+    this.navx = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k200Hz);
+    this.inputs = new NavX2InputsAutoLogged();
+    this.fieldCentricVelocities = false;
 
-    SimDeviceSim simNavX2 = new SimDeviceSim("navX-Sensor", m_navx.getPort());
-    this.m_simPitch = simNavX2.getDouble("Pitch");
-    this.m_simRoll = simNavX2.getDouble("Roll");
-    this.m_simYaw = simNavX2.getDouble("Yaw");
-    this.m_simAccelX = simNavX2.getDouble("LinearWorldAccelX");
-    this.m_simAccelY = simNavX2.getDouble("LinearWorldAccelY");
-    this.m_simAccelZ = simNavX2.getDouble("LinearWorldAccelZ");
-    this.m_previousSpeeds = new ChassisSpeeds();
-    this.m_lastUpdateTime = Instant.now();
+    SimDeviceSim simNavX2 = new SimDeviceSim("navX-Sensor", navx.getPort());
+    this.simPitch = simNavX2.getDouble("Pitch");
+    this.simRoll = simNavX2.getDouble("Roll");
+    this.simYaw = simNavX2.getDouble("Yaw");
+    this.simAccelX = simNavX2.getDouble("LinearWorldAccelX");
+    this.simAccelY = simNavX2.getDouble("LinearWorldAccelY");
+      SimDouble simAccelZ = simNavX2.getDouble("LinearWorldAccelZ");
+    this.previousSpeeds = new ChassisSpeeds();
+    this.lastUpdateTime = Instant.now();
 
     // Update inputs on init
     updateInputs();
@@ -119,26 +118,26 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    * @return Port number
    */
   int getPort() {
-    return m_navx.getPort();
+    return navx.getPort();
   }
 
   /**
    * Update NavX input readings
    */
   public void updateInputs() {
-    synchronized (m_inputs) {
-      m_inputs.isConnected = m_navx.isConnected();
-      m_inputs.rollAngle.mut_replace(m_navx.getRoll(), Units.Degrees);
-      m_inputs.pitchAngle.mut_replace(m_navx.getPitch(), Units.Degrees);
-      m_inputs.yawAngle.mut_replace(m_navx.getAngle(), Units.Degrees);
-      m_inputs.accelerationX.mut_replace(m_navx.getWorldLinearAccelX(), Units.Gs);
-      m_inputs.accelerationY.mut_replace(m_navx.getWorldLinearAccelY(), Units.Gs);
-      m_inputs.accelerationZ.mut_replace(m_navx.getWorldLinearAccelZ(), Units.Gs);
-      m_inputs.velocityX.mut_replace((m_fieldCentricVelocities) ? m_navx.getVelocityX() : m_navx.getRobotCentricVelocityX(), Units.MetersPerSecond);
-      m_inputs.velocityY.mut_replace((m_fieldCentricVelocities) ? m_navx.getVelocityY() : m_navx.getRobotCentricVelocityY(), Units.MetersPerSecond);
-      m_inputs.velocityZ.mut_replace((m_fieldCentricVelocities) ? m_navx.getVelocityZ() : m_navx.getRobotCentricVelocityZ(), Units.MetersPerSecond);
-      m_inputs.yawRate.mut_replace(m_navx.getRate(), Units.DegreesPerSecond);
-      m_inputs.rotation2d = Rotation2d.fromRadians(m_inputs.yawAngle.times(-1).in(Units.Radians));
+    synchronized (inputs) {
+      inputs.isConnected = navx.isConnected();
+      inputs.rollAngle.mut_replace(navx.getRoll(), Units.Degrees);
+      inputs.pitchAngle.mut_replace(navx.getPitch(), Units.Degrees);
+      inputs.yawAngle.mut_replace(navx.getAngle(), Units.Degrees);
+      inputs.accelerationX.mut_replace(navx.getWorldLinearAccelX(), Units.Gs);
+      inputs.accelerationY.mut_replace(navx.getWorldLinearAccelY(), Units.Gs);
+      inputs.accelerationZ.mut_replace(navx.getWorldLinearAccelZ(), Units.Gs);
+      inputs.velocityX.mut_replace((fieldCentricVelocities) ? navx.getVelocityX() : navx.getRobotCentricVelocityX(), Units.MetersPerSecond);
+      inputs.velocityY.mut_replace((fieldCentricVelocities) ? navx.getVelocityY() : navx.getRobotCentricVelocityY(), Units.MetersPerSecond);
+      inputs.velocityZ.mut_replace((fieldCentricVelocities) ? navx.getVelocityZ() : navx.getRobotCentricVelocityZ(), Units.MetersPerSecond);
+      inputs.yawRate.mut_replace(navx.getRate(), Units.DegreesPerSecond);
+      inputs.rotation2d = Rotation2d.fromRadians(inputs.yawAngle.times(-1).in(Units.Radians));
     }
   }
 
@@ -147,7 +146,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    */
   @Override
   protected void periodic() {
-    synchronized (m_inputs) { Logger.processInputs(m_name, m_inputs); }
+    synchronized (inputs) { Logger.processInputs(name, inputs); }
   }
 
   @Override
@@ -161,7 +160,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    */
   @Override
   public NavX2InputsAutoLogged getInputs() {
-    synchronized (m_inputs) { return m_inputs; }
+    synchronized (inputs) { return inputs; }
   }
 
   /**
@@ -173,7 +172,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    * @param invertZ Will invert Z
    */
   public void configureVelocity(boolean swapAxes, boolean invertX, boolean invertY, boolean invertZ) {
-    m_navx.configureVelocity(swapAxes, invertX, invertY, invertZ);
+    navx.configureVelocity(swapAxes, invertX, invertY, invertZ);
   }
 
   /**
@@ -181,7 +180,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    * integration begins.
    */
   public void resetDisplacement() {
-    m_navx.resetDisplacement();
+    navx.resetDisplacement();
   }
 
   /**
@@ -198,76 +197,76 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
    * @return Returns true if the sensor is currently automatically calibrating the gyro
    */
   public boolean isCalibrating() {
-    return m_navx.isCalibrating();
+    return navx.isCalibrating();
   }
 
   @Override
   public boolean isConnected() {
-    synchronized (m_inputs) { return m_inputs.isConnected; }
+    synchronized (inputs) { return inputs.isConnected; }
   }
 
   @Override
   public void reset() {
-    m_navx.reset();
+    navx.reset();
   }
 
   @Override
   public Angle getRoll() {
-    synchronized (m_inputs) { return m_inputs.rollAngle; }
+    synchronized (inputs) { return inputs.rollAngle; }
   }
 
   @Override
   public Angle getPitch() {
-    synchronized (m_inputs) { return m_inputs.pitchAngle; }
+    synchronized (inputs) { return inputs.pitchAngle; }
   }
 
   @Override
   public Angle getYaw() {
-    synchronized (m_inputs) { return m_inputs.yawAngle; }
+    synchronized (inputs) { return inputs.yawAngle; }
   }
 
   @Override
   public AngularVelocity getYawRate() {
-    synchronized (m_inputs) { return m_inputs.yawRate; }
+    synchronized (inputs) { return inputs.yawRate; }
   }
 
   @Override
   public Rotation2d getRotation2d() {
-    synchronized (m_inputs) { return m_inputs.rotation2d; }
+    synchronized (inputs) { return inputs.rotation2d; }
   }
 
   @Override
   public LinearVelocity getVelocityX() {
-    synchronized (m_inputs) { return m_inputs.velocityX; }
+    synchronized (inputs) { return inputs.velocityX; }
   }
 
   @Override
   public LinearVelocity getVelocityY() {
-    synchronized (m_inputs) { return m_inputs.velocityY; }
+    synchronized (inputs) { return inputs.velocityY; }
   }
 
   @Override
   public void updateSim(Rotation2d orientation, ChassisSpeeds desiredSpeeds, ControlCentricity controlCentricity) {
     var currentTime = Instant.now();
     double randomNoise = ThreadLocalRandom.current().nextDouble(0.9, 1.0);
-    double dt = Duration.between(currentTime, m_lastUpdateTime).toMillis() / 1000.0;
+    double dt = Duration.between(currentTime, lastUpdateTime).toMillis() / 1000.0;
 
     if (controlCentricity.equals(ControlCentricity.FIELD_CENTRIC))
       desiredSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(desiredSpeeds, orientation);
 
-    m_inputs.velocityX.mut_replace(desiredSpeeds.vxMetersPerSecond, Units.MetersPerSecond);
-    m_inputs.velocityY.mut_replace(desiredSpeeds.vyMetersPerSecond, Units.MetersPerSecond);
+    inputs.velocityX.mut_replace(desiredSpeeds.vxMetersPerSecond, Units.MetersPerSecond);
+    inputs.velocityY.mut_replace(desiredSpeeds.vyMetersPerSecond, Units.MetersPerSecond);
 
     int yawDriftDirection = ThreadLocalRandom.current().nextDouble(1.0) < 0.5 ? -1 : +1;
-    double angle = m_simYaw.get() + Math.toDegrees(desiredSpeeds.omegaRadiansPerSecond * randomNoise) * dt
+    double angle = simYaw.get() + Math.toDegrees(desiredSpeeds.omegaRadiansPerSecond * randomNoise) * dt
                    + (NAVX2_YAW_DRIFT_RATE.in(Units.DegreesPerSecond) * dt * yawDriftDirection);
-    m_simYaw.set(angle);
+    simYaw.set(angle);
 
-    m_simAccelX.set((desiredSpeeds.vxMetersPerSecond - m_previousSpeeds.vxMetersPerSecond) / dt);
-    m_simAccelY.set((desiredSpeeds.vyMetersPerSecond - m_previousSpeeds.vyMetersPerSecond) / dt);
+    simAccelX.set((desiredSpeeds.vxMetersPerSecond - previousSpeeds.vxMetersPerSecond) / dt);
+    simAccelY.set((desiredSpeeds.vyMetersPerSecond - previousSpeeds.vyMetersPerSecond) / dt);
 
-    m_previousSpeeds = desiredSpeeds;
-    m_lastUpdateTime = currentTime;
+    previousSpeeds = desiredSpeeds;
+    lastUpdateTime = currentTime;
   }
 
   /**
@@ -276,6 +275,6 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
   @Override
   public void close() {
     PurpleManager.remove(this);
-    m_navx.close();
+    navx.close();
   }
 }
