@@ -2,16 +2,17 @@ package frc.robot.practicum;
 
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.config.SparkBaseConfig;
-import frc.robot.Constants;
+import frc.robot.CommonConstants;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.hardware.TankHardware;
 import frc.robot.common.swerve.RAWRNavX2;
+import frc.robot.pearce.PearceConstants;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import frc.robot.common.interfaces.IRobotContainer;
 import frc.robot.common.subsystems.drive.TankDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.HIDConstants;
+import frc.robot.CommonConstants.HIDConstants;
 import frc.robot.common.annotations.Robot;
 
 import java.util.Collections;
@@ -22,13 +23,12 @@ public class PracticumInStemContainer implements IRobotContainer {
 
   public static final TankDriveSubsystem DRIVE_SUBSYSTEM = new TankDriveSubsystem(
           new TankHardware(
-                  new RAWRNavX2(Constants.DriveHardwareConstants.NAVX_ID),
+                  new RAWRNavX2(PearceConstants.DriveHardwareConstants.NAVX_ID),
                   Collections.singletonList(EasyMotor.createEasySparkMax(1, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast)),
                   Collections.singletonList(EasyMotor.createEasySparkMax(2, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast))));
 
     
     public static IRobotContainer createContainer(){
-      //TODO Binds and Tank Drive go here
       configureBindings();
 
       return new PracticumInStemContainer();

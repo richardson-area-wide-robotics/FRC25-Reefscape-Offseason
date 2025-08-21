@@ -4,7 +4,7 @@
 flowchart TD
     subgraph frc_robot[frc.robot]
         BuildConstants[BuildConstants]
-        Constants[Constants]
+        CommonConstants[CommonConstants]
         Main[Main]
         Robot[Robot]
     end
@@ -35,6 +35,7 @@ flowchart TD
         RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
+        PearceConstants[PearceConstants]
         RobotContainer[RobotContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
@@ -78,8 +79,9 @@ flowchart TD
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style Constants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

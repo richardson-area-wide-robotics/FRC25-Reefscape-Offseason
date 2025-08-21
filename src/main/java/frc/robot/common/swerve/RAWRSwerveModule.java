@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import frc.robot.Constants;
+import frc.robot.pearce.PearceConstants;
 import org.lasarobotics.drive.TractionControlController;
 import org.lasarobotics.drive.swerve.DriveWheel;
 import org.lasarobotics.drive.swerve.SwerveModule;
@@ -56,8 +56,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.common.components.RobotUtils;
 import lombok.AllArgsConstructor;
 
@@ -126,7 +124,8 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
             location,
             SwerveModule.MountOrientation.STANDARD,
             SwerveModule.MountOrientation.INVERTED,
-            Constants.SwerveConstants.GEAR_RATIO,
+            PearceConstants.SwerveConstants.GEAR_RATIO,
+
             DriveWheel.create(
               Distance.ofRelativeUnits(75, Units.Millimeter), 
               Dimensionless.ofBaseUnits(1.6, Units.Value),
@@ -136,11 +135,11 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
           PIDConstants.of(2.1, 0, 0.2, 0, 0), // The PID for the rotate Motor
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
-          Dimensionless.ofBaseUnits(DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
+          Dimensionless.ofBaseUnits(PearceConstants.DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
           Mass.ofRelativeUnits(RobotUtils.robotConfig.massKG, Units.Kilograms),
           Distance.ofRelativeUnits(23, Units.Inches),
           Distance.ofRelativeUnits(24.5, Units.Inches),
-          Time.ofBaseUnits(Constants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
+          Time.ofBaseUnits(PearceConstants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
     
     
     return swerveModule;
@@ -186,7 +185,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
       * (1 / (driveWheel.diameter.in(Units.Meters) * Math.PI));
     DRIVE_METERS_PER_TICK = 1 / DRIVE_TICKS_PER_METER;
     DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * encoderTicksPerRotation;
-    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * DriveConstants.DRIVETRAIN_EFFICIENCY;
+    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * PearceConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
 
     // Set traction control controller
     super.setTractionControlController(new TractionControlController(driveWheel, slipRatio, mass, Units.MetersPerSecond.of(DRIVE_MAX_LINEAR_SPEED)));
@@ -204,11 +203,11 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     this.m_simDrivePosition = 0.0;
     this.m_simModulePosition = new SwerveModulePosition();
     this.m_desiredState = new SwerveModuleState(Units.MetersPerSecond.of(0.0), m_zeroOffset.plus(m_location.getLockPosition()));
-    this.m_autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
+    this.m_autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, PearceConstants.SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
     this.m_previousRotatePosition = m_zeroOffset.plus(m_location.getLockPosition());
     this.m_autoLockTimer = Instant.now();
 
-    Logger.recordOutput(m_driveMotor.getID().name + SwerveConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
+    Logger.recordOutput(m_driveMotor.getID().name + PearceConstants.SwerveConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
 
     //Config Drive Motor 
     EXECUTOR_SERVICE.submit(() -> configDrive(driveWheel, motorOrientation, drivePID));
@@ -255,7 +254,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     m_driveMotorConfig.idleMode(IdleMode.kCoast);
 
     // Set current limits
-    m_driveMotorConfig.smartCurrentLimit(SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    m_driveMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
     // Set status frame rates
     m_driveMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -294,7 +293,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   m_rotateMotorConfig.idleMode(IdleMode.kBrake);
 
   // Set current limits
-  m_rotateMotorConfig.smartCurrentLimit(SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
+  m_rotateMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
 
   // Set status frame rates
   m_rotateMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -341,7 +340,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
    */
   private void periodic() {
     super.logOutputs();
-    Logger.recordOutput(m_rotateMotor.getID().name + SwerveConstants.ROTATE_ERROR_LOG_ENTRY, m_desiredState.angle.minus(Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition)));
+    Logger.recordOutput(m_rotateMotor.getID().name + PearceConstants.SwerveConstants.ROTATE_ERROR_LOG_ENTRY, m_desiredState.angle.minus(Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition)));
   }
 
  /**
@@ -423,7 +422,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   @Override
   public void set(SwerveModuleState state) {
     // Auto lock modules if auto lock enabled, speed not requested, and time has elapsed
-    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < SwerveConstants.EPSILON) {
+    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < PearceConstants.SwerveConstants.EPSILON) {
       state.speedMetersPerSecond = 0.0;
       // Time's up, lock now...
       if (Duration.between(m_autoLockTimer, Instant.now()).toMillis() > m_autoLockTime)

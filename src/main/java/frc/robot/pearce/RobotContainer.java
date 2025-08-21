@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants;
-import frc.robot.Constants.HIDConstants;
+import frc.robot.CommonConstants;
+import frc.robot.CommonConstants.HIDConstants;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.components.RobotUtils;
 import frc.robot.common.interfaces.IRobotContainer;
@@ -36,13 +36,13 @@ public class RobotContainer implements IRobotContainer {
 
   public static final SwerveDriveSubsystem DRIVE_SUBSYSTEM = new SwerveDriveSubsystem(
       SwerveDriveSubsystem.initializeHardware(),
-      Constants.DriveConstants.DRIVE_ROTATE_PID,
-      Constants.DriveConstants.DRIVE_CONTROL_CENTRICITY,
-      Constants.DriveConstants.DRIVE_THROTTLE_INPUT_CURVE,
-      Constants.DriveConstants.DRIVE_TURN_INPUT_CURVE,
-      Angle.ofRelativeUnits(Constants.DriveConstants.DRIVE_TURN_SCALAR, Units.Degree),
-      Dimensionless.ofRelativeUnits(Constants.HIDConstants.CONTROLLER_DEADBAND, Units.Value),
-      Time.ofRelativeUnits(Constants.DriveConstants.DRIVE_LOOKAHEAD, Units.Second));
+      PearceConstants.DriveConstants.DRIVE_ROTATE_PID,
+      PearceConstants.DriveConstants.DRIVE_CONTROL_CENTRICITY,
+      PearceConstants.DriveConstants.DRIVE_THROTTLE_INPUT_CURVE,
+      PearceConstants.DriveConstants.DRIVE_TURN_INPUT_CURVE,
+      Angle.ofRelativeUnits(PearceConstants.DriveConstants.DRIVE_TURN_SCALAR, Units.Degree),
+      Dimensionless.ofRelativeUnits(CommonConstants.HIDConstants.CONTROLLER_DEADBAND, Units.Value),
+      Time.ofRelativeUnits(PearceConstants.DriveConstants.DRIVE_LOOKAHEAD, Units.Second));
 
   public static final ElevatorSubsystem ELEVATOR_SUBSYSTEM = new ElevatorSubsystem(9);
   public static final DeepClimbSubsystem DEEP_CLIMB_SUBSYSTEM = new DeepClimbSubsystem(13, 14);
@@ -72,7 +72,7 @@ public class RobotContainer implements IRobotContainer {
 
       // Set up the auto chooser
       automodeChooser = AutoBuilder.buildAutoChooser();
-      SmartDashboard.putData(Constants.SmartDashboardConstants.SMARTDASHBOARD_AUTO_MODE, automodeChooser);
+      SmartDashboard.putData(CommonConstants.SmartDashboardConstants.SMARTDASHBOARD_AUTO_MODE, automodeChooser);
 
       return new RobotContainer();
   }
