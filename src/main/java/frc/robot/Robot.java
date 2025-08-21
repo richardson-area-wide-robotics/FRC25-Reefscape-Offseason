@@ -10,6 +10,7 @@ import frc.robot.common.components.RobotExceptionHandler;
 import frc.robot.common.components.RobotUtils;
 import java.nio.file.Path;
 
+import frc.robot.practicum.PracticumInStemContainer;
 import org.lasarobotics.hardware.PurpleManager;
 import org.littletonrobotics.junction.LoggedRobot;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -60,7 +61,7 @@ super();
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     RobotUtils.loadRobotConfig();
-    robotContainer = RobotContainerRegistry.createContainerForTeam(RobotUtils.getTeamNumber());
+    robotContainer = PracticumInStemContainer.createContainer();
 }
 
 
