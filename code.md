@@ -3,91 +3,90 @@
 ```mermaid
 flowchart TD
     subgraph frc_robot[frc.robot]
-        frc_robot_BuildConstants[BuildConstants]
-        frc_robot_CommonConstants[CommonConstants]
-        frc_robot_Main[Main «NoArgsConstructor»]
-        frc_robot_Robot[Robot]
+        BuildConstants[BuildConstants]
+        CommonConstants[CommonConstants]
+        Main[Main]
+        Robot[Robot]
     end
     subgraph frc_robot_common_annotations[frc.robot.common.annotations]
-        frc_robot_common_annotations_Robot[@Robot «Retention»]
+        Robot[Robot]
     end
     subgraph frc_robot_common_components[frc.robot.common.components]
-        frc_robot_common_components_EasyBreakBeam[EasyBreakBeam «Getter»]
-        frc_robot_common_components_EasyMotor[EasyMotor «UtilityClass»]
-        frc_robot_common_components_RobotContainerRegistry[RobotContainerRegistry «UtilityClass»]
-        frc_robot_common_components_RobotUtils[RobotUtils «UtilityClass»]
+        EasyBreakBeam[EasyBreakBeam]
+        EasyMotor[EasyMotor]
+        RobotContainerRegistry[RobotContainerRegistry]
+        RobotUtils[RobotUtils]
     end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
-        frc_robot_common_interfaces_IRobotContainer[IRobotContainer]
+        IRobotContainer[IRobotContainer]
     end
     subgraph frc_robot_common[frc.robot.common]
-        frc_robot_common_LocalADStarAK[LocalADStarAK]
+        LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_subsystems_drive[frc.robot.common.subsystems.drive]
-        frc_robot_common_subsystems_drive_SwerveDriveSubsystem[SwerveDriveSubsystem]
-        frc_robot_common_subsystems_drive_TankDriveSubsystem[TankDriveSubsystem «Getter»]
+        SwerveDriveSubsystem[SwerveDriveSubsystem]
+        TankDriveSubsystem[TankDriveSubsystem]
     end
     subgraph frc_robot_common_subsystems[frc.robot.common.subsystems]
-        frc_robot_common_subsystems_SingleMotorSubsystem[SingleMotorSubsystem]
+        SingleMotorSubsystem[SingleMotorSubsystem]
     end
     subgraph frc_robot_common_swerve[frc.robot.common.swerve]
-        frc_robot_common_swerve_RAWRNavX2[RAWRNavX2 «SuppressWarnings»]
-        frc_robot_common_swerve_RAWRSwerveModule[RAWRSwerveModule]
+        RAWRNavX2[RAWRNavX2]
+        RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
-        frc_robot_pearce_PearceConstants[PearceConstants]
-        frc_robot_pearce_RobotContainer[RobotContainer]
+        PearceConstants[PearceConstants]
+        RobotContainer[RobotContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
-        frc_robot_pearce_subsystems_CBSSubsystem[CBSSubsystem]
-        frc_robot_pearce_subsystems_DeepClimbSubsystem[DeepClimbSubsystem]
-        frc_robot_pearce_subsystems_ElevatorSubsystem[ElevatorSubsystem]
-        frc_robot_pearce_subsystems_ScoringSubsystem[ScoringSubsystem]
+        CBSSubsystem[CBSSubsystem]
+        DeepClimbSubsystem[DeepClimbSubsystem]
+        ElevatorSubsystem[ElevatorSubsystem]
+        ScoringSubsystem[ScoringSubsystem]
     end
     subgraph frc_robot_practicum[frc.robot.practicum]
-        frc_robot_practicum_PracticumInStemContainer[PracticumInStemContainer «NoArgsConstructor, Robot»]
+        PracticumInStemContainer[PracticumInStemContainer]
     end
-    frc_robot_common_subsystems_drive_SwerveDriveSubsystem -->|extends| SubsystemBase
-    frc_robot_common_subsystems_drive_TankDriveSubsystem -->|extends| SubsystemBase
-    frc_robot_common_subsystems_SingleMotorSubsystem -->|extends| SubsystemBase
-    frc_robot_common_swerve_RAWRNavX2 -->|extends| LoggableHardware
-    frc_robot_common_swerve_RAWRSwerveModule -->|extends| SwerveModule
-    frc_robot_pearce_subsystems_CBSSubsystem -->|extends| SubsystemBase
-    frc_robot_pearce_subsystems_DeepClimbSubsystem -->|extends| SubsystemBase
-    frc_robot_pearce_subsystems_ElevatorSubsystem -->|extends| SubsystemBase
-    frc_robot_pearce_subsystems_ScoringSubsystem -->|extends| SubsystemBase
-    frc_robot_Robot -->|extends| LoggedRobot
-    frc_robot_common_LocalADStarAK -.implements.-> Pathfinder
-    frc_robot_common_subsystems_drive_SwerveDriveSubsystem -.implements.-> AutoCloseable
-    frc_robot_common_subsystems_drive_TankDriveSubsystem -.implements.-> AutoCloseable
-    frc_robot_common_swerve_RAWRNavX2 -.implements.-> IMU
-    frc_robot_common_swerve_RAWRSwerveModule -.implements.-> Sendable
-    frc_robot_pearce_RobotContainer -.implements.-> frc_robot_common_interfaces_IRobotContainer
-    frc_robot_practicum_PracticumInStemContainer -.implements.-> frc_robot_common_interfaces_IRobotContainer
-    frc_robot_pearce_subsystems_ScoringSubsystem --> frc_robot_common_components_EasyBreakBeam
-    frc_robot_Robot --> frc_robot_common_interfaces_IRobotContainer
-    frc_robot_practicum_PracticumInStemContainer -.annotated with.-> frc_robot_common_annotations_Robot
-    style frc_robot_BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_annotations_Robot fill:#fbc02d,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_components_EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_components_EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_components_RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_components_RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_interfaces_IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_subsystems_drive_SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_subsystems_drive_TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_subsystems_SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_swerve_RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_common_swerve_RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_RobotContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_subsystems_CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_subsystems_DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_subsystems_ElevatorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_pearce_subsystems_ScoringSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_practicum_PracticumInStemContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style frc_robot_Robot fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    SwerveDriveSubsystem -->|extends| SubsystemBase
+    TankDriveSubsystem -->|extends| SubsystemBase
+    SingleMotorSubsystem -->|extends| SubsystemBase
+    RAWRNavX2 -->|extends| LoggableHardware
+    RAWRSwerveModule -->|extends| SwerveModule
+    CBSSubsystem -->|extends| SubsystemBase
+    DeepClimbSubsystem -->|extends| SubsystemBase
+    ElevatorSubsystem -->|extends| SubsystemBase
+    ScoringSubsystem -->|extends| SubsystemBase
+    Robot -->|extends| LoggedRobot
+    LocalADStarAK -.implements.-> Pathfinder
+    SwerveDriveSubsystem -.implements.-> AutoCloseable
+    TankDriveSubsystem -.implements.-> AutoCloseable
+    RAWRNavX2 -.implements.-> IMU
+    RAWRSwerveModule -.implements.-> Sendable
+    RobotContainer -.implements.-> IRobotContainer
+    PracticumInStemContainer -.implements.-> IRobotContainer
+    ScoringSubsystem --> EasyBreakBeam
+    Robot --> IRobotContainer
+    style BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style ElevatorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style ScoringSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PracticumInStemContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Robot fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
 ```

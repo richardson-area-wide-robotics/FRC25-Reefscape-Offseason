@@ -155,7 +155,7 @@ tasks.register("exportMermaidGraph") {
         def srcDir = file("src/main/java")
         def outFile = file("code.md")
 
-        def classInfo = [:]  // fqcn -> [name, pkg, type, annotations, extends, implements, associations, safeId]
+        def classInfo = [:]  // fqcn -> [name, pkg, type, annotations, extends, implements, associations]
 
         srcDir.eachFileRecurse { f ->
             if (f.name.endsWith(".java")) {
@@ -164,20 +164,23 @@ tasks.register("exportMermaidGraph") {
                 def pkgMatch = (text =~ /package\s+([\w\.]+);/)
                 def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
 
-                // Match declaration with optional annotations, visibility, etc.
-                def declMatch = (text =~ /((?:@\w+(?:\([^)]*\))?\s*)*)(?:public|protected|private|abstract|final|\s)*\s*(class|interface|record|@interface)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
-                if (declMatch.find()) {
-                    def rawAnnotations = declMatch[0][1] ?: ""
-                    def annotations = (rawAnnotations =~ /@(\w+)/).collect { it[1] }
+                // Match class, interface, record, or annotation definition (@interface)
+                def match = (text =~ /\b(class|interface|record|@interface)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
+                if (match.find()) {
+                    def type = match[0][1]
+                    def name = match[0][2]
+                    def ext = match[0][3]
+                    def impls = match[0][4]?.split(",")*.trim() ?: []
 
-                    def type = declMatch[0][2]
-                    def name = declMatch[0][3]
-                    def ext = declMatch[0][4]
-                    def impls = declMatch[0][5]?.split(",")*.trim() ?: []
+                    // Collect annotations applied to this class/interface
+                    def annotatedMatch = (text =~ /(@\w+(?:\([^)]*\))?\s*)*(class|interface|record|@interface)\s+\w+/)
+                    def annotations = []
+                    if (annotatedMatch.find()) {
+                        def raw = annotatedMatch[0][1] ?: ""
+                        annotations = (raw =~ /@(\w+)/).collect { it[1] }
+                    }
 
                     def fqcn = pkg ? "${pkg}.${name}" : name
-                    def safeId = fqcn.replaceAll(/[^A-Za-z0-9_]/, "_")
-
                     classInfo[fqcn] = [
                             name        : (type == "@interface" ? "@${name}" : name),
                             pkg         : pkg,
@@ -185,8 +188,7 @@ tasks.register("exportMermaidGraph") {
                             annotations : annotations,
                             extends     : ext,
                             implements  : impls,
-                            associations: [],
-                            safeId      : safeId
+                            associations: []
                     ]
 
                     // Associations: detect field types
@@ -218,13 +220,13 @@ tasks.register("exportMermaidGraph") {
                     writer.writeLine("    subgraph ${safePkg}[${pkg}]")
                     classes.each { c ->
                         def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
-                        writer.writeLine("        ${c.safeId}[${label}]")
+                        writer.writeLine("        ${c.name}[${label}]")
                     }
                     writer.writeLine("    end")
                 } else {
                     classes.each { c ->
                         def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
-                        writer.writeLine("    ${c.safeId}[${label}]")
+                        writer.writeLine("    ${c.name}[${label}]")
                     }
                 }
             }
@@ -232,43 +234,39 @@ tasks.register("exportMermaidGraph") {
             // Inheritance
             classInfo.each { fqcn, meta ->
                 if (meta.extends) {
-                    def to = classInfo.values().find { it.name == meta.extends }?.safeId ?: meta.extends
-                    writer.writeLine("    ${meta.safeId} -->|extends| ${to}")
+                    writer.writeLine("    ${meta.name} -->|extends| ${meta.extends}")
                 }
             }
 
             // Interfaces (class → interface)
             classInfo.each { fqcn, meta ->
                 meta.implements.each { impl ->
-                    def to = classInfo.values().find { it.name == impl }?.safeId ?: impl
-                    writer.writeLine("    ${meta.safeId} -.implements.-> ${to}")
+                    writer.writeLine("    ${meta.name} -.implements.-> ${impl}")
                 }
             }
 
             // Associations (fields)
             classInfo.each { fqcn, meta ->
                 meta.associations.each { assoc ->
-                    def to = classInfo.values().find { it.name == assoc }?.safeId
-                    if (to) {
-                        writer.writeLine("    ${meta.safeId} --> ${to}")
+                    if (classInfo.values().any { it.name == assoc }) {
+                        writer.writeLine("    ${meta.name} --> ${assoc}")
                     }
                 }
             }
 
-            // Annotation usage edges
+            // Annotation usage edges (optional)
             classInfo.each { fqcn, meta ->
                 meta.annotations.each { ann ->
                     def annNode = "@${ann}"
-                    def to = classInfo.values().find { it.name == annNode }?.safeId
-                    if (to) {
-                        writer.writeLine("    ${meta.safeId} -.annotated with.-> ${to}")
+                    if (classInfo.values().any { it.name == annNode }) {
+                        writer.writeLine("    ${meta.name} -.annotated with.-> ${annNode}")
                     }
                 }
             }
 
             // --- Styles ---
             classInfo.each { fqcn, meta ->
-                def node = meta.safeId
+                def node = meta.name
                 def baseColor
                 switch (meta.type) {
                     case "interface":
