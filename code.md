@@ -46,23 +46,45 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
-    SubsystemBase -->|extends| SwerveDriveSubsystem
-    SubsystemBase -->|extends| TankDriveSubsystem
-    SubsystemBase -->|extends| SingleMotorSubsystem
-    LoggableHardware -->|extends| RAWRNavX2
-    SwerveModule -->|extends| RAWRSwerveModule
-    SubsystemBase -->|extends| CBSSubsystem
-    SubsystemBase -->|extends| DeepClimbSubsystem
-    SubsystemBase -->|extends| ElevatorSubsystem
-    SubsystemBase -->|extends| ScoringSubsystem
-    LoggedRobot -->|extends| Robot
-    Pathfinder -.implements.-> LocalADStarAK
-    AutoCloseable -.implements.-> SwerveDriveSubsystem
-    AutoCloseable -.implements.-> TankDriveSubsystem
-    IMU -.implements.-> RAWRNavX2
-    Sendable -.implements.-> RAWRSwerveModule
-    IRobotContainer -.implements.-> RobotContainer
-    IRobotContainer -.implements.-> PracticumInStemContainer
+    SwerveDriveSubsystem -->|extends| SubsystemBase
+    TankDriveSubsystem -->|extends| SubsystemBase
+    SingleMotorSubsystem -->|extends| SubsystemBase
+    RAWRNavX2 -->|extends| LoggableHardware
+    RAWRSwerveModule -->|extends| SwerveModule
+    CBSSubsystem -->|extends| SubsystemBase
+    DeepClimbSubsystem -->|extends| SubsystemBase
+    ElevatorSubsystem -->|extends| SubsystemBase
+    ScoringSubsystem -->|extends| SubsystemBase
+    Robot -->|extends| LoggedRobot
+    LocalADStarAK -.implements.-> Pathfinder
+    SwerveDriveSubsystem -.implements.-> AutoCloseable
+    TankDriveSubsystem -.implements.-> AutoCloseable
+    RAWRNavX2 -.implements.-> IMU
+    RAWRSwerveModule -.implements.-> Sendable
+    RobotContainer -.implements.-> IRobotContainer
+    PracticumInStemContainer -.implements.-> IRobotContainer
     ScoringSubsystem --> EasyBreakBeam
     Robot --> IRobotContainer
+    style BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Constants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style ElevatorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style ScoringSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PracticumInStemContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style Robot fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
 ```
