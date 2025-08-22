@@ -88,6 +88,9 @@ dependencies {
     // Reflections (For @Robot Annotation handling)
     implementation 'org.reflections:reflections:0.10.2'
 
+    // JSON (For loading wpilib_preferences.json during sim)
+    implementation 'org.json:json:20240303'
+
     // Apache (For PurpleLib)
     implementation 'org.apache.commons:commons-math3:3.+'
 

@@ -60,8 +60,9 @@ super();
     // Set pathfinding algorithm to be AdvantageKit compatible
     Pathfinding.setPathfinder(new LocalADStarAK());
 
+    System.out.println("Starting with team: " + RobotUtils.getTeamNumber());
     RobotUtils.loadRobotConfig();
-    robotContainer = PracticumInStemContainer.createContainer();
+    robotContainer = RobotContainerRegistry.createContainerForTeam(RobotUtils.getTeamNumber());
 }
 
 

@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.hal.HALUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,7 +37,11 @@ public class RobotUtils  {
    * @author Hudson Strub
    * @since 2025
    */
-  public static int getTeamNumber(){
+  public static int getTeamNumber() {
+    if (RobotBase.isSimulation()) {
+      // Override in sim since HALUtil returns 0
+      return TeamUtils.getTeamNumber(); // e.g. 1745
+    }
     return HALUtil.getTeamNumber();
   }
 
@@ -74,7 +79,7 @@ public class RobotUtils  {
 
 
    /**
-   * Move a motor to a relative positon 
+   * Move a motor to a relative position
 
    * @author Hudson Strub
    * @since 2025
