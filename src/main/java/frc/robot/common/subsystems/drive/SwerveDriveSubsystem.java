@@ -305,7 +305,15 @@ public static SwerveHardware initializeHardware() {
     POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.navx().getRotation2d(), getModulePositions());
 
     // Update current heading
-    currentHeading = new Rotation2d(getPose().getX() - m_previousPose.getX(), getPose().getY() - m_previousPose.getY());
+    double dx = getPose().getX() - m_previousPose.getX();
+    double dy = getPose().getY() - m_previousPose.getY();
+
+    if (dx == 0 && dy == 0) {
+      // No movement, keep previous heading
+      return;
+    }
+
+    currentHeading = new Rotation2d(Math.atan2(dy, dx)); //OLD IF THIS DOESNT WORK:     currentHeading = new Rotation2d(getPose().getX() - m_previousPose.getX(), getPose().getY() - m_previousPose.getY());
   }
 
   /**

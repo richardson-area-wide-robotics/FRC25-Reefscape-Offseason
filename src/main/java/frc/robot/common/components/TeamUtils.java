@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import edu.wpi.first.hal.HALUtil;
 import org.json.JSONObject;
 
 public class TeamUtils {
