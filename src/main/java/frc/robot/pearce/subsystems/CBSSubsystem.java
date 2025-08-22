@@ -27,8 +27,8 @@ public class CBSSubsystem extends SubsystemBase {
     public CBSSubsystem(int motorID) {
         SparkFlexConfig config = new SparkFlexConfig();
 
-       config.closedLoop.pid(1, 0, 0);
-       config.closedLoop.outputRange(-1, 1);
+        config.closedLoop.pid(1, 0, 0);
+        config.closedLoop.outputRange(-1, 1);
 
         motor = new SparkFlex(motorID, MotorType.kBrushless);
         config.idleMode(IdleMode.kBrake);

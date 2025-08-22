@@ -26,12 +26,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
        config.closedLoop.p(0.1).i(0).d(0).outputRange(-1, 1);
 
-        motor = new SparkFlex(motorID, MotorType.kBrushless);
-        config.idleMode(IdleMode.kBrake);
-        motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);        
+       motor = new SparkFlex(motorID, MotorType.kBrushless);
+       config.idleMode(IdleMode.kBrake);
+       motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
         
-        encoder = motor.getEncoder();
-        encoder.setPosition(0); // Reset encoder position at startup
+       encoder = motor.getEncoder();
+       encoder.setPosition(0); // Reset encoder position at startup
     }
 
     public Command up() {
