@@ -45,4 +45,11 @@ public final class CommonConstants {
     public static final String SMARTDASHBOARD_AUTO_MODE = "Auto Mode";
   }
 
+  public static class LogConstants {
+    public static final String POSE_LOG_ENTRY = "/Pose";
+    public static final String ACTUAL_SWERVE_STATE_LOG_ENTRY = "/ActualSwerveState";
+    public static final String DESIRED_SWERVE_STATE_LOG_ENTRY = "/DesiredSwerveState";
+
+  }
+
 }

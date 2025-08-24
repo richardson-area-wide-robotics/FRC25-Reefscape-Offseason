@@ -52,28 +52,39 @@ public class PearceConstants {
 
     public static class DriveConstants {
         // Drive specs
+
+        /**The efficiency of the drivetrain (Ex: maximum linear speed - friction/heat) , as a percent*/
         public static final double DRIVETRAIN_EFFICIENCY = 0.90;
+
+        /**PID for the drivetrains rotate motors*/
         public static final PIDConstants DRIVE_ROTATE_PID = PIDConstants.of(4.0, 0.0, 0.05, 0.0, 0.0);
+
+        /**Difference between a wheel’s rotational speed and the actual speed of the robot across the floor*/
         public static final double DRIVE_SLIP_RATIO = 0.05;
+
+        /**Turning, in degrees*/
         public static final double DRIVE_TURN_SCALAR = 60.0;
+
+        /**Swerve lookahead, in seconds*/
         public static final double DRIVE_LOOKAHEAD = 0.0;
+
+        /**The time for the motors to lock, in seconds*/
         public static final double AUTO_LOCK_TIME = 3.0;
+
         public static final AngularVelocity DRIVE_ROTATE_VELOCITY = Units.RadiansPerSecond.of(12.0 * Math.PI);
         public static final AngularVelocity AIM_VELOCITY_THRESHOLD = Units.DegreesPerSecond.of(5.0);
         public static final AngularAcceleration DRIVE_ROTATE_ACCELERATION = Units.RadiansPerSecond.of(4.0 * Math.PI).per(Units.Second);
         public static final Translation2d AIM_OFFSET = new Translation2d(0.0, -0.5);
 
         // Other settings
+        /**The pitch/roll the robot needs to be to consider itself tipped/tipping, as a degree*/
         public static final double TIP_THRESHOLD = 35.0;
+
+        /**Angle tolerance that defines when the robot is considered "flat enough", as a degree*/
         public static final double BALANCED_THRESHOLD = 10.0;
         public static final double AIM_VELOCITY_COMPENSATION_FUDGE_FACTOR = 0.1;
         public static final Matrix<N3, N1> ODOMETRY_STDDEV = VecBuilder.fill(0.03, 0.03, Math.toRadians(1.0));
         public static final Matrix<N3, N1> VISION_STDDEV = VecBuilder.fill(1.0, 1.0, Math.toRadians(3.0));
-
-        // Log
-        public static final String POSE_LOG_ENTRY = "/Pose";
-        public static final String ACTUAL_SWERVE_STATE_LOG_ENTRY = "/ActualSwerveState";
-        public static final String DESIRED_SWERVE_STATE_LOG_ENTRY = "/DesiredSwerveState";
 
         public static final AdvancedSwerveKinematics.ControlCentricity DRIVE_CONTROL_CENTRICITY = AdvancedSwerveKinematics.ControlCentricity.FIELD_CENTRIC;
 

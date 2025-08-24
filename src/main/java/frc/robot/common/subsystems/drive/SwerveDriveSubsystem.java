@@ -7,6 +7,7 @@ package frc.robot.common.subsystems.drive;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import frc.robot.CommonConstants;
 import frc.robot.pearce.PearceConstants;
 import lombok.Getter;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -227,7 +228,7 @@ public static SwerveHardware initializeHardware() {
     DRIVETRAIN_HARDWARE.rFrontModule().set(moduleStates);
     DRIVETRAIN_HARDWARE.lRearModule().set(moduleStates);
     DRIVETRAIN_HARDWARE.rRearModule().set(moduleStates);
-    Logger.recordOutput(getName() + PearceConstants.DriveConstants.DESIRED_SWERVE_STATE_LOG_ENTRY, moduleStates);
+    Logger.recordOutput(getName() + CommonConstants.LogConstants.DESIRED_SWERVE_STATE_LOG_ENTRY, moduleStates);
   }
 
   /**
@@ -320,8 +321,8 @@ public static SwerveHardware initializeHardware() {
    * Log SwerveDriveSubsystem outputs
    */
   private void logOutputs() {
-    Logger.recordOutput(getName() + PearceConstants.DriveConstants.POSE_LOG_ENTRY, getPose());
-    Logger.recordOutput(getName() + PearceConstants.DriveConstants.ACTUAL_SWERVE_STATE_LOG_ENTRY, getModuleStates());
+    Logger.recordOutput(getName() + CommonConstants.LogConstants.POSE_LOG_ENTRY, getPose());
+    Logger.recordOutput(getName() + CommonConstants.LogConstants.ACTUAL_SWERVE_STATE_LOG_ENTRY, getModuleStates());
   }
 
   /**
