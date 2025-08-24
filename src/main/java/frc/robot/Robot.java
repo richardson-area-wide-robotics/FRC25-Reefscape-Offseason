@@ -31,7 +31,7 @@ public class Robot extends LoggedRobot {
 
   private IRobotContainer robotContainer;
   public Robot() {
-super();
+    super();
   }
 
   @Override

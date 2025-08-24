@@ -18,15 +18,15 @@ public interface IRobotContainer {
     /**Get the command to use during auto */
     Command getAutonomousCommand();
 
-    /**Ran periodicly during simulation */
+    /**Ran periodically during simulation */
     void simulationPeriodic();
 
-    /**Ran periodicly when the robot is disabled. (Dont try it lmao) */
+    /**Ran periodically when the robot is disabled. (Dont try it lmao) */
     void disabledPeriodic();
 
-    /**Ran periodicly during auto */
+    /**Ran periodically during auto */
     void autonomousPeriodic();
 
-    /**Ran periodicly during teleop */
+    /**Ran periodically during teleop */
     void teleopPeriodic();
 }
