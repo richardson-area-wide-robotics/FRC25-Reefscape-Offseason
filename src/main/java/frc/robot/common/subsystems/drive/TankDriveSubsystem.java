@@ -17,10 +17,10 @@ import java.util.function.DoubleSupplier;
  */
 @Getter
 public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
-    private final TankHardware hardware;
+    private final TankHardware TANK_HARDWARE;
 
     public TankDriveSubsystem(TankHardware hardware) {
-        this.hardware = hardware;
+        this.TANK_HARDWARE = hardware;
     }
 
     /**
@@ -32,7 +32,7 @@ public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
     public void arcadeDrive(double forward, double rotation) {
         double leftSpeed = forward + rotation;
         double rightSpeed = forward - rotation;
-        hardware.set(leftSpeed, rightSpeed);
+        TANK_HARDWARE.set(leftSpeed, rightSpeed);
     }
 
     public Command arcadeDriveCommand(DoubleSupplier forward, DoubleSupplier rotation) {
@@ -44,6 +44,6 @@ public class TankDriveSubsystem extends SubsystemBase implements AutoCloseable {
 
     @Override
     public void close() {
-        hardware.close();
+        TANK_HARDWARE.close();
     }
 }
