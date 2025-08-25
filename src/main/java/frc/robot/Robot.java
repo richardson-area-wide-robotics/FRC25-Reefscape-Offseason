@@ -98,7 +98,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-    //RobotContainer.DRIVE_SUBSYSTEM.DRIVETRAIN_HARDWARE.navx.reset();
+    //PearceContainer.DRIVE_SUBSYSTEM.DRIVETRAIN_HARDWARE.navx.reset();
   }
 
   @Override

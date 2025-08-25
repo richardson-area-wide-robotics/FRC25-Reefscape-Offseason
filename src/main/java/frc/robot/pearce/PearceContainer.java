@@ -31,8 +31,8 @@ import lombok.NoArgsConstructor;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Robot(team = 1745) //Note: This class is also the defualt so it will be loaded on 8874
-public class RobotContainer implements IRobotContainer {
+@Robot(team = 1745)
+public class PearceContainer implements IRobotContainer {
 
   public static final SwerveDriveSubsystem DRIVE_SUBSYSTEM = new SwerveDriveSubsystem(
       SwerveDriveSubsystem.initializeHardware(),
@@ -74,7 +74,7 @@ public class RobotContainer implements IRobotContainer {
       automodeChooser = AutoBuilder.buildAutoChooser();
       SmartDashboard.putData(CommonConstants.SmartDashboardConstants.SMARTDASHBOARD_AUTO_MODE, automodeChooser);
 
-      return new RobotContainer();
+      return new PearceContainer();
   }
 
   private static void registerNamedCommands() {

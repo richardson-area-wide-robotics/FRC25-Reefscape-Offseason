@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import frc.robot.CommonConstants;
 import frc.robot.pearce.PearceConstants;
 import org.lasarobotics.drive.TractionControlController;
 import org.lasarobotics.drive.swerve.DriveWheel;
@@ -207,7 +208,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     this.previousRotatePosition = this.zeroOffset.plus(this.location.getLockPosition());
     this.autoLockTimer = Instant.now();
 
-    Logger.recordOutput(driveMotor.getID().name + PearceConstants.SwerveConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
+    Logger.recordOutput(driveMotor.getID().name + CommonConstants.LogConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
 
     //Config Drive Motor 
     EXECUTOR_SERVICE.submit(() -> configDrive(driveWheel, motorOrientation, drivePID));
@@ -340,7 +341,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
    */
   private void periodic() {
     super.logOutputs();
-    Logger.recordOutput(rotateMotor.getID().name + PearceConstants.SwerveConstants.ROTATE_ERROR_LOG_ENTRY, desiredState.angle.minus(Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition)));
+    Logger.recordOutput(rotateMotor.getID().name + CommonConstants.LogConstants.ROTATE_ERROR_LOG_ENTRY, desiredState.angle.minus(Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition)));
   }
 
  /**

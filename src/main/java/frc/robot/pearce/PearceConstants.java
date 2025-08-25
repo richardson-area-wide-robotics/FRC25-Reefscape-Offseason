@@ -43,9 +43,6 @@ public class PearceConstants {
         /**The Gear Ratio used for our swerve modules*/
         public static final MAXSwerveModule.GearRatio GEAR_RATIO = MAXSwerveModule.GearRatio.L3;
 
-        // Log
-        public static final String ROTATE_ERROR_LOG_ENTRY = "/RotateError";
-        public static final String MAX_LINEAR_VELOCITY_LOG_ENTRY = "/MaxLinearVelocity";
         public static final double MAX_AUTO_LOCK_TIME = 10.0;
 
     }

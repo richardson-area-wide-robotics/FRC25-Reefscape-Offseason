@@ -49,6 +49,8 @@ public final class CommonConstants {
     public static final String POSE_LOG_ENTRY = "/Pose";
     public static final String ACTUAL_SWERVE_STATE_LOG_ENTRY = "/ActualSwerveState";
     public static final String DESIRED_SWERVE_STATE_LOG_ENTRY = "/DesiredSwerveState";
+    public static final String ROTATE_ERROR_LOG_ENTRY = "/RotateError";
+    public static final String MAX_LINEAR_VELOCITY_LOG_ENTRY = "/MaxLinearVelocity";
 
   }
 

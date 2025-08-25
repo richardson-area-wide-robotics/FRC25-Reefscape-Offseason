@@ -1,6 +1,6 @@
 package frc.robot.common.components;
 
-import frc.robot.practicum.PracticumInStemContainer;
+import frc.robot.common.DefaultContainer;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.interfaces.IRobotContainer;
 import lombok.experimental.UtilityClass;
@@ -32,7 +32,7 @@ public class RobotContainerRegistry {
 
         if (containerClass == null) {
             System.out.println("We can't find a container for " + teamNumber + "! Using default");
-            return PracticumInStemContainer.createContainer();
+            return DefaultContainer.createContainer();
         }
 
         try {
