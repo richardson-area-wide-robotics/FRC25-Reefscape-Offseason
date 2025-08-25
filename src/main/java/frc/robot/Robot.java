@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.common.LocalADStarAK;
+import frc.robot.common.components.DashboardAutoUpdater;
 import frc.robot.common.components.RobotContainerRegistry;
 import frc.robot.common.components.RobotExceptionHandler;
 import frc.robot.common.components.RobotUtils;
@@ -68,6 +69,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     PurpleManager.update();
+    DashboardAutoUpdater.updateAll();
     CommandScheduler.getInstance().run();
   }
 

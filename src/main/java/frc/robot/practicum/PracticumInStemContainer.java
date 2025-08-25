@@ -2,7 +2,6 @@ package frc.robot.practicum;
 
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.config.SparkBaseConfig;
-import frc.robot.CommonConstants;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.hardware.TankHardware;
 import frc.robot.common.swerve.RAWRNavX2;
