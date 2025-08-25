@@ -78,6 +78,7 @@ public class PearceContainer implements IRobotContainer {
   }
 
   private static void registerNamedCommands() {
+    NamedCommands.registerCommand("Stop Outtake", SCORING_SUBSYSTEM.outtakeStop());
     NamedCommands.registerCommand("Outtake", RobotUtils.timedCommand(1, SCORING_SUBSYSTEM.outtake(), SCORING_SUBSYSTEM.outtakeStop()));
     NamedCommands.registerCommand("Elevator L3", ELEVATOR_SUBSYSTEM.autoGoLevelThree());
     NamedCommands.registerCommand("Elevator L2", ELEVATOR_SUBSYSTEM.autoGoLevelTwo());
