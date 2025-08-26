@@ -405,7 +405,7 @@ public static SwerveHardware initializeHardware() {
     // Log aim point
     Logger.recordOutput(getName() + "/AimPoint", new Pose2d(aimPoint, new Rotation2d()));
     double aimError = currentPose.getRotation().getDegrees() - adjustedAngle.getDegrees();
-    Logger.recordOutput(getName() + "/AimError", Math.copySign(((180 - Math.abs(aimError)) % 180), (aimError)));
+    Logger.recordOutput(getName() + "/AimError", Math.copySign(((180 - Math.abs(aimError)) % 180), aimError));
 
     // Drive robot accordingly
     drive(
@@ -483,11 +483,11 @@ public static SwerveHardware initializeHardware() {
 
 
     // Filter inertial velocity
-    DRIVETRAIN_HARDWARE.navx().getInputs().velocityX = (Units.MetersPerSecond.of(
-      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond))
+    DRIVETRAIN_HARDWARE.navx().getInputs().velocityX = Units.MetersPerSecond.of(
+      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond)
     )).mutableCopy();
-    DRIVETRAIN_HARDWARE.navx().getInputs().velocityY = (Units.MetersPerSecond.of(
-      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond))
+    DRIVETRAIN_HARDWARE.navx().getInputs().velocityY = Units.MetersPerSecond.of(
+      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond)
 
     )).mutableCopy();
 
@@ -665,6 +665,8 @@ public static SwerveHardware initializeHardware() {
   }
 
   /**
+   * Aim robot at desired point on the field
+   *
    * @return Command to aim a point on the field in robot centric mode
    */
   public Command aimAtPointRobotCentric(DoubleSupplier xRequestSupplier, DoubleSupplier yRequestSupplier, DoubleSupplier rotateRequestSupplier,

@@ -230,7 +230,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     SparkBaseConfig m_driveMotorConfig;
     
     // Configure the drive motor
-    m_driveMotorConfig = (driveMotor.getKind().equals(MotorKind.NEO_VORTEX)) ? new SparkFlexConfig() : new SparkMaxConfig();
+    m_driveMotorConfig = driveMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
     // Set drive encoder config
     double m_driveConversionFactor = driveWheel.diameter.in(Units.Meters) * Math.PI / super.getGearRatio().getDriveRatio();
@@ -274,7 +274,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   SparkBaseConfig m_rotateMotorConfig;
 
   // Configure the rotate motor
-  m_rotateMotorConfig = (rotateMotor.getKind().equals(MotorKind.NEO_VORTEX)) ? new SparkFlexConfig() : new SparkMaxConfig();
+  m_rotateMotorConfig = rotateMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
   // Set rotate encoder config
   double m_rotateConversionFactor = 6.28318530718;
@@ -371,7 +371,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
 
   /**
    * Allow for adding swerve module as a sendable object for dashboard interactivity
-   * @param builder
+   * @param builder the builder
    */
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -417,7 +417,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
 
   @Override
   public void enableBrakeMode(boolean enable) {
-    driveMotor.setIdleMode((enable) ? IdleMode.kBrake : IdleMode.kCoast);
+    driveMotor.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }
 
   @Override

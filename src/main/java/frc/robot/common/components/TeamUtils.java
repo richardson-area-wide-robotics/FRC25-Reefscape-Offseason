@@ -28,7 +28,7 @@ public class TeamUtils {
                     return json.optInt("teamNumber", 0);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error loading team number from file!");
             }
             return 200; // fallback in sim if file missing
         }

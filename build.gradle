@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.3.2"
     id "com.peterabeles.gversion" version "1.10" // PurpleLib
+    id "net.ltgt.errorprone" version "3.1.0" // ErrorProne
 }
 
 repositories {
@@ -113,6 +114,24 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Toggle Error Prone checks
+def errorProneEnabled = true
+
+if (errorProneEnabled) {
+    dependencies {
+        // Error Prone (Catch common Java mistakes at compile time)
+        errorprone "com.google.errorprone:error_prone_core:2.31.0"
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.errorprone {
+            disableWarningsInGeneratedCode = true
+            // Example: promote a specific check to error
+            // check("UnusedVariable", net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
+        }
+    }
 }
 
 test {
