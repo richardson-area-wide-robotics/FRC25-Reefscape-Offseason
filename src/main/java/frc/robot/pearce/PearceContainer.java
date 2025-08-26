@@ -61,9 +61,6 @@ public class PearceContainer implements IRobotContainer {
             HIDConstants.DRIVER_CONTROLLER::getLeftX,
             HIDConstants.DRIVER_CONTROLLER::getRightX));
   
-      // Register named commands
-      registerNamedCommands();
-  
       // Bind buttons and triggers
       configureBindings();
   
@@ -75,19 +72,6 @@ public class PearceContainer implements IRobotContainer {
       SmartDashboard.putData(CommonConstants.SmartDashboardConstants.SMARTDASHBOARD_AUTO_MODE, automodeChooser);
 
       return new PearceContainer();
-  }
-
-  private static void registerNamedCommands() {
-    NamedCommands.registerCommand("Stop Outtake", SCORING_SUBSYSTEM.outtakeStop());
-    NamedCommands.registerCommand("Outtake", RobotUtils.timedCommand(1, SCORING_SUBSYSTEM.outtake(), SCORING_SUBSYSTEM.outtakeStop()));
-    NamedCommands.registerCommand("Elevator L3", ELEVATOR_SUBSYSTEM.autoGoLevelThree());
-    NamedCommands.registerCommand("Elevator L2", ELEVATOR_SUBSYSTEM.autoGoLevelTwo());
-    NamedCommands.registerCommand("Elevator L1", ELEVATOR_SUBSYSTEM.autoGoLevelOne());
-    NamedCommands.registerCommand("Elevator Bottom", ELEVATOR_SUBSYSTEM.autoGoToBottom());
-    NamedCommands.registerCommand("Elevator Intake", ELEVATOR_SUBSYSTEM.autoGoToIntake());
-    NamedCommands.registerCommand("Drawbridge Bottom", SCORING_SUBSYSTEM.goToDrawBridgeBottom());
-    NamedCommands.registerCommand("Drawbridge Fullback", SCORING_SUBSYSTEM.goToDrawBridgeFullBack());
-    NamedCommands.registerCommand("Intake", RobotUtils.timedCommand(0.25, SCORING_SUBSYSTEM.outtake(), SCORING_SUBSYSTEM.outtakeStop()));
   }
 
   private static void configureBindings() {

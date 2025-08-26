@@ -12,11 +12,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.common.annotations.NamedAuto;
 import frc.robot.common.components.EasyBreakBeam;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
-public class ScoringSubsystem extends SubsystemBase {
+public class ScoringSubsystem extends DashboardSubsystem {
 
     SparkFlex drawbridgeMotor;
     SparkFlex outtakeMotor;
@@ -49,6 +51,7 @@ public class ScoringSubsystem extends SubsystemBase {
         return Commands.run(() -> drawbridgeMotor.set(0.02), this);
     }
 
+    @NamedAuto("Stop Outtake")
     public Command outtakeStop(){
         return Commands.runOnce(() -> outtakeMotor.set(0), this);
     }
@@ -71,6 +74,16 @@ public class ScoringSubsystem extends SubsystemBase {
 
     public Command intake() {
         return Commands.run(() -> outtakeMotor.set(-0.2), this);
+    }
+
+    @NamedAuto("Intake")
+    public Command intakeAuto(){
+        return RobotUtils.timedCommand(0.25, outtake(), outtakeStop());
+    }
+
+    @NamedAuto("Outtake")
+    public Command outtakeAuto(){
+        return RobotUtils.timedCommand(1, outtake(), outtakeStop());
     }
 
     public Command goToDrawBridgeBottom(){

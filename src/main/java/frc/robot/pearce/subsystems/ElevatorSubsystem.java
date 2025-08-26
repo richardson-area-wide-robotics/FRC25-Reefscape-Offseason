@@ -8,9 +8,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.common.annotations.NamedAuto;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ElevatorSubsystem extends DashboardSubsystem {
 
     private final SparkFlex motor;
     private final RelativeEncoder encoder;
@@ -66,22 +68,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Commands.run(() -> RobotUtils.moveToPosition(motor, INTAKE_POSITION));
     }
 
+    @NamedAuto("Elevator Bottom")
     public Command autoGoToBottom() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, BOTTOM_POSITION));
     }
 
+    @NamedAuto("Elevator L1")
     public Command autoGoLevelOne() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L1_POSITION));
     }
 
+    @NamedAuto("Elevator L2")
     public Command autoGoLevelTwo() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L2_POSITION));
     }
 
+    @NamedAuto("Elevator L3")
     public Command autoGoLevelThree() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L3_POSITION));
     }
 
+    @NamedAuto("Elevator Intake")
     public Command autoGoToIntake() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, INTAKE_POSITION));
     }

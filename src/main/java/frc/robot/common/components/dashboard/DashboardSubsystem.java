@@ -1,6 +1,7 @@
 package frc.robot.common.components.dashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.common.components.NamedAutoRegistry;
 
 /**
  * A SubsystemBase that automatically registers its instance
@@ -13,6 +14,7 @@ public abstract class DashboardSubsystem extends SubsystemBase {
 
     public DashboardSubsystem() {
         super();
+        NamedAutoRegistry.register(this);
         DashboardAutoUpdater.register(this);
     }
 

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
 
 /**
@@ -20,7 +21,7 @@ import frc.robot.common.components.RobotUtils;
  * @author Hudson Strub
  * @since 2025
  */
-public class CBSSubsystem extends SubsystemBase {
+public class CBSSubsystem extends DashboardSubsystem {
     public SparkFlex motor;
     private final RelativeEncoder encoder;
 

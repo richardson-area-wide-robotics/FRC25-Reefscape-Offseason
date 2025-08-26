@@ -10,6 +10,7 @@ flowchart TD
     end
     subgraph frc_robot_common_annotations[frc.robot.common.annotations]
         DashboardVariable[DashboardVariable]
+        NamedAuto[NamedAuto]
         Robot[Robot]
     end
     subgraph frc_robot_common_components_dashboard[frc.robot.common.components.dashboard]
@@ -22,6 +23,7 @@ flowchart TD
     subgraph frc_robot_common_components[frc.robot.common.components]
         EasyBreakBeam[EasyBreakBeam]
         EasyMotor[EasyMotor]
+        NamedAutoRegistry[NamedAutoRegistry]
         RobotContainerRegistry[RobotContainerRegistry]
         RobotUtils[RobotUtils]
         TeamUtils[TeamUtils]
@@ -64,10 +66,10 @@ flowchart TD
     SingleMotorSubsystem -->|extends| DashboardSubsystem
     RAWRNavX2 -->|extends| LoggableHardware
     RAWRSwerveModule -->|extends| SwerveModule
-    CBSSubsystem -->|extends| SubsystemBase
-    DeepClimbSubsystem -->|extends| SubsystemBase
-    ElevatorSubsystem -->|extends| SubsystemBase
-    ScoringSubsystem -->|extends| SubsystemBase
+    CBSSubsystem -->|extends| DashboardSubsystem
+    DeepClimbSubsystem -->|extends| DashboardSubsystem
+    ElevatorSubsystem -->|extends| DashboardSubsystem
+    ScoringSubsystem -->|extends| DashboardSubsystem
     Robot -->|extends| LoggedRobot
     CANDiagnostics -.implements.-> IDiagnostic
     DefaultContainer -.implements.-> IRobotContainer
@@ -82,12 +84,14 @@ flowchart TD
     Robot --> IRobotContainer
     style BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DashboardVariable fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style NamedAuto fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CANDiagnostics fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style NamedAutoRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
