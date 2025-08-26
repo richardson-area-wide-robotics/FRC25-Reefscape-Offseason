@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.common.LocalADStarAK;
+import frc.robot.common.components.NamedAutoRegistry;
+import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 import frc.robot.common.components.RobotContainerRegistry;
 import frc.robot.common.components.RobotExceptionHandler;
 import frc.robot.common.components.RobotUtils;
 import java.nio.file.Path;
 
+import frc.robot.common.components.diagnostics.CANDiagnostics;
 import org.lasarobotics.hardware.PurpleManager;
 import org.littletonrobotics.junction.LoggedRobot;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -31,7 +35,7 @@ public class Robot extends LoggedRobot {
 
   private IRobotContainer robotContainer;
   public Robot() {
-super();
+    super();
   }
 
   @Override
@@ -51,7 +55,8 @@ super();
     catch (Exception e){
       System.out.println("Error loading PurpleManager" + e.getMessage() + e.getCause());
     }
-    
+
+    DriverStation.silenceJoystickConnectionWarning(CommonConstants.HIDConstants.SILENCE_NO_CONTROLLER_WARNING);
 
     Thread.setDefaultUncaughtExceptionHandler(new RobotExceptionHandler());
 
@@ -59,6 +64,7 @@ super();
     // Set pathfinding algorithm to be AdvantageKit compatible
     Pathfinding.setPathfinder(new LocalADStarAK());
 
+    System.out.println("Starting with team: " + RobotUtils.getTeamNumber());
     RobotUtils.loadRobotConfig();
     robotContainer = RobotContainerRegistry.createContainerForTeam(RobotUtils.getTeamNumber());
 }
@@ -67,6 +73,8 @@ super();
   @Override
   public void robotPeriodic() {
     PurpleManager.update();
+    DashboardAutoUpdater.updateAll();
+    CANDiagnostics.checkHealth();
     CommandScheduler.getInstance().run();
   }
 
@@ -97,7 +105,7 @@ super();
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-    RobotContainer.DRIVE_SUBSYSTEM.DRIVETRAIN_HARDWARE.navx.reset();
+    //PearceContainer.DRIVE_SUBSYSTEM.DRIVETRAIN_HARDWARE.navx.reset();
   }
 
   @Override

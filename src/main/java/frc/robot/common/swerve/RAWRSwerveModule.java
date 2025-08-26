@@ -12,7 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import frc.robot.Constants;
+import frc.robot.CommonConstants;
+import frc.robot.pearce.PearceConstants;
 import org.lasarobotics.drive.TractionControlController;
 import org.lasarobotics.drive.swerve.DriveWheel;
 import org.lasarobotics.drive.swerve.SwerveModule;
@@ -56,8 +57,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.common.components.RobotUtils;
 import lombok.AllArgsConstructor;
 
@@ -77,22 +76,22 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
   private final double DRIVE_METERS_PER_ROTATION;
   private final double DRIVE_MAX_LINEAR_SPEED;
 
-  private final Spark m_driveMotor;
-  private final Spark m_rotateMotor;
-  private final SwerveModuleSim m_moduleSim;
-  private SimpleMotorFeedforward m_driveFF;
-  private final Rotation2d m_zeroOffset;
+  private final Spark driveMotor;
+  private final Spark rotateMotor;
+  private final SwerveModuleSim moduleSim;
+  private SimpleMotorFeedforward driveFF;
+  private final Rotation2d zeroOffset;
   
-  private final SwerveModule.Location m_location;
-  private Rotation2d m_previousRotatePosition;
+  private final SwerveModule.Location location;
+  private Rotation2d previousRotatePosition;
 
-  private volatile double m_simDrivePosition;
-  private volatile SwerveModulePosition m_simModulePosition;
-  private volatile SwerveModuleState m_desiredState;
+  private volatile double simDrivePosition;
+  private volatile SwerveModulePosition simModulePosition;
+  private volatile SwerveModuleState desiredState;
 
-  private final double m_autoLockTime;
+  private final double autoLockTime;
 
-  private Instant m_autoLockTimer;
+  private Instant autoLockTimer;
 
   private final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(2);  
     
@@ -126,7 +125,8 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
             location,
             SwerveModule.MountOrientation.STANDARD,
             SwerveModule.MountOrientation.INVERTED,
-            Constants.SwerveConstants.GEAR_RATIO,
+            PearceConstants.SwerveConstants.GEAR_RATIO,
+
             DriveWheel.create(
               Distance.ofRelativeUnits(75, Units.Millimeter), 
               Dimensionless.ofBaseUnits(1.6, Units.Value),
@@ -136,11 +136,11 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
           PIDConstants.of(2.1, 0, 0.2, 0, 0), // The PID for the rotate Motor
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
-          Dimensionless.ofBaseUnits(DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
+          Dimensionless.ofBaseUnits(PearceConstants.DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
           Mass.ofRelativeUnits(RobotUtils.robotConfig.massKG, Units.Kilograms),
           Distance.ofRelativeUnits(23, Units.Inches),
           Distance.ofRelativeUnits(24.5, Units.Inches),
-          Time.ofBaseUnits(Constants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
+          Time.ofBaseUnits(PearceConstants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
     
     
     return swerveModule;
@@ -177,38 +177,38 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
                          Distance wheelbase, Distance trackWidth,
                          Time autoLockTime) {
     super(location, gearRatio, driveWheel, zeroOffset, wheelbase, trackWidth, swerveHardware.driveMotor.getID().name);
-    int encoderTicksPerRotation = swerveHardware.driveMotor.getKind().equals(MotorKind.NEO_VORTEX)
-      ? GlobalConstants.VORTEX_ENCODER_TICKS_PER_ROTATION
-      : GlobalConstants.NEO_ENCODER_TICKS_PER_ROTATION;
-  
+
+    //Get the encoder ticks per rotation for the drive motor
+    int encoderTicksPerRotation = RobotUtils.getEncoderTicksPerRotation(swerveHardware.driveMotor);
+
     DRIVE_TICKS_PER_METER =
       (encoderTicksPerRotation * gearRatio.getDriveRatio())
       * (1 / (driveWheel.diameter.in(Units.Meters) * Math.PI));
     DRIVE_METERS_PER_TICK = 1 / DRIVE_TICKS_PER_METER;
     DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * encoderTicksPerRotation;
-    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * DriveConstants.DRIVETRAIN_EFFICIENCY;
+    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * PearceConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
 
     // Set traction control controller
     super.setTractionControlController(new TractionControlController(driveWheel, slipRatio, mass, Units.MetersPerSecond.of(DRIVE_MAX_LINEAR_SPEED)));
 
-    this.m_driveMotor = swerveHardware.driveMotor;
-    this.m_rotateMotor = swerveHardware.rotateMotor;
-    this.m_moduleSim = new SwerveModuleSim(
-      m_driveMotor.getKind().motor,
+    this.driveMotor = swerveHardware.driveMotor;
+    this.rotateMotor = swerveHardware.rotateMotor;
+    this.moduleSim = new SwerveModuleSim(
+      driveMotor.getKind().motor,
       driveFF.withKA((driveFF.kA <= 0.0) ? SwerveModule.MIN_SIM_kA : driveFF.kA),
-      m_rotateMotor.getKind().motor, rotateFF.withKA((rotateFF.kA <= 0.0) ? SwerveModule.MIN_SIM_kA : rotateFF.kA)
+      rotateMotor.getKind().motor, rotateFF.withKA((rotateFF.kA <= 0.0) ? SwerveModule.MIN_SIM_kA : rotateFF.kA)
     );
-    this.m_driveFF = new SimpleMotorFeedforward(driveFF.kS, driveFF.kV, driveFF.kA);
-    this.m_location = location;
-    this.m_zeroOffset = Rotation2d.fromRadians(zeroOffset.in(Units.Radians));
-    this.m_simDrivePosition = 0.0;
-    this.m_simModulePosition = new SwerveModulePosition();
-    this.m_desiredState = new SwerveModuleState(Units.MetersPerSecond.of(0.0), m_zeroOffset.plus(m_location.getLockPosition()));
-    this.m_autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
-    this.m_previousRotatePosition = m_zeroOffset.plus(m_location.getLockPosition());
-    this.m_autoLockTimer = Instant.now();
+    this.driveFF = new SimpleMotorFeedforward(driveFF.kS, driveFF.kV, driveFF.kA);
+    this.location = location;
+    this.zeroOffset = Rotation2d.fromRadians(zeroOffset.in(Units.Radians));
+    this.simDrivePosition = 0.0;
+    this.simModulePosition = new SwerveModulePosition();
+    this.desiredState = new SwerveModuleState(Units.MetersPerSecond.of(0.0), this.zeroOffset.plus(this.location.getLockPosition()));
+    this.autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, PearceConstants.SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
+    this.previousRotatePosition = this.zeroOffset.plus(this.location.getLockPosition());
+    this.autoLockTimer = Instant.now();
 
-    Logger.recordOutput(m_driveMotor.getID().name + SwerveConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
+    Logger.recordOutput(driveMotor.getID().name + CommonConstants.LogConstants.MAX_LINEAR_VELOCITY_LOG_ENTRY, DRIVE_MAX_LINEAR_SPEED);
 
     //Config Drive Motor 
     EXECUTOR_SERVICE.submit(() -> configDrive(driveWheel, motorOrientation, drivePID));
@@ -230,7 +230,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     SparkBaseConfig m_driveMotorConfig;
     
     // Configure the drive motor
-    m_driveMotorConfig = (m_driveMotor.getKind().equals(MotorKind.NEO_VORTEX)) ? new SparkFlexConfig() : new SparkMaxConfig();
+    m_driveMotorConfig = driveMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
     // Set drive encoder config
     double m_driveConversionFactor = driveWheel.diameter.in(Units.Meters) * Math.PI / super.getGearRatio().getDriveRatio();
@@ -255,7 +255,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     m_driveMotorConfig.idleMode(IdleMode.kCoast);
 
     // Set current limits
-    m_driveMotorConfig.smartCurrentLimit(SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    m_driveMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
     // Set status frame rates
     m_driveMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -267,14 +267,14 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     m_driveMotorConfig.signals.limitsPeriodMs(10);
 
     // Configure the drive motor with the desired config
-    m_driveMotor.configure(m_driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    driveMotor.configure(m_driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveModule.MountOrientation encoderOrientation, PIDConstants rotatePID) {
   SparkBaseConfig m_rotateMotorConfig;
 
   // Configure the rotate motor
-  m_rotateMotorConfig = (m_rotateMotor.getKind().equals(MotorKind.NEO_VORTEX)) ? new SparkFlexConfig() : new SparkMaxConfig();
+  m_rotateMotorConfig = rotateMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
   // Set rotate encoder config
   double m_rotateConversionFactor = 6.28318530718;
@@ -294,7 +294,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   m_rotateMotorConfig.idleMode(IdleMode.kBrake);
 
   // Set current limits
-  m_rotateMotorConfig.smartCurrentLimit(SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
+  m_rotateMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
 
   // Set status frame rates
   m_rotateMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -306,7 +306,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   m_rotateMotorConfig.signals.limitsPeriodMs(10);
 
   // Configure the rotate motor with the desired config
-  m_rotateMotor.configure(m_rotateMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  rotateMotor.configure(m_rotateMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 
@@ -325,13 +325,13 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
    * Update position in simulation
    */
   void updateSimPosition() {
-    m_simDrivePosition += m_desiredState.speedMetersPerSecond * GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds);
-    synchronized (m_driveMotor.getInputs()) {
-      m_driveMotor.getInputs().encoderPosition = m_simDrivePosition;
-      m_driveMotor.getInputs().encoderVelocity = m_desiredState.speedMetersPerSecond;
-      synchronized (m_rotateMotor.getInputs()) {
-        m_rotateMotor.getInputs().absoluteEncoderPosition = m_desiredState.angle.getRadians();
-        m_simModulePosition = new SwerveModulePosition(m_simDrivePosition, m_desiredState.angle);
+    simDrivePosition += desiredState.speedMetersPerSecond * GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds);
+    synchronized (driveMotor.getInputs()) {
+      driveMotor.getInputs().encoderPosition = simDrivePosition;
+      driveMotor.getInputs().encoderVelocity = desiredState.speedMetersPerSecond;
+      synchronized (rotateMotor.getInputs()) {
+        rotateMotor.getInputs().absoluteEncoderPosition = desiredState.angle.getRadians();
+        simModulePosition = new SwerveModulePosition(simDrivePosition, desiredState.angle);
       }
     }
   }
@@ -341,7 +341,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
    */
   private void periodic() {
     super.logOutputs();
-    Logger.recordOutput(m_rotateMotor.getID().name + SwerveConstants.ROTATE_ERROR_LOG_ENTRY, m_desiredState.angle.minus(Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition)));
+    Logger.recordOutput(rotateMotor.getID().name + CommonConstants.LogConstants.ROTATE_ERROR_LOG_ENTRY, desiredState.angle.minus(Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition)));
   }
 
  /**
@@ -349,29 +349,29 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
    */
   private void simulationPeriodic() {
     var vbus = Units.Volts.of(RobotController.getBatteryVoltage());
-    m_driveMotor.getSim().enable();
-    m_rotateMotor.getSim().enable();
+    driveMotor.getSim().enable();
+    rotateMotor.getSim().enable();
 
-    m_driveMotor.getSim().iterate(m_moduleSim.getDriveMotorVelocity().in(Units.RPM), vbus.in(Units.Volts), GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
-    m_rotateMotor.getSim().iterate(m_moduleSim.getRotateMotorVelocity().in(Units.RPM), vbus.in(Units.Volts), GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
+    driveMotor.getSim().iterate(moduleSim.getDriveMotorVelocity().in(Units.RPM), vbus.in(Units.Volts), GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
+    rotateMotor.getSim().iterate(moduleSim.getRotateMotorVelocity().in(Units.RPM), vbus.in(Units.Volts), GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
 
-    m_moduleSim.update(
-      vbus.times(m_driveMotor.getSim().getAppliedOutput()),
-      vbus.times(m_rotateMotor.getSim().getAppliedOutput())
+    moduleSim.update(
+      vbus.times(driveMotor.getSim().getAppliedOutput()),
+      vbus.times(rotateMotor.getSim().getAppliedOutput())
     );
 
     RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(m_moduleSim.getTotalCurrentDraw().in(Units.Amps)));
+        BatterySim.calculateDefaultBatteryLoadedVoltage(moduleSim.getTotalCurrentDraw().in(Units.Amps)));
 
-    m_driveMotor.getSim().setMotorCurrent(m_moduleSim.getDriveMotorCurrentDraw().in(Units.Amps));
-    m_rotateMotor.getSim().setMotorCurrent(m_moduleSim.getRotateMotorCurrentDraw().in(Units.Amps));
+    driveMotor.getSim().setMotorCurrent(moduleSim.getDriveMotorCurrentDraw().in(Units.Amps));
+    rotateMotor.getSim().setMotorCurrent(moduleSim.getRotateMotorCurrentDraw().in(Units.Amps));
 
     updateSimPosition();
   }
 
   /**
    * Allow for adding swerve module as a sendable object for dashboard interactivity
-   * @param builder
+   * @param builder the builder
    */
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -380,128 +380,128 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
     // Control drive velocity
     builder.addDoubleProperty(
       "Velocity",
-      () -> m_desiredState.speedMetersPerSecond,
-      (value) -> set(new SwerveModuleState(Units.MetersPerSecond.of(value), m_desiredState.angle))
+      () -> desiredState.speedMetersPerSecond,
+      (value) -> set(new SwerveModuleState(Units.MetersPerSecond.of(value), desiredState.angle))
     );
     // Control rotation
     builder.addDoubleProperty(
       "Orientation",
-      () -> m_desiredState.angle.getRadians(),
-      (value) -> set(new SwerveModuleState(m_desiredState.speedMetersPerSecond, Rotation2d.fromRadians(value)))
+      () -> desiredState.angle.getRadians(),
+      (value) -> set(new SwerveModuleState(desiredState.speedMetersPerSecond, Rotation2d.fromRadians(value)))
     );
     // Configure drive kS
     builder.addDoubleProperty(
       "Drive kS",
-      () -> m_driveFF.getKs(),
+      () -> driveFF.getKs(),
       (value) -> {
-        m_driveFF = new SimpleMotorFeedforward(value, m_driveFF.getKv(), m_driveFF.getKa());
+        driveFF = new SimpleMotorFeedforward(value, driveFF.getKv(), driveFF.getKa());
       }
     );
     // Configure drive kV
     builder.addDoubleProperty(
       "Drive kV",
-      () -> m_driveFF.getKv(),
+      () -> driveFF.getKv(),
       (value) -> {
-        m_driveFF = new SimpleMotorFeedforward(m_driveFF.getKs(), value, m_driveFF.getKa());
+        driveFF = new SimpleMotorFeedforward(driveFF.getKs(), value, driveFF.getKa());
       }
     );
     // Configure drive kA
     builder.addDoubleProperty(
       "Drive kA",
-      () -> m_driveFF.getKa(),
+      () -> driveFF.getKa(),
       (value) -> {
-        m_driveFF = new SimpleMotorFeedforward(m_driveFF.getKs(), m_driveFF.getKv(), value);
+        driveFF = new SimpleMotorFeedforward(driveFF.getKs(), driveFF.getKv(), value);
       }
     );
   }
 
   @Override
   public void enableBrakeMode(boolean enable) {
-    m_driveMotor.setIdleMode((enable) ? IdleMode.kBrake : IdleMode.kCoast);
+    driveMotor.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }
 
   @Override
   public void set(SwerveModuleState state) {
     // Auto lock modules if auto lock enabled, speed not requested, and time has elapsed
-    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < SwerveConstants.EPSILON) {
+    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < PearceConstants.SwerveConstants.EPSILON) {
       state.speedMetersPerSecond = 0.0;
       // Time's up, lock now...
-      if (Duration.between(m_autoLockTimer, Instant.now()).toMillis() > m_autoLockTime)
-        state.angle = m_location.getLockPosition();
+      if (Duration.between(autoLockTimer, Instant.now()).toMillis() > autoLockTime)
+        state.angle = location.getLockPosition();
       // Waiting to lock...
-      else state.angle = m_previousRotatePosition.minus(m_zeroOffset);
+      else state.angle = previousRotatePosition.minus(zeroOffset);
     } else {
       // Not locking this loop, restart timer...
-      m_autoLockTimer = Instant.now();
+      autoLockTimer = Instant.now();
     }
 
     // Save previous state
-    var oldState = m_desiredState;
+    var oldState = desiredState;
 
     // Get desired state
-    m_desiredState = super.getDesiredState(state, Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition));
+    desiredState = super.getDesiredState(state, Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition));
 
     // Set rotate motor position
-    m_rotateMotor.set(m_desiredState.angle.getRadians(), ControlType.kPosition);
+    rotateMotor.set(desiredState.angle.getRadians(), ControlType.kPosition);
 
     // Calculate drive FF
-    var driveFF = m_driveFF.calculateWithVelocities(
+    var driveFF = this.driveFF.calculateWithVelocities(
       oldState.speedMetersPerSecond,
-      m_desiredState.speedMetersPerSecond
+      desiredState.speedMetersPerSecond
     );
 
     // Set drive motor speed
-    m_driveMotor.set(
-      m_desiredState.speedMetersPerSecond, ControlType.kVelocity,
+    driveMotor.set(
+      desiredState.speedMetersPerSecond, ControlType.kVelocity,
       driveFF, ArbFFUnits.kVoltage
     );
 
     // Save rotate position
-    m_previousRotatePosition = m_desiredState.angle;
+    previousRotatePosition = desiredState.angle;
 
     // Increment odometer
-    super.incrementOdometer(Math.abs(m_desiredState.speedMetersPerSecond) * GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
+    super.incrementOdometer(Math.abs(desiredState.speedMetersPerSecond) * GlobalConstants.ROBOT_LOOP_HZ.asPeriod().in(Units.Seconds));
   }
 
   @Override
   public LinearVelocity getDriveVelocity() {
-    return Units.MetersPerSecond.of(m_driveMotor.getInputs().encoderVelocity);
+    return Units.MetersPerSecond.of(driveMotor.getInputs().encoderVelocity);
   }
 
   @Override
   public SwerveModuleState getState() {
     return new SwerveModuleState(
       getDriveVelocity(),
-      Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition).minus(m_zeroOffset)
+      Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition).minus(zeroOffset)
     );
   }
 
   @Override
   public SwerveModulePosition getPosition() {
-    if (RobotBase.isSimulation()) return m_simModulePosition;
+    if (RobotBase.isSimulation()) return simModulePosition;
     return new SwerveModulePosition(
-      m_driveMotor.getInputs().encoderPosition,
-      Rotation2d.fromRadians(m_rotateMotor.getInputs().absoluteEncoderPosition).minus(m_zeroOffset)
+      driveMotor.getInputs().encoderPosition,
+      Rotation2d.fromRadians(rotateMotor.getInputs().absoluteEncoderPosition).minus(zeroOffset)
     );
   }
 
   @Override
   public void resetDriveEncoder() {
-    m_driveMotor.resetEncoder();
-    m_simDrivePosition = 0.0;
-    m_simModulePosition = new SwerveModulePosition(m_simDrivePosition, m_previousRotatePosition);
+    driveMotor.resetEncoder();
+    simDrivePosition = 0.0;
+    simModulePosition = new SwerveModulePosition(simDrivePosition, previousRotatePosition);
   }
 
   @Override
   public void stop() {
-    m_rotateMotor.stopMotor();
-    m_driveMotor.stopMotor();
+    rotateMotor.stopMotor();
+    driveMotor.stopMotor();
   }
 
   @Override
   public void close() {
-    m_driveMotor.close();
-    m_rotateMotor.close();
+    driveMotor.close();
+    rotateMotor.close();
   }
 
   @Override

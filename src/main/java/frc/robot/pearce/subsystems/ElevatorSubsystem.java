@@ -1,4 +1,4 @@
-package frc.robot.common.subsystems;
+package frc.robot.pearce.subsystems;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import  com.revrobotics.RelativeEncoder;
@@ -8,9 +8,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.common.annotations.NamedAuto;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ElevatorSubsystem extends DashboardSubsystem {
 
     private final SparkFlex motor;
     private final RelativeEncoder encoder;
@@ -26,12 +28,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
        config.closedLoop.p(0.1).i(0).d(0).outputRange(-1, 1);
 
-        motor = new SparkFlex(motorID, MotorType.kBrushless);
-        config.idleMode(IdleMode.kBrake);
-        motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);        
+       motor = new SparkFlex(motorID, MotorType.kBrushless);
+       config.idleMode(IdleMode.kBrake);
+       motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
         
-        encoder = motor.getEncoder();
-        encoder.setPosition(0); // Reset encoder position at startup
+       encoder = motor.getEncoder();
+       encoder.setPosition(0); // Reset encoder position at startup
     }
 
     public Command up() {
@@ -66,22 +68,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Commands.run(() -> RobotUtils.moveToPosition(motor, INTAKE_POSITION));
     }
 
+    @NamedAuto("Elevator Bottom")
     public Command autoGoToBottom() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, BOTTOM_POSITION));
     }
 
+    @NamedAuto("Elevator L1")
     public Command autoGoLevelOne() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L1_POSITION));
     }
 
+    @NamedAuto("Elevator L2")
     public Command autoGoLevelTwo() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L2_POSITION));
     }
 
+    @NamedAuto("Elevator L3")
     public Command autoGoLevelThree() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, L3_POSITION));
     }
 
+    @NamedAuto("Elevator Intake")
     public Command autoGoToIntake() {
         return Commands.runOnce(() -> RobotUtils.moveToPosition(motor, INTAKE_POSITION));
     }

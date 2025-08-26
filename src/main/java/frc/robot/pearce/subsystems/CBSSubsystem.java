@@ -1,4 +1,4 @@
-package frc.robot.common.subsystems;
+package frc.robot.pearce.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
 
 /**
@@ -20,15 +21,15 @@ import frc.robot.common.components.RobotUtils;
  * @author Hudson Strub
  * @since 2025
  */
-public class CBSSubsystem extends SubsystemBase {
+public class CBSSubsystem extends DashboardSubsystem {
     public SparkFlex motor;
     private final RelativeEncoder encoder;
 
     public CBSSubsystem(int motorID) {
         SparkFlexConfig config = new SparkFlexConfig();
 
-       config.closedLoop.pid(1, 0, 0);
-       config.closedLoop.outputRange(-1, 1);
+        config.closedLoop.pid(1, 0, 0);
+        config.closedLoop.outputRange(-1, 1);
 
         motor = new SparkFlex(motorID, MotorType.kBrushless);
         config.idleMode(IdleMode.kBrake);
