@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.components.EasyMotor;
+import frc.robot.common.components.dashboard.DashboardSubsystem;
 
 
 /**
@@ -17,7 +18,7 @@ import frc.robot.common.components.EasyMotor;
  * @author Hudson Strub
  * @since 2025
  */
-public class SingleMotorSubsystem extends SubsystemBase {
+public class SingleMotorSubsystem extends DashboardSubsystem {
     public SparkFlex motor;
 
     public SingleMotorSubsystem(int motorID) {
