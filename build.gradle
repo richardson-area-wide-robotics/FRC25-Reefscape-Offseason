@@ -112,6 +112,10 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
+
+    implementation 'net.sf.sociaal:freetts:1.2.2'
+    implementation 'org.mobicents.external.freetts:cmu_us_kal:1.0'
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -170,6 +174,15 @@ task(replayWatch, type: JavaExec) {
 
 tasks.named("build") {
     dependsOn("exportMermaidGraph")
+}
+
+task runSpeechJar(type: JavaExec) {
+    group = "simulation"
+    description = "Runs the RobotSpeech JAR alongside simulation"
+
+    // Path to the prebuilt JAR
+    classpath = files("libs/RobotSpeach.jar") + sourceSets.main.runtimeClasspath
+    mainClass.set("com.strubium.gasstation.Main")
 }
 
 tasks.register("exportMermaidGraph") {
