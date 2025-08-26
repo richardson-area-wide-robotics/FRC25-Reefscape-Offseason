@@ -8,7 +8,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.CommonConstants;
-import frc.robot.common.annotations.DashboardVariable;
 import frc.robot.common.components.dashboard.DashboardSubsystem;
 import frc.robot.pearce.PearceConstants;
 import lombok.Getter;
