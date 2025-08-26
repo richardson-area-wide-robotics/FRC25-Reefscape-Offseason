@@ -11,6 +11,7 @@ import frc.robot.common.components.RobotExceptionHandler;
 import frc.robot.common.components.RobotUtils;
 import java.nio.file.Path;
 
+import frc.robot.common.components.diagnostics.CANDiagnostics;
 import org.lasarobotics.hardware.PurpleManager;
 import org.littletonrobotics.junction.LoggedRobot;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -70,6 +71,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     PurpleManager.update();
     DashboardAutoUpdater.updateAll();
+    CANDiagnostics.checkCANHealth();
     CommandScheduler.getInstance().run();
   }
 
