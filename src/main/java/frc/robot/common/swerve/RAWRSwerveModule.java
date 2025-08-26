@@ -177,9 +177,9 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
                          Distance wheelbase, Distance trackWidth,
                          Time autoLockTime) {
     super(location, gearRatio, driveWheel, zeroOffset, wheelbase, trackWidth, swerveHardware.driveMotor.getID().name);
-    int encoderTicksPerRotation = swerveHardware.driveMotor.getKind().equals(MotorKind.NEO_VORTEX)
-      ? GlobalConstants.VORTEX_ENCODER_TICKS_PER_ROTATION
-      : GlobalConstants.NEO_ENCODER_TICKS_PER_ROTATION;
+
+    //Get the encoder ticks per rotation for the drive motor
+    int encoderTicksPerRotation = RobotUtils.getEncoderTicksPerRotation(swerveHardware.driveMotor);
 
     DRIVE_TICKS_PER_METER =
       (encoderTicksPerRotation * gearRatio.getDriveRatio())
