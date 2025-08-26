@@ -31,6 +31,8 @@ public final class CommonConstants {
    */
   public static class HIDConstants {
 
+    
+  public static final boolean SILENCE_NO_CONTROLLER_WARNING = true;
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
   public static final double CONTROLLER_DEADBAND = 0.6;

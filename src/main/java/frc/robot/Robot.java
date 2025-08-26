@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.common.LocalADStarAK;
 import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 import frc.robot.common.components.RobotContainerRegistry;
@@ -53,7 +54,8 @@ public class Robot extends LoggedRobot {
     catch (Exception e){
       System.out.println("Error loading PurpleManager" + e.getMessage() + e.getCause());
     }
-    
+
+    DriverStation.silenceJoystickConnectionWarning(CommonConstants.HIDConstants.SILENCE_NO_CONTROLLER_WARNING);
 
     Thread.setDefaultUncaughtExceptionHandler(new RobotExceptionHandler());
 
