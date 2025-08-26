@@ -16,6 +16,9 @@ flowchart TD
         DashboardAutoUpdater[DashboardAutoUpdater]
         DashboardSubsystem[DashboardSubsystem]
     end
+    subgraph frc_robot_common_components_diagnostics[frc.robot.common.components.diagnostics]
+        CANDiagnostics[CANDiagnostics]
+    end
     subgraph frc_robot_common_components[frc.robot.common.components]
         EasyBreakBeam[EasyBreakBeam]
         EasyMotor[EasyMotor]
@@ -28,6 +31,7 @@ flowchart TD
         LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
+        IDiagnostic[IDiagnostic]
         IRobotContainer[IRobotContainer]
     end
     subgraph frc_robot_common_subsystems_drive[frc.robot.common.subsystems.drive]
@@ -65,6 +69,7 @@ flowchart TD
     ElevatorSubsystem -->|extends| SubsystemBase
     ScoringSubsystem -->|extends| SubsystemBase
     Robot -->|extends| LoggedRobot
+    CANDiagnostics -.implements.-> IDiagnostic
     DefaultContainer -.implements.-> IRobotContainer
     LocalADStarAK -.implements.-> Pathfinder
     SwerveDriveSubsystem -.implements.-> AutoCloseable
@@ -80,12 +85,14 @@ flowchart TD
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CANDiagnostics fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

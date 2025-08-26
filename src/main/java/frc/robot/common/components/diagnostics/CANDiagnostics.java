@@ -3,6 +3,7 @@ package frc.robot.common.components.diagnostics;
 import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.common.interfaces.IDiagnostic;
 
 /**
  * Utility class for monitoring CAN bus issues.
@@ -12,12 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Hudson Strub
  * @since 2025 Offseason
  */
-public class CANDiagnostics {
+public class CANDiagnostics implements IDiagnostic {
 
     /**
      * Checks CAN bus health using RobotController.getCANStatus().
      */
-    public static void checkCANHealth() {
+    public static void checkHealth() {
         CANStatus status = RobotController.getCANStatus();
 
         SmartDashboard.putNumber("CAN/Utilization (%)", status.percentBusUtilization * 100.0);
