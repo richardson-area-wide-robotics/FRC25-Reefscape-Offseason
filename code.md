@@ -9,19 +9,26 @@ flowchart TD
         Robot[Robot]
     end
     subgraph frc_robot_common_annotations[frc.robot.common.annotations]
+        DashboardVariable[DashboardVariable]
         Robot[Robot]
+    end
+    subgraph frc_robot_common_components_dashboard[frc.robot.common.components.dashboard]
+        DashboardAutoUpdater[DashboardAutoUpdater]
+        DashboardSubsystem[DashboardSubsystem]
     end
     subgraph frc_robot_common_components[frc.robot.common.components]
         EasyBreakBeam[EasyBreakBeam]
         EasyMotor[EasyMotor]
         RobotContainerRegistry[RobotContainerRegistry]
         RobotUtils[RobotUtils]
+        TeamUtils[TeamUtils]
+    end
+    subgraph frc_robot_common[frc.robot.common]
+        DefaultContainer[DefaultContainer]
+        LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
         IRobotContainer[IRobotContainer]
-    end
-    subgraph frc_robot_common[frc.robot.common]
-        LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_subsystems_drive[frc.robot.common.subsystems.drive]
         SwerveDriveSubsystem[SwerveDriveSubsystem]
@@ -36,7 +43,7 @@ flowchart TD
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
         PearceConstants[PearceConstants]
-        RobotContainer[RobotContainer]
+        PearceContainer[PearceContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
         CBSSubsystem[CBSSubsystem]
@@ -47,9 +54,10 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
-    SwerveDriveSubsystem -->|extends| SubsystemBase
+    DashboardSubsystem -->|extends| SubsystemBase
+    SwerveDriveSubsystem -->|extends| DashboardSubsystem
     TankDriveSubsystem -->|extends| SubsystemBase
-    SingleMotorSubsystem -->|extends| SubsystemBase
+    SingleMotorSubsystem -->|extends| DashboardSubsystem
     RAWRNavX2 -->|extends| LoggableHardware
     RAWRSwerveModule -->|extends| SwerveModule
     CBSSubsystem -->|extends| SubsystemBase
@@ -57,21 +65,27 @@ flowchart TD
     ElevatorSubsystem -->|extends| SubsystemBase
     ScoringSubsystem -->|extends| SubsystemBase
     Robot -->|extends| LoggedRobot
+    DefaultContainer -.implements.-> IRobotContainer
     LocalADStarAK -.implements.-> Pathfinder
     SwerveDriveSubsystem -.implements.-> AutoCloseable
     TankDriveSubsystem -.implements.-> AutoCloseable
     RAWRNavX2 -.implements.-> IMU
     RAWRSwerveModule -.implements.-> Sendable
-    RobotContainer -.implements.-> IRobotContainer
+    PearceContainer -.implements.-> IRobotContainer
     PracticumInStemContainer -.implements.-> IRobotContainer
     ScoringSubsystem --> EasyBreakBeam
     Robot --> IRobotContainer
     style BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DashboardVariable fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
@@ -82,7 +96,7 @@ flowchart TD
     style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style RobotContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PearceContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style ElevatorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
