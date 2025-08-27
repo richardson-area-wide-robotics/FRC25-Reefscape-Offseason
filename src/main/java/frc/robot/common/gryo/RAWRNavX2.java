@@ -1,15 +1,10 @@
-// Copyright (c) LASA Robotics and other contributors
-// Open Source Software; you can modify and/or share it under the terms of
-// the MIT license file in the root directory of this project.
-
-package frc.robot.common.swerve;
+package frc.robot.common.gryo;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.lasarobotics.drive.swerve.AdvancedSwerveKinematics.ControlCentricity;
-import org.lasarobotics.hardware.IMU;
 import org.lasarobotics.hardware.LoggableHardware;
 import org.lasarobotics.hardware.PurpleManager;
 import org.lasarobotics.hardware.kauailabs.NavX2InputsAutoLogged;
@@ -34,25 +29,18 @@ import edu.wpi.first.units.measure.MutLinearAcceleration;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
-/** NavX2 */
+/**
+ * NavX2 implementation of the IMU interface
+ */
 @SuppressWarnings("unused")
 public class RAWRNavX2 extends LoggableHardware implements IMU {
   /** NavX2 ID */
   public static class ID {
     public final String name;
-
-    /**
-     * NavX2 ID
-     * @param name Device name for logging
-     */
-    public ID(String name) {
-      this.name = name;
-    }
+    public ID(String name) { this.name = name; }
   }
 
-  /**
-   * NavX sensor inputs
-   */
+  /** NavX sensor inputs */
   @AutoLog
   public static class NavX2Inputs {
     public boolean isConnected = false;
@@ -75,21 +63,12 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
   private ChassisSpeeds previousSpeeds;
   private Instant lastUpdateTime;
 
-  private final SimDouble simPitch;
-  private final SimDouble simRoll;
-  private final SimDouble simYaw;
-  private final SimDouble simAccelX;
-  private final SimDouble simAccelY;
-
+  private final SimDouble simPitch, simRoll, simYaw, simAccelX, simAccelY;
   private final String name;
   private final NavX2InputsAutoLogged inputs;
-
   private final boolean fieldCentricVelocities;
 
-  /**
-   * Create a NavX2 object with built-in logging
-   * @param id NavX2 ID
-   */
+  /** Construct NavX2 with logging */
   public RAWRNavX2(ID id) {
     this.name = id.name;
     this.navx = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k200Hz);
@@ -102,28 +81,15 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
     this.simYaw = simNavX2.getDouble("Yaw");
     this.simAccelX = simNavX2.getDouble("LinearWorldAccelX");
     this.simAccelY = simNavX2.getDouble("LinearWorldAccelY");
-      SimDouble simAccelZ = simNavX2.getDouble("LinearWorldAccelZ");
+    SimDouble simAccelZ = simNavX2.getDouble("LinearWorldAccelZ");
+
     this.previousSpeeds = new ChassisSpeeds();
     this.lastUpdateTime = Instant.now();
 
-    // Update inputs on init
     updateInputs();
-
-    // Register device with manager
     PurpleManager.add(this);
   }
 
-  /**
-   * Get NavX port number
-   * @return Port number
-   */
-  int getPort() {
-    return navx.getPort();
-  }
-
-  /**
-   * Update NavX input readings
-   */
   @Override
   public void updateInputs() {
     synchronized (inputs) {
@@ -176,75 +142,19 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
     navx.configureVelocity(swapAxes, invertX, invertY, invertZ);
   }
 
-  /**
-   * Zeros the displacement integration variables.   Invoke this at the moment when
-   * integration begins.
-   */
-  public void resetDisplacement() {
-    navx.resetDisplacement();
-  }
+  public void resetDisplacement() { navx.resetDisplacement(); }
 
-  /**
-   * Returns true if the sensor is currently performing automatic
-   * gyro/accelerometer calibration. Automatic calibration occurs when the
-   * sensor is initially powered on, during which time the sensor should be
-   * held still, with the Z-axis pointing up (perpendicular to the earth).
-   * <p>
-   * NOTE: During this automatic calibration, the yaw, pitch and roll values
-   * returned may not be accurate.
-   * <p>
-   * Once calibration is complete, the sensor will automatically remove an
-   * internal yaw offset value from all reported values.
-   * @return Returns true if the sensor is currently automatically calibrating the gyro
-   */
-  public boolean isCalibrating() {
-    return navx.isCalibrating();
-  }
+  public boolean isCalibrating() { return navx.isCalibrating(); }
 
-  @Override
-  public boolean isConnected() {
-    synchronized (inputs) { return inputs.isConnected; }
-  }
-
-  @Override
-  public void reset() {
-    navx.reset();
-  }
-
-  @Override
-  public Angle getRoll() {
-    synchronized (inputs) { return inputs.rollAngle; }
-  }
-
-  @Override
-  public Angle getPitch() {
-    synchronized (inputs) { return inputs.pitchAngle; }
-  }
-
-  @Override
-  public Angle getYaw() {
-    synchronized (inputs) { return inputs.yawAngle; }
-  }
-
-  @Override
-  public AngularVelocity getYawRate() {
-    synchronized (inputs) { return inputs.yawRate; }
-  }
-
-  @Override
-  public Rotation2d getRotation2d() {
-    synchronized (inputs) { return inputs.rotation2d; }
-  }
-
-  @Override
-  public LinearVelocity getVelocityX() {
-    synchronized (inputs) { return inputs.velocityX; }
-  }
-
-  @Override
-  public LinearVelocity getVelocityY() {
-    synchronized (inputs) { return inputs.velocityY; }
-  }
+  @Override public boolean isConnected() { synchronized (inputs) { return inputs.isConnected; } }
+  @Override public void reset() { navx.reset(); }
+  @Override public Angle getRoll() { synchronized (inputs) { return inputs.rollAngle; } }
+  @Override public Angle getPitch() { synchronized (inputs) { return inputs.pitchAngle; } }
+  @Override public Angle getYaw() { synchronized (inputs) { return inputs.yawAngle; } }
+  @Override public AngularVelocity getYawRate() { synchronized (inputs) { return inputs.yawRate; } }
+  @Override public Rotation2d getRotation2d() { synchronized (inputs) { return inputs.rotation2d; } }
+  @Override public LinearVelocity getVelocityX() { synchronized (inputs) { return inputs.velocityX; } }
+  @Override public LinearVelocity getVelocityY() { synchronized (inputs) { return inputs.velocityY; } }
 
   @Override
   public void updateSim(Rotation2d orientation, ChassisSpeeds desiredSpeeds, ControlCentricity controlCentricity) {
@@ -259,8 +169,9 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
     inputs.velocityY.mut_replace(desiredSpeeds.vyMetersPerSecond, Units.MetersPerSecond);
 
     int yawDriftDirection = ThreadLocalRandom.current().nextDouble(1.0) < 0.5 ? -1 : +1;
-    double angle = simYaw.get() + Math.toDegrees(desiredSpeeds.omegaRadiansPerSecond * randomNoise) * dt
-                   + (NAVX2_YAW_DRIFT_RATE.in(Units.DegreesPerSecond) * dt * yawDriftDirection);
+    double angle = simYaw.get()
+            + Math.toDegrees(desiredSpeeds.omegaRadiansPerSecond * randomNoise) * dt
+            + (NAVX2_YAW_DRIFT_RATE.in(Units.DegreesPerSecond) * dt * yawDriftDirection);
     simYaw.set(angle);
 
     simAccelX.set((desiredSpeeds.vxMetersPerSecond - previousSpeeds.vxMetersPerSecond) / dt);
@@ -270,9 +181,6 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
     lastUpdateTime = currentTime;
   }
 
-  /**
-   * Closes the NavX
-   */
   @Override
   public void close() {
     PurpleManager.remove(this);

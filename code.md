@@ -31,6 +31,11 @@ flowchart TD
         DefaultContainer[DefaultContainer]
         LocalADStarAK[LocalADStarAK]
     end
+    subgraph frc_robot_common_gryo[frc.robot.common.gryo]
+        IMU[IMU]
+        RAWRNavX2[RAWRNavX2]
+        RAWRQuestNav[RAWRQuestNav]
+    end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
         IDiagnostic[IDiagnostic]
         IRobotContainer[IRobotContainer]
@@ -44,7 +49,6 @@ flowchart TD
         TankDriveSubsystem[TankDriveSubsystem]
     end
     subgraph frc_robot_common_swerve[frc.robot.common.swerve]
-        RAWRNavX2[RAWRNavX2]
         RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
@@ -60,11 +64,12 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
+    IMU -->|extends| AutoCloseable
+    RAWRNavX2 -->|extends| LoggableHardware
     DashboardSubsystem -->|extends| SubsystemBase
     SwerveDriveSubsystem -->|extends| DashboardSubsystem
     TankDriveSubsystem -->|extends| SubsystemBase
     SingleMotorSubsystem -->|extends| DashboardSubsystem
-    RAWRNavX2 -->|extends| LoggableHardware
     RAWRSwerveModule -->|extends| SwerveModule
     CBSSubsystem -->|extends| DashboardSubsystem
     DeepClimbSubsystem -->|extends| DashboardSubsystem
@@ -73,10 +78,11 @@ flowchart TD
     Robot -->|extends| LoggedRobot
     CANDiagnostics -.implements.-> IDiagnostic
     DefaultContainer -.implements.-> IRobotContainer
+    RAWRNavX2 -.implements.-> IMU
+    RAWRQuestNav -.implements.-> IMU
     LocalADStarAK -.implements.-> Pathfinder
     SwerveDriveSubsystem -.implements.-> AutoCloseable
     TankDriveSubsystem -.implements.-> AutoCloseable
-    RAWRNavX2 -.implements.-> IMU
     RAWRSwerveModule -.implements.-> Sendable
     PearceContainer -.implements.-> IRobotContainer
     PracticumInStemContainer -.implements.-> IRobotContainer
@@ -95,6 +101,9 @@ flowchart TD
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style IMU fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RAWRQuestNav fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
@@ -102,7 +111,6 @@ flowchart TD
     style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

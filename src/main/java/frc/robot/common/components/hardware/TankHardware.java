@@ -1,7 +1,7 @@
 package frc.robot.common.components.hardware;
 
 import com.revrobotics.spark.SparkBase;
-import frc.robot.common.swerve.RAWRNavX2;
+import frc.robot.common.gryo.RAWRNavX2;
 
 import java.util.List;
 

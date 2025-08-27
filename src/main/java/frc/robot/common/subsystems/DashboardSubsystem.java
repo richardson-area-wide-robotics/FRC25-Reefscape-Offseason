@@ -21,6 +21,7 @@ public abstract class DashboardSubsystem extends SubsystemBase {
 
     public DashboardSubsystem(String name) {
         super(name);
+        NamedAutoRegistry.register(this);
         DashboardAutoUpdater.register(this);
     }
 }
