@@ -47,7 +47,7 @@ public class NamedAutoRegistry {
                 System.out.println("Registered static @NamedAuto: " + annotation.value());
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error registering static method" + method.getName());
             }
         }
     }
@@ -85,7 +85,7 @@ public class NamedAutoRegistry {
                         + " → " + annotation.value());
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error registering instance of " + instance);
             }
         }
     }

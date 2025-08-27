@@ -127,7 +127,11 @@ if (errorProneEnabled) {
 
     tasks.withType(JavaCompile).configureEach {
         options.errorprone {
-            disableWarningsInGeneratedCode = true
+            disableWarningsInGeneratedCode = false
+
+            disable("FutureReturnValueIgnored")
+            disable("DoNotCallSuggester")
+
             // Example: promote a specific check to error
             // check("UnusedVariable", net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
         }

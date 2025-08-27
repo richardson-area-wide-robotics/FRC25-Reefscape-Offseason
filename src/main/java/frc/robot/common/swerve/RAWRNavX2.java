@@ -124,6 +124,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
   /**
    * Update NavX input readings
    */
+  @Override
   public void updateInputs() {
     synchronized (inputs) {
       inputs.isConnected = navx.isConnected();

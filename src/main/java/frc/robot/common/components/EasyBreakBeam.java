@@ -21,6 +21,8 @@ public class EasyBreakBeam {
     }
 
     /**
+     * Opposite of {@link #isClear()}. Is the break beam broken?
+     *
      * @return true if the beam is broken (object is present)
      */
     public boolean isBroken() {

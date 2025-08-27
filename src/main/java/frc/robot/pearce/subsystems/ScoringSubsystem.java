@@ -27,6 +27,9 @@ public class ScoringSubsystem extends DashboardSubsystem {
 
     EasyBreakBeam breakBeam;
 
+    private boolean usingBreakBeam = true;
+
+
     public ScoringSubsystem(int drawbridgeMotorId, int outtakeMotorId) {
        SparkFlexConfig config = new SparkFlexConfig();
        breakBeam = new EasyBreakBeam(1);
@@ -55,9 +58,12 @@ public class ScoringSubsystem extends DashboardSubsystem {
         return Commands.runOnce(() -> outtakeMotor.set(0), this);
     }
 
-    public Command outtake() { 
-        return Commands.run(() -> outtakeMotor.set(0.2), this);
-        //return Commands.run(() -> outtakeUntilBroken(), this);
+    public Command outtake() {
+        if (usingBreakBeam) {
+            return Commands.run(this::outtakeUntilBroken, this);
+        } else {
+            return Commands.run(() -> outtakeMotor.set(0.2), this);
+        }
     }
 
     private void outtakeUntilBroken() {

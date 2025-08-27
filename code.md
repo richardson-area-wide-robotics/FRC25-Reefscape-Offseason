@@ -15,7 +15,6 @@ flowchart TD
     end
     subgraph frc_robot_common_components_dashboard[frc.robot.common.components.dashboard]
         DashboardAutoUpdater[DashboardAutoUpdater]
-        DashboardSubsystem[DashboardSubsystem]
     end
     subgraph frc_robot_common_components_diagnostics[frc.robot.common.components.diagnostics]
         CANDiagnostics[CANDiagnostics]
@@ -36,12 +35,13 @@ flowchart TD
         IDiagnostic[IDiagnostic]
         IRobotContainer[IRobotContainer]
     end
+    subgraph frc_robot_common_subsystems[frc.robot.common.subsystems]
+        DashboardSubsystem[DashboardSubsystem]
+        SingleMotorSubsystem[SingleMotorSubsystem]
+    end
     subgraph frc_robot_common_subsystems_drive[frc.robot.common.subsystems.drive]
         SwerveDriveSubsystem[SwerveDriveSubsystem]
         TankDriveSubsystem[TankDriveSubsystem]
-    end
-    subgraph frc_robot_common_subsystems[frc.robot.common.subsystems]
-        SingleMotorSubsystem[SingleMotorSubsystem]
     end
     subgraph frc_robot_common_swerve[frc.robot.common.swerve]
         RAWRNavX2[RAWRNavX2]
@@ -87,7 +87,6 @@ flowchart TD
     style NamedAuto fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CANDiagnostics fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
@@ -99,6 +98,7 @@ flowchart TD
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

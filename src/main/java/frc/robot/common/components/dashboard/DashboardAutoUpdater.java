@@ -50,7 +50,7 @@ public class DashboardAutoUpdater {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error registering static method" + field.getName());
             }
         }
     }
@@ -86,7 +86,7 @@ public class DashboardAutoUpdater {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error registering instance of " + instance);
             }
         }
     }
@@ -108,7 +108,7 @@ public class DashboardAutoUpdater {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error updating dashboard! " + e.getMessage());
             }
         }
     }

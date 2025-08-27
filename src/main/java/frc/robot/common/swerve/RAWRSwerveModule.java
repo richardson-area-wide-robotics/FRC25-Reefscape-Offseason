@@ -85,7 +85,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
   private final SwerveModule.Location location;
   private Rotation2d previousRotatePosition;
 
-  private volatile double simDrivePosition;
+  private double simDrivePosition;
   private volatile SwerveModulePosition simModulePosition;
   private volatile SwerveModuleState desiredState;
 
