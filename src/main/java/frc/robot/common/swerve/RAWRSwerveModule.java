@@ -227,24 +227,24 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
   }
 
   public void configDrive(DriveWheel driveWheel, SwerveModule.MountOrientation motorOrientation,  PIDConstants drivePID) {
-    SparkBaseConfig m_driveMotorConfig;
+    SparkBaseConfig driveMotorConfig;
     
     // Configure the drive motor
-    m_driveMotorConfig = driveMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
+    driveMotorConfig = driveMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
     // Set drive encoder config
     double m_driveConversionFactor = driveWheel.diameter.in(Units.Meters) * Math.PI / super.getGearRatio().getDriveRatio();
-    m_driveMotorConfig.encoder.positionConversionFactor(m_driveConversionFactor);
-    m_driveMotorConfig.encoder.velocityConversionFactor(m_driveConversionFactor / 60);
+    driveMotorConfig.encoder.positionConversionFactor(m_driveConversionFactor);
+    driveMotorConfig.encoder.velocityConversionFactor(m_driveConversionFactor / 60);
 
     // Invert drive motor if necessary
-    m_driveMotorConfig.inverted(motorOrientation.equals(MountOrientation.INVERTED));
+    driveMotorConfig.inverted(motorOrientation.equals(MountOrientation.INVERTED));
 
     // Set sensor to use for closed loop control
-    m_driveMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    driveMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     // Set gains for drive PID
-    m_driveMotorConfig.closedLoop.pidf(
+    driveMotorConfig.closedLoop.pidf(
       drivePID.kP,
       drivePID.kI,
       drivePID.kD,
@@ -252,61 +252,61 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     );
 
     // Set drive motor to coast
-    m_driveMotorConfig.idleMode(IdleMode.kCoast);
+    driveMotorConfig.idleMode(IdleMode.kCoast);
 
     // Set current limits
-    m_driveMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    driveMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
     // Set status frame rates
-    m_driveMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
-    m_driveMotorConfig.signals.primaryEncoderVelocityPeriodMs(20);
-    m_driveMotorConfig.signals.absoluteEncoderPositionPeriodMs(20);
-    m_driveMotorConfig.signals.absoluteEncoderVelocityPeriodMs(20);
-    m_driveMotorConfig.signals.analogPositionPeriodMs(20);
-    m_driveMotorConfig.signals.analogVelocityPeriodMs(20);
-    m_driveMotorConfig.signals.limitsPeriodMs(10);
+    driveMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
+    driveMotorConfig.signals.primaryEncoderVelocityPeriodMs(20);
+    driveMotorConfig.signals.absoluteEncoderPositionPeriodMs(20);
+    driveMotorConfig.signals.absoluteEncoderVelocityPeriodMs(20);
+    driveMotorConfig.signals.analogPositionPeriodMs(20);
+    driveMotorConfig.signals.analogVelocityPeriodMs(20);
+    driveMotorConfig.signals.limitsPeriodMs(10);
 
     // Configure the drive motor with the desired config
-    driveMotor.configure(m_driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    driveMotor.configure(driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveModule.MountOrientation encoderOrientation, PIDConstants rotatePID) {
-  SparkBaseConfig m_rotateMotorConfig;
+  SparkBaseConfig rotateMotorConfig;
 
   // Configure the rotate motor
-  m_rotateMotorConfig = rotateMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
+  rotateMotorConfig = rotateMotor.getKind().equals(MotorKind.NEO_VORTEX) ? new SparkFlexConfig() : new SparkMaxConfig();
 
   // Set rotate encoder config
   double m_rotateConversionFactor = 6.28318530718;
-  m_rotateMotorConfig.absoluteEncoder.positionConversionFactor(m_rotateConversionFactor);
-  m_rotateMotorConfig.absoluteEncoder.velocityConversionFactor(m_rotateConversionFactor / 60);
-  m_rotateMotorConfig.absoluteEncoder.inverted(!encoderOrientation.equals(motorOrientation));
+  rotateMotorConfig.absoluteEncoder.positionConversionFactor(m_rotateConversionFactor);
+  rotateMotorConfig.absoluteEncoder.velocityConversionFactor(m_rotateConversionFactor / 60);
+  rotateMotorConfig.absoluteEncoder.inverted(!encoderOrientation.equals(motorOrientation));
 
   // Set sensor to use for closed loop control
-  m_rotateMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+  rotateMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
   // Set gains for rotate PID and enable wrapping
-  m_rotateMotorConfig.closedLoop.pid(rotatePID.kP, rotatePID.kI, rotatePID.kD);
-  m_rotateMotorConfig.closedLoop.positionWrappingEnabled(true);
-  m_rotateMotorConfig.closedLoop.positionWrappingInputRange(0.0, m_rotateConversionFactor);
+  rotateMotorConfig.closedLoop.pid(rotatePID.kP, rotatePID.kI, rotatePID.kD);
+  rotateMotorConfig.closedLoop.positionWrappingEnabled(true);
+  rotateMotorConfig.closedLoop.positionWrappingInputRange(0.0, m_rotateConversionFactor);
 
   // Set rotate motor to brake
-  m_rotateMotorConfig.idleMode(IdleMode.kBrake);
+  rotateMotorConfig.idleMode(IdleMode.kBrake);
 
   // Set current limits
-  m_rotateMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
+  rotateMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
 
   // Set status frame rates
-  m_rotateMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
-  m_rotateMotorConfig.signals.primaryEncoderVelocityPeriodMs(20);
-  m_rotateMotorConfig.signals.absoluteEncoderPositionPeriodMs(20);
-  m_rotateMotorConfig.signals.absoluteEncoderVelocityPeriodMs(20);
-  m_rotateMotorConfig.signals.analogPositionPeriodMs(20);
-  m_rotateMotorConfig.signals.analogVelocityPeriodMs(20);
-  m_rotateMotorConfig.signals.limitsPeriodMs(10);
+  rotateMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
+  rotateMotorConfig.signals.primaryEncoderVelocityPeriodMs(20);
+  rotateMotorConfig.signals.absoluteEncoderPositionPeriodMs(20);
+  rotateMotorConfig.signals.absoluteEncoderVelocityPeriodMs(20);
+  rotateMotorConfig.signals.analogPositionPeriodMs(20);
+  rotateMotorConfig.signals.analogVelocityPeriodMs(20);
+  rotateMotorConfig.signals.limitsPeriodMs(10);
 
   // Configure the rotate motor with the desired config
-  rotateMotor.configure(m_rotateMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  rotateMotor.configure(rotateMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 

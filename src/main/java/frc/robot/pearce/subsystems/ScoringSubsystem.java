@@ -10,13 +10,12 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.common.annotations.NamedAuto;
 import frc.robot.common.components.EasyBreakBeam;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.RobotUtils;
-import frc.robot.common.components.dashboard.DashboardSubsystem;
+import frc.robot.common.subsystems.DashboardSubsystem;
 
 public class ScoringSubsystem extends DashboardSubsystem {
 

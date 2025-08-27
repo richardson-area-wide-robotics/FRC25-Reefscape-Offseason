@@ -1,7 +1,8 @@
-package frc.robot.common.components.dashboard;
+package frc.robot.common.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.components.NamedAutoRegistry;
+import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 
 /**
  * A SubsystemBase that automatically registers its instance

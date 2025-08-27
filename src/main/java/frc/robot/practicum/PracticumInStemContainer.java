@@ -26,7 +26,7 @@ public class PracticumInStemContainer implements IRobotContainer {
                   Collections.singletonList(EasyMotor.createEasySparkMax(1, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast)),
                   Collections.singletonList(EasyMotor.createEasySparkMax(2, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast))));
 
-    
+
     public static IRobotContainer createContainer(){
       configureBindings();
 
