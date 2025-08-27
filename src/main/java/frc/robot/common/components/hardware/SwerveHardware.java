@@ -1,7 +1,7 @@
 package frc.robot.common.components.hardware;
 
 
-import frc.robot.common.gryo.RAWRNavX2;
+import frc.robot.common.gryo.IMU;
 import frc.robot.common.swerve.RAWRSwerveModule;
 
 
@@ -14,7 +14,7 @@ import frc.robot.common.swerve.RAWRSwerveModule;
  *
  * @since 2025
  */
-public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
+public record SwerveHardware(IMU gyro, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
                              RAWRSwerveModule lRearModule, RAWRSwerveModule rRearModule) {
     public void lock() {
         lFrontModule.lock();
@@ -52,7 +52,11 @@ public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWR
     }
 
     public void close() {
-        navx.close();
+        try { // TODO EVIL
+            gyro.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         lFrontModule.close();
         rFrontModule.close();
         lRearModule.close();

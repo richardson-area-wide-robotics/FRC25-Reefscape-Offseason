@@ -134,9 +134,9 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
         );
 
         // NavX calibration
-        while (DRIVETRAIN_HARDWARE.navx().isCalibrating()) DRIVETRAIN_HARDWARE.stop();
+        while (DRIVETRAIN_HARDWARE.gyro().isCalibrating()) DRIVETRAIN_HARDWARE.stop();
 
-        DRIVETRAIN_HARDWARE.navx().reset();
+        DRIVETRAIN_HARDWARE.gyro().reset();
 
         // Swerve drive kinematics and pose estimator
         KINEMATICS = new SwerveDriveKinematics(
@@ -153,7 +153,7 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
 
       POSE_ESTIMATOR = new SwerveDrivePoseEstimator(
           KINEMATICS,
-          DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+          DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
           getModulePositions(),
           new Pose2d(),
           PearceConstants.DriveConstants.ODOMETRY_STDDEV,
@@ -258,7 +258,7 @@ public static SwerveHardware initializeHardware() {
       // Convert speeds to module states, correcting for 2nd order kinematics
       SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
           desiredChassisSpeeds,
-              DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+              DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
           controlCentricity
       );
 
@@ -303,7 +303,7 @@ public static SwerveHardware initializeHardware() {
     m_previousPose = getPose();
 
     // Update pose based on odometry
-    POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.navx().getRotation2d(), getModulePositions());
+    POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.gyro().getRotation2d(), getModulePositions());
 
     // Update current heading
     double dx = getPose().getX() - m_previousPose.getX();
@@ -338,7 +338,7 @@ public static SwerveHardware initializeHardware() {
    */
   private void antiTip() {
     // Calculate direction of tip
-    double direction = Math.atan2(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees), DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees));
+    double direction = Math.atan2(DRIVETRAIN_HARDWARE.gyro().getRoll().in(Units.Degrees), DRIVETRAIN_HARDWARE.gyro().getPitch().in(Units.Degrees));
 
     // Drive to counter tipping motion
     drive(
@@ -365,7 +365,7 @@ public static SwerveHardware initializeHardware() {
 
     // Drive normally and return if invalid point
     if (point == null) {
-      AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), rotateRequest).unaryMinus();
+      AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.gyro().getYaw(), DRIVETRAIN_HARDWARE.gyro().getYawRate(), rotateRequest).unaryMinus();
       drive(
         velocityOutput.unaryMinus().times(Math.cos(moveDirection)),
         velocityOutput.unaryMinus().times(Math.sin(moveDirection)),
@@ -451,7 +451,7 @@ public static SwerveHardware initializeHardware() {
 
     // Get throttle and rotate output
     LinearVelocity velocityOutput = THROTTLE_MAP.throttleLookup(moveRequest);
-    AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), rotateRequest).unaryMinus();
+    AngularVelocity rotateOutput = ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.gyro().getYaw(), DRIVETRAIN_HARDWARE.gyro().getYawRate(), rotateRequest).unaryMinus();
 
     // Drive robot
     drive(
@@ -469,7 +469,7 @@ public static SwerveHardware initializeHardware() {
    */
   private void resetPose(Pose2d pose) {
     POSE_ESTIMATOR.resetPosition(
-      DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
       getModulePositions(),
       pose
     );
@@ -478,17 +478,17 @@ public static SwerveHardware initializeHardware() {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    DRIVETRAIN_HARDWARE.navx().updateInputs();
+    DRIVETRAIN_HARDWARE.gyro().updateInputs();
 
 
     // Filter inertial velocity
-    DRIVETRAIN_HARDWARE.navx().getInputs().velocityX = Units.MetersPerSecond.of(
-      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond)
-    )).mutableCopy();
-    DRIVETRAIN_HARDWARE.navx().getInputs().velocityY = Units.MetersPerSecond.of(
-      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond)
-
-    )).mutableCopy();
+//    DRIVETRAIN_HARDWARE.gyro().getVelocityX() = Units.MetersPerSecond.of(
+//      X_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.gyro().getInputs().velocityX.in(Units.MetersPerSecond)
+//    )).mutableCopy();
+//    DRIVETRAIN_HARDWARE.gyro().getVelocityY() = Units.MetersPerSecond.of(
+//      Y_VELOCITY_FILTER.calculate(DRIVETRAIN_HARDWARE.gyro().getInputs().velocityY.in(Units.MetersPerSecond)
+//
+//    )).mutableCopy();
 
 
 
@@ -516,7 +516,7 @@ public static SwerveHardware initializeHardware() {
     // Convert speeds to module states, correcting for 2nd order kinematics
     SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
             desiredChassisSpeeds,
-      DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
       ControlCentricity.ROBOT_CENTRIC
     );
 
@@ -527,16 +527,16 @@ public static SwerveHardware initializeHardware() {
     setSwerveModules(moduleStates);
 
     // Update turn PID
-    ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.navx().getYaw(), DRIVETRAIN_HARDWARE.navx().getYawRate(), 0.0);
+    ROTATE_PID_CONTROLLER.calculate(DRIVETRAIN_HARDWARE.gyro().getYaw(), DRIVETRAIN_HARDWARE.gyro().getYawRate(), 0.0);
 
     // Update auto-aim controllers
     AUTO_AIM_PID_CONTROLLER_FRONT.calculate(
-      DRIVETRAIN_HARDWARE.navx().getRotation2d().getDegrees(),
-      DRIVETRAIN_HARDWARE.navx().getRotation2d().getDegrees()
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d().getDegrees(),
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d().getDegrees()
     );
     AUTO_AIM_PID_CONTROLLER_BACK.calculate(
-      DRIVETRAIN_HARDWARE.navx().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees(),
-      DRIVETRAIN_HARDWARE.navx().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees()
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees(),
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d().plus(Rotation2d.fromRadians(Math.PI)).getDegrees()
     );
   }
 
@@ -689,7 +689,7 @@ public static SwerveHardware initializeHardware() {
    * Reset SwerveDriveSubsystem turn PID
    */
   public void resetRotatePID() {
-    ROTATE_PID_CONTROLLER.setSetpoint(DRIVETRAIN_HARDWARE.navx().getYaw());
+    ROTATE_PID_CONTROLLER.setSetpoint(DRIVETRAIN_HARDWARE.gyro().getYaw());
     ROTATE_PID_CONTROLLER.reset();
   }
 
@@ -727,8 +727,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is tipping
    */
   public boolean isTipping() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD ||
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.gyro().getPitch().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD ||
+           Math.abs(DRIVETRAIN_HARDWARE.gyro().getRoll().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD;
   }
 
   /**
@@ -736,8 +736,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is (nearly) balanced
    */
   public boolean isBalanced() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD &&
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.gyro().getPitch().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD &&
+           Math.abs(DRIVETRAIN_HARDWARE.gyro().getRoll().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD;
   }
 
   /**
@@ -745,7 +745,7 @@ public static SwerveHardware initializeHardware() {
    * @return True if aimed
    */
   public boolean isAimed() {
-    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.navx().getYawRate().lt(PearceConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
+    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.gyro().getYawRate().lt(PearceConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
   }
 
   /**
@@ -754,7 +754,7 @@ public static SwerveHardware initializeHardware() {
    */
   public LinearVelocity getInertialVelocity() {
     return Units.MetersPerSecond.of(
-      Math.hypot(DRIVETRAIN_HARDWARE.navx().getInputs().velocityX.in(Units.MetersPerSecond), DRIVETRAIN_HARDWARE.navx().getInputs().velocityY.in(Units.MetersPerSecond))
+      Math.hypot(DRIVETRAIN_HARDWARE.gyro().getVelocityX().in(Units.MetersPerSecond), DRIVETRAIN_HARDWARE.gyro().getVelocityY().in(Units.MetersPerSecond))
     );
   }
 

@@ -1,7 +1,7 @@
 package frc.robot.common.components.hardware;
 
 import com.revrobotics.spark.SparkBase;
-import frc.robot.common.gryo.RAWRNavX2;
+import frc.robot.common.gryo.IMU;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Hudson Strub
  * @since 2025 Offseason
  */
-public record TankHardware(RAWRNavX2 navx, List<SparkBase> lMotors, List<SparkBase> rMotors) {
+public record TankHardware(IMU gyro, List<SparkBase> lMotors, List<SparkBase> rMotors) {
 
 
     public void set(double leftSpeed, double rightSpeed) {
@@ -27,7 +27,11 @@ public record TankHardware(RAWRNavX2 navx, List<SparkBase> lMotors, List<SparkBa
     }
 
     public void close() {
-        navx.close();
+        try {
+            gyro.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         lMotors.forEach(SparkBase::close);
         rMotors.forEach(SparkBase::close);
     }

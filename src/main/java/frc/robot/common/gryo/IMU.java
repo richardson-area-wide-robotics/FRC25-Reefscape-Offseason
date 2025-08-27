@@ -29,6 +29,8 @@ public interface IMU extends AutoCloseable {
     /** @return Whether sensor is currently connected */
     boolean isConnected();
 
+    boolean isCalibrating();
+
     /** @return Roll angle */
     Angle getRoll();
 

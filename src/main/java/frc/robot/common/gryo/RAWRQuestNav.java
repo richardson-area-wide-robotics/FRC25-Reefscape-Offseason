@@ -61,6 +61,11 @@ public class RAWRQuestNav implements IMU {
     }
 
     @Override
+    public boolean isCalibrating() {
+        return false; // TODO this correct?
+    }
+
+    @Override
     public void reset() {
         // Reset pose to zero (field origin) — adjust if you need field-relative reset
         questNav.setPose(new Pose2d());
