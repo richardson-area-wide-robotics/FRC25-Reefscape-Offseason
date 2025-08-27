@@ -17,6 +17,11 @@ public class RoboTalker {
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
+            try {
+                socket.close();
+            } catch (IOException error) {
+                throw new RuntimeException(error);
+            }
             throw new RuntimeException(e);
         }
         out.println("Hello, I am speaking now!");
