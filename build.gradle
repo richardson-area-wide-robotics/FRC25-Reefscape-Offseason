@@ -181,7 +181,7 @@ task runSpeechJar(type: JavaExec) {
     description = "Runs the RobotSpeech JAR alongside simulation"
 
     // Path to the prebuilt JAR
-    classpath = files("libs/RobotSpeach.jar") + sourceSets.main.runtimeClasspath
+    classpath = files("libs/RobotSpeech.jar") + sourceSets.main.runtimeClasspath
     mainClass.set("com.strubium.gasstation.Main")
 }
 

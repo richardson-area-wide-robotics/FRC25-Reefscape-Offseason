@@ -31,6 +31,7 @@ flowchart TD
     subgraph frc_robot_common[frc.robot.common]
         DefaultContainer[DefaultContainer]
         LocalADStarAK[LocalADStarAK]
+        RoboTalker[RoboTalker]
     end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
         IDiagnostic[IDiagnostic]
@@ -99,6 +100,7 @@ flowchart TD
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RoboTalker fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SwerveDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

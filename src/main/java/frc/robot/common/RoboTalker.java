@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class RoboTalker {
 
-    public static void black(){
+    public static void backtalk(){
         Socket socket = null;
         try {
             socket = new Socket("192.168.12.193", 5810);

@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.common.LocalADStarAK;
 import frc.robot.common.RoboTalker;
-import frc.robot.common.components.NamedAutoRegistry;
 import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 import frc.robot.common.components.RobotContainerRegistry;
 import frc.robot.common.components.RobotExceptionHandler;
@@ -78,7 +77,7 @@ public class Robot extends LoggedRobot {
     CANDiagnostics.checkHealth();
     CommandScheduler.getInstance().run();
 
-    RoboTalker.black();
+    RoboTalker.backtalk();
   }
 
   
