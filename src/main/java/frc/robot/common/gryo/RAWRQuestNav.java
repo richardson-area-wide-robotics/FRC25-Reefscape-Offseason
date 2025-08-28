@@ -51,12 +51,12 @@ public class RAWRQuestNav implements IMU {
 
     @Override
     public boolean isConnected() {
-        return questNav.isTracking();
+        return questNav.isConnected();
     }
 
     @Override
     public boolean isCalibrating() {
-        return false; // TODO this correct?
+        return !questNav.isTracking(); // TODO this correct?
     }
 
     @Override
