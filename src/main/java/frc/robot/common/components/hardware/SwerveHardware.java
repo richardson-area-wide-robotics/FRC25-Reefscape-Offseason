@@ -1,7 +1,7 @@
 package frc.robot.common.components.hardware;
 
 
-import frc.robot.common.gryo.IMU;
+import frc.robot.common.interfaces.IMU;
 import frc.robot.common.swerve.RAWRSwerveModule;
 
 

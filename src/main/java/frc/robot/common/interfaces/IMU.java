@@ -1,4 +1,4 @@
-package frc.robot.common.gryo;
+package frc.robot.common.interfaces;
 
 // General-purpose IMU/Gyro abstraction for swerve or other subsystems
 
@@ -16,9 +16,6 @@ import edu.wpi.first.units.measure.LinearVelocity;
 public interface IMU extends AutoCloseable {
     /** Periodically update the IMU sensor inputs */
     void updateInputs();
-
-    /** @return Latest IMU inputs object (device-specific implementation decides format) */
-    Object getInputs();
 
     /** @return Update frequency of the sensor */
     Frequency getUpdateRate();

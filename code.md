@@ -32,12 +32,12 @@ flowchart TD
         LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_gryo[frc.robot.common.gryo]
-        IMU[IMU]
         RAWRNavX2[RAWRNavX2]
         RAWRQuestNav[RAWRQuestNav]
     end
     subgraph frc_robot_common_interfaces[frc.robot.common.interfaces]
         IDiagnostic[IDiagnostic]
+        IMU[IMU]
         IRobotContainer[IRobotContainer]
     end
     subgraph frc_robot_common_subsystems[frc.robot.common.subsystems]
@@ -64,8 +64,8 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
-    IMU -->|extends| AutoCloseable
     RAWRNavX2 -->|extends| LoggableHardware
+    IMU -->|extends| AutoCloseable
     DashboardSubsystem -->|extends| SubsystemBase
     SwerveDriveSubsystem -->|extends| DashboardSubsystem
     TankDriveSubsystem -->|extends| SubsystemBase
@@ -101,10 +101,10 @@ flowchart TD
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style IMU fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRQuestNav fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
+    style IMU fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style IRobotContainer fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style LocalADStarAK fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DashboardSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

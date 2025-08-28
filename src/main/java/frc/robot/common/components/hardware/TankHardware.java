@@ -1,7 +1,7 @@
 package frc.robot.common.components.hardware;
 
 import com.revrobotics.spark.SparkBase;
-import frc.robot.common.gryo.IMU;
+import frc.robot.common.interfaces.IMU;
 
 import java.util.List;
 

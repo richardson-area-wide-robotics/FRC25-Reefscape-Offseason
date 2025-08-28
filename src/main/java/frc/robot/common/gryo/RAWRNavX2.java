@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ThreadLocalRandom;
 
+import frc.robot.common.interfaces.IMU;
 import org.lasarobotics.drive.swerve.AdvancedSwerveKinematics.ControlCentricity;
 import org.lasarobotics.hardware.LoggableHardware;
 import org.lasarobotics.hardware.PurpleManager;
@@ -144,6 +145,7 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
 
   public void resetDisplacement() { navx.resetDisplacement(); }
 
+  @Override
   public boolean isCalibrating() { return navx.isCalibrating(); }
 
   @Override public boolean isConnected() { synchronized (inputs) { return inputs.isConnected; } }
