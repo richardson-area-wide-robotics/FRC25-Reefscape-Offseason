@@ -86,18 +86,18 @@ public class PearceConstants {
         public static final AdvancedSwerveKinematics.ControlCentricity DRIVE_CONTROL_CENTRICITY = AdvancedSwerveKinematics.ControlCentricity.FIELD_CENTRIC;
 
         // Input Curves
-        private static final double[] m_DriveThrottleInputCurveX = { 0.0, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.000 };
-        private static final double[] m_DriveThrottleInputCurveY = { 0.0, 0.052, 0.207, 0.465, 0.827, 1.293, 1.862, 2.534, 3.310, 4.189, 5.172 };
-        private static final double[] m_DriveTurnInputCurveX = { 0.0, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.0 };
-        private static final double[] m_DriveTurnInputCurveY = { 0.0, 0.010, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300, 0.400, 0.600, 1.0 };
+        private static final double[] driveThrottleInputCurveX = { 0.0, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.000 };
+        private static final double[] driveThrottleInputCurveY = { 0.0, 0.052, 0.207, 0.465, 0.827, 1.293, 1.862, 2.534, 3.310, 4.189, 5.172 };
+        private static final double[] driveTurnInputCurveX = { 0.0, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.0 };
+        private static final double[] driveTurnInputCurveY = { 0.0, 0.010, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300, 0.400, 0.600, 1.0 };
 
         private static final SplineInterpolator SPLINE_INTERPOLATOR = new SplineInterpolator();
 
 
         public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR
-                .interpolate(m_DriveThrottleInputCurveX, m_DriveThrottleInputCurveY);
+                .interpolate(driveThrottleInputCurveX, driveThrottleInputCurveY);
         public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR
-                .interpolate(m_DriveTurnInputCurveX, m_DriveTurnInputCurveY);
+                .interpolate(driveTurnInputCurveX, driveTurnInputCurveY);
     }
 
 
