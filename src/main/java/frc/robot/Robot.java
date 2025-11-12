@@ -38,7 +38,6 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  @SuppressWarnings("resource")
   public void robotInit() {
     try{
       PurpleManager.initialize(

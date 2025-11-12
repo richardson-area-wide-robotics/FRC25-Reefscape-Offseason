@@ -78,7 +78,7 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
 
   public final LinearVelocity DRIVE_MAX_LINEAR_SPEED;
   public final LinearAcceleration DRIVE_AUTO_ACCELERATION;
-  private AdvancedSwerveKinematics advancedKinematics;
+  private final AdvancedSwerveKinematics ADVANCED_KINEMATICS;
   private final ProfiledPIDController AUTO_AIM_PID_CONTROLLER_FRONT;
   private final ProfiledPIDController AUTO_AIM_PID_CONTROLLER_BACK;
   private final MedianFilter X_VELOCITY_FILTER;
@@ -146,7 +146,7 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
             DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate()
         );
 
-        advancedKinematics = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
+        ADVANCED_KINEMATICS = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
                                 DRIVETRAIN_HARDWARE.rFrontModule().getModuleCoordinate(),
                                 DRIVETRAIN_HARDWARE.lRearModule().getModuleCoordinate(),
                                 DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate());
@@ -256,7 +256,7 @@ public static SwerveHardware initializeHardware() {
       );
 
       // Convert speeds to module states, correcting for 2nd order kinematics
-      SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
+      SwerveModuleState[] moduleStates = ADVANCED_KINEMATICS.toSwerveModuleStates(
           desiredChassisSpeeds,
               DRIVETRAIN_HARDWARE.navx().getRotation2d(),
           controlCentricity
@@ -514,7 +514,7 @@ public static SwerveHardware initializeHardware() {
     desiredChassisSpeeds = AdvancedSwerveKinematics.correctForDynamics(speeds);
 
     // Convert speeds to module states, correcting for 2nd order kinematics
-    SwerveModuleState[] moduleStates = advancedKinematics.toSwerveModuleStates(
+    SwerveModuleState[] moduleStates = ADVANCED_KINEMATICS.toSwerveModuleStates(
             desiredChassisSpeeds,
       DRIVETRAIN_HARDWARE.navx().getRotation2d(),
       ControlCentricity.ROBOT_CENTRIC

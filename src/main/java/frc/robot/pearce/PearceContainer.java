@@ -5,7 +5,6 @@
 package frc.robot.pearce;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
@@ -50,7 +49,7 @@ public class PearceContainer implements IRobotContainer {
   public static final CBSSubsystem COAXIAL_BOOM_STICK = new CBSSubsystem(17);
 
 
-  private static SendableChooser<Command> automodeChooser; 
+  private static SendableChooser<Command> automodeChooser;
 
   public static IRobotContainer createContainer(){
         // Set drive command

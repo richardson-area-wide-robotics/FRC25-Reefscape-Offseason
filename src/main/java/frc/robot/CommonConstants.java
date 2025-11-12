@@ -45,7 +45,6 @@ public final class CommonConstants {
   }
 
   public static class SmartDashboardConstants {
-    @DashboardVariable(name = "RACIST")
     public static final String SMARTDASHBOARD_AUTO_MODE = "Auto Mode";
   }
 
