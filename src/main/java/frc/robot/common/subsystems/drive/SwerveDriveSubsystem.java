@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 import frc.robot.CommonConstants;
 import frc.robot.common.subsystems.DashboardSubsystem;
-import frc.robot.pearce.PearceConstants;
 import lombok.Getter;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -156,8 +155,8 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
           DRIVETRAIN_HARDWARE.navx().getRotation2d(),
           getModulePositions(),
           new Pose2d(),
-          PearceConstants.DriveConstants.ODOMETRY_STDDEV,
-          PearceConstants.DriveConstants.VISION_STDDEV
+          CommonConstants.DriveConstants.ODOMETRY_STDDEV,
+          CommonConstants.DriveConstants.VISION_STDDEV
       );
 
       // Chassis speeds
@@ -194,26 +193,26 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
  * @return A Hardware object containing all necessary devices for this subsystem
  */
 public static SwerveHardware initializeHardware() {
-  RAWRNavX2 navx = new RAWRNavX2(PearceConstants.DriveHardwareConstants.NAVX_ID);
+  RAWRNavX2 navx = new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_ID);
 
   RAWRSwerveModule lFrontModule = RAWRSwerveModule.createSwerve(
-          PearceConstants.DriveHardwareConstants.LEFT_FRONT_DRIVE_MOTOR_ID,
-          PearceConstants.DriveHardwareConstants.LEFT_FRONT_ROTATE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.LEFT_FRONT_DRIVE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.LEFT_FRONT_ROTATE_MOTOR_ID,
           SwerveModule.Location.LeftFront);
 
   RAWRSwerveModule rFrontModule = RAWRSwerveModule.createSwerve(
-          PearceConstants.DriveHardwareConstants.RIGHT_FRONT_DRIVE_MOTOR_ID,
-          PearceConstants.DriveHardwareConstants.RIGHT_FRONT_ROTATE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_DRIVE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_ROTATE_MOTOR_ID,
           SwerveModule.Location.RightFront);
 
   RAWRSwerveModule lRearModule = RAWRSwerveModule.createSwerve(
-          PearceConstants.DriveHardwareConstants.LEFT_REAR_DRIVE_MOTOR_ID,
-          PearceConstants.DriveHardwareConstants.LEFT_REAR_ROTATE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.LEFT_REAR_DRIVE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.LEFT_REAR_ROTATE_MOTOR_ID,
           SwerveModule.Location.LeftRear);
 
   RAWRSwerveModule rRearModule = RAWRSwerveModule.createSwerve(
-          PearceConstants.DriveHardwareConstants.RIGHT_REAR_DRIVE_MOTOR_ID,
-          PearceConstants.DriveHardwareConstants.RIGHT_REAR_ROTATE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.RIGHT_REAR_DRIVE_MOTOR_ID,
+          CommonConstants.DriveHardwareConstants.RIGHT_REAR_ROTATE_MOTOR_ID,
           SwerveModule.Location.RightRear);
 
     return new SwerveHardware(navx, lFrontModule, rFrontModule, lRearModule, rRearModule);
@@ -377,7 +376,7 @@ public static SwerveHardware initializeHardware() {
     }
 
     // Adjust point
-    point = point.plus(PearceConstants.DriveConstants.AIM_OFFSET);
+    point = point.plus(CommonConstants.DriveConstants.AIM_OFFSET);
     // Get current pose
     Pose2d currentPose = getPose();
     // Angle to target point
@@ -391,7 +390,7 @@ public static SwerveHardware initializeHardware() {
     // Parallel component of robot's motion to target vector
     Vector2D parallelRobotVector = targetVector.scalarMultiply(robotVector.dotProduct(targetVector) / targetVector.getNormSq());
     // Perpendicular component of robot's motion to target vector
-    Vector2D perpendicularRobotVector = robotVector.subtract(parallelRobotVector).scalarMultiply(velocityCorrection ?PearceConstants.DriveConstants. AIM_VELOCITY_COMPENSATION_FUDGE_FACTOR : 0.0);
+    Vector2D perpendicularRobotVector = robotVector.subtract(parallelRobotVector).scalarMultiply(velocityCorrection ?CommonConstants.DriveConstants. AIM_VELOCITY_COMPENSATION_FUDGE_FACTOR : 0.0);
     // Adjust aim point using calculated vector
     Translation2d adjustedPoint = point.minus(new Translation2d(perpendicularRobotVector.getX(), perpendicularRobotVector.getY()));
     // Calculate new angle using adjusted point
@@ -701,8 +700,8 @@ public static SwerveHardware initializeHardware() {
     return new PathConstraints(
       3.0,
       1.0,
-      PearceConstants.DriveConstants.DRIVE_ROTATE_VELOCITY.in(Units.RadiansPerSecond),
-      PearceConstants.DriveConstants.DRIVE_ROTATE_ACCELERATION.magnitude()
+      CommonConstants.DriveConstants.DRIVE_ROTATE_VELOCITY.in(Units.RadiansPerSecond),
+      CommonConstants.DriveConstants.DRIVE_ROTATE_ACCELERATION.magnitude()
     );
   }
 
@@ -727,8 +726,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is tipping
    */
   public boolean isTipping() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD ||
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) > PearceConstants.DriveConstants.TIP_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD ||
+           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD;
   }
 
   /**
@@ -736,8 +735,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is (nearly) balanced
    */
   public boolean isBalanced() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD &&
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) < PearceConstants.DriveConstants.BALANCED_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD &&
+           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD;
   }
 
   /**
@@ -745,7 +744,7 @@ public static SwerveHardware initializeHardware() {
    * @return True if aimed
    */
   public boolean isAimed() {
-    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.navx().getYawRate().lt(PearceConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
+    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.navx().getYawRate().lt(CommonConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
   }
 
   /**
