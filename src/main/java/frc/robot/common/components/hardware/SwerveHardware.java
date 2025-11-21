@@ -1,8 +1,12 @@
 package frc.robot.common.components.hardware;
 
 
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.CommonConstants;
 import frc.robot.common.swerve.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
+import org.littletonrobotics.junction.Logger;
 
 
 /**
@@ -21,6 +25,43 @@ public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWR
         rFrontModule.lock();
         lRearModule.lock();
         rRearModule.lock();
+    }
+
+    /**
+     * Set swerve modules
+     * @param moduleStates Array of calculated module states
+     */
+    public void setSwerveModules(SwerveModuleState[] moduleStates) {
+        lFrontModule.set(moduleStates);
+        rFrontModule.set(moduleStates);
+        lRearModule.set(moduleStates);
+        rRearModule.set(moduleStates);
+    }
+
+    /**
+     * Get current module states
+     * @return Array of swerve module states
+     */
+    public SwerveModuleState[] getModuleStates() {
+        return new SwerveModuleState[] {
+                lFrontModule.getState(),
+                rFrontModule.getState(),
+                lRearModule.getState(),
+                rRearModule.getState()
+        };
+    }
+
+    /**
+     * Get current module positions
+     * @return Array of swerve module positions
+     */
+    public SwerveModulePosition[] getModulePositions() {
+        return new SwerveModulePosition[] {
+                lFrontModule.getPosition(),
+                rFrontModule.getPosition(),
+                lRearModule.getPosition(),
+                rRearModule.getPosition()
+        };
     }
 
     public void stop() {
