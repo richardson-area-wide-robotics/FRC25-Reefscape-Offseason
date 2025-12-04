@@ -1,6 +1,7 @@
 package frc.robot.common.components.hardware;
 
 
+import frc.robot.common.interfaces.IMU;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.CommonConstants;
@@ -18,7 +19,7 @@ import org.littletonrobotics.junction.Logger;
  *
  * @since 2025
  */
-public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
+public record SwerveHardware(IMU gyro, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
                              RAWRSwerveModule lRearModule, RAWRSwerveModule rRearModule) {
     public void lock() {
         lFrontModule.lock();
@@ -93,7 +94,11 @@ public record SwerveHardware(RAWRNavX2 navx, RAWRSwerveModule lFrontModule, RAWR
     }
 
     public void close() {
-        navx.close();
+        try { // TODO EVIL
+            gyro.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         lFrontModule.close();
         rFrontModule.close();
         lRearModule.close();
