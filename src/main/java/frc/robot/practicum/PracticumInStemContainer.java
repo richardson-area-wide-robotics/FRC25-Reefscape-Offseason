@@ -5,7 +5,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import frc.robot.CommonConstants;
 import frc.robot.common.components.EasyMotor;
 import frc.robot.common.components.hardware.TankHardware;
-import frc.robot.common.swerve.RAWRNavX2;
+import frc.robot.common.gryo.RAWRNavX2;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import frc.robot.common.interfaces.IRobotContainer;

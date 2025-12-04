@@ -151,7 +151,7 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
 
       POSE_ESTIMATOR = new SwerveDrivePoseEstimator(
           KINEMATICS,
-          DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+          DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
           DRIVETRAIN_HARDWARE.getModulePositions(),
           new Pose2d(),
           CommonConstants.DriveConstants.ODOMETRY_STDDEV,
@@ -265,7 +265,7 @@ public static SwerveHardware initializeHardware() {
     m_previousPose = getPose();
 
     // Update pose based on odometry
-    POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.navx().getRotation2d(),  DRIVETRAIN_HARDWARE.getModulePositions());
+    POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.gyro().getRotation2d(),  DRIVETRAIN_HARDWARE.getModulePositions());
 
     // Update current heading
     double dx = getPose().getX() - m_previousPose.getX();
@@ -431,7 +431,7 @@ public static SwerveHardware initializeHardware() {
    */
   private void resetPose(Pose2d pose) {
     POSE_ESTIMATOR.resetPosition(
-      DRIVETRAIN_HARDWARE.navx().getRotation2d(),
+      DRIVETRAIN_HARDWARE.gyro().getRotation2d(),
       DRIVETRAIN_HARDWARE.getModulePositions(),
       pose
     );
@@ -689,8 +689,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is tipping
    */
   public boolean isTipping() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD ||
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.gyro().getPitch().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD ||
+           Math.abs(DRIVETRAIN_HARDWARE.gyro().getRoll().in(Units.Degrees)) > CommonConstants.DriveConstants.TIP_THRESHOLD;
   }
 
   /**
@@ -698,8 +698,8 @@ public static SwerveHardware initializeHardware() {
    * @return True if robot is (nearly) balanced
    */
   public boolean isBalanced() {
-    return Math.abs(DRIVETRAIN_HARDWARE.navx().getPitch().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD &&
-           Math.abs(DRIVETRAIN_HARDWARE.navx().getRoll().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD;
+    return Math.abs(DRIVETRAIN_HARDWARE.gyro().getPitch().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD &&
+           Math.abs(DRIVETRAIN_HARDWARE.gyro().getRoll().in(Units.Degrees)) < CommonConstants.DriveConstants.BALANCED_THRESHOLD;
   }
 
   /**
@@ -707,7 +707,7 @@ public static SwerveHardware initializeHardware() {
    * @return True if aimed
    */
   public boolean isAimed() {
-    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.navx().getYawRate().lt(CommonConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
+    return (AUTO_AIM_PID_CONTROLLER_FRONT.atGoal() || AUTO_AIM_PID_CONTROLLER_BACK.atGoal()) && DRIVETRAIN_HARDWARE.gyro().getYawRate().lt(CommonConstants.DriveConstants.AIM_VELOCITY_THRESHOLD);
   }
 
   /**

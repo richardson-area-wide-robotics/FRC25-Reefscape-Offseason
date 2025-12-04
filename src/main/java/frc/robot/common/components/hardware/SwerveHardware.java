@@ -4,10 +4,7 @@ package frc.robot.common.components.hardware;
 import frc.robot.common.interfaces.IMU;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.CommonConstants;
-import frc.robot.common.swerve.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
-import org.littletonrobotics.junction.Logger;
 
 
 /**
