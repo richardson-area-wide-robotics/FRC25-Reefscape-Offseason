@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import frc.robot.CommonConstants;
-import frc.robot.pearce.PearceConstants;
 import org.lasarobotics.drive.TractionControlController;
 import org.lasarobotics.drive.swerve.DriveWheel;
 import org.lasarobotics.drive.swerve.SwerveModule;
@@ -31,7 +30,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import  com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -125,7 +124,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
             location,
             SwerveModule.MountOrientation.STANDARD,
             SwerveModule.MountOrientation.INVERTED,
-            PearceConstants.SwerveConstants.GEAR_RATIO,
+            CommonConstants.SwerveConstants.GEAR_RATIO,
 
             DriveWheel.create(
               Distance.ofRelativeUnits(75, Units.Millimeter), 
@@ -136,11 +135,11 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
           PIDConstants.of(2.1, 0, 0.2, 0, 0), // The PID for the rotate Motor
           FFConstants.of(0, 0, 0, 0),  // Replace with actual feed-forward constants
-          Dimensionless.ofBaseUnits(PearceConstants.DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
+          Dimensionless.ofBaseUnits(CommonConstants.DriveConstants.DRIVE_SLIP_RATIO, Units.Value),
           Mass.ofRelativeUnits(RobotUtils.robotConfig.massKG, Units.Kilograms),
           Distance.ofRelativeUnits(23, Units.Inches),
           Distance.ofRelativeUnits(24.5, Units.Inches),
-          Time.ofBaseUnits(PearceConstants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
+          Time.ofBaseUnits(CommonConstants.DriveConstants.AUTO_LOCK_TIME, Units.Second));
     
     
     return swerveModule;
@@ -186,7 +185,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
       * (1 / (driveWheel.diameter.in(Units.Meters) * Math.PI));
     DRIVE_METERS_PER_TICK = 1 / DRIVE_TICKS_PER_METER;
     DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * encoderTicksPerRotation;
-    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * PearceConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
+    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * CommonConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
 
     // Set traction control controller
     super.setTractionControlController(new TractionControlController(driveWheel, slipRatio, mass, Units.MetersPerSecond.of(DRIVE_MAX_LINEAR_SPEED)));
@@ -204,7 +203,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     this.simDrivePosition = 0.0;
     this.simModulePosition = new SwerveModulePosition();
     this.desiredState = new SwerveModuleState(Units.MetersPerSecond.of(0.0), this.zeroOffset.plus(this.location.getLockPosition()));
-    this.autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, PearceConstants.SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
+    this.autoLockTime = MathUtil.clamp(autoLockTime.in(Units.Milliseconds), 0.0, CommonConstants.SwerveConstants.MAX_AUTO_LOCK_TIME * 1000);
     this.previousRotatePosition = this.zeroOffset.plus(this.location.getLockPosition());
     this.autoLockTimer = Instant.now();
 
@@ -255,7 +254,7 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     driveMotorConfig.idleMode(IdleMode.kCoast);
 
     // Set current limits
-    driveMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    driveMotorConfig.smartCurrentLimit(CommonConstants.SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
     // Set status frame rates
     driveMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -294,7 +293,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   rotateMotorConfig.idleMode(IdleMode.kBrake);
 
   // Set current limits
-  rotateMotorConfig.smartCurrentLimit(PearceConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
+  rotateMotorConfig.smartCurrentLimit(CommonConstants.SwerveConstants.ROTATE_MOTOR_CURRENT_LIMIT);
 
   // Set status frame rates
   rotateMotorConfig.signals.primaryEncoderPositionPeriodMs(23);
@@ -423,7 +422,7 @@ public void configRotate(SwerveModule.MountOrientation motorOrientation, SwerveM
   @Override
   public void set(SwerveModuleState state) {
     // Auto lock modules if auto lock enabled, speed not requested, and time has elapsed
-    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < PearceConstants.SwerveConstants.EPSILON) {
+    if (super.isAutoLockEnabled() && state.speedMetersPerSecond < CommonConstants.SwerveConstants.EPSILON) {
       state.speedMetersPerSecond = 0.0;
       // Time's up, lock now...
       if (Duration.between(autoLockTimer, Instant.now()).toMillis() > autoLockTime)

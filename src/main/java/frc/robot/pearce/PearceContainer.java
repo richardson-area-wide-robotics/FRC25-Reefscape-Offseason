@@ -5,7 +5,6 @@
 package frc.robot.pearce;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
@@ -28,6 +27,9 @@ import frc.robot.pearce.subsystems.ScoringSubsystem;
 import frc.robot.common.subsystems.drive.SwerveDriveSubsystem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.lasarobotics.utils.PIDConstants;
+
+import static org.lasarobotics.drive.swerve.AdvancedSwerveKinematics.ControlCentricity.FIELD_CENTRIC;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,13 +38,13 @@ public class PearceContainer implements IRobotContainer {
 
   public static final SwerveDriveSubsystem DRIVE_SUBSYSTEM = new SwerveDriveSubsystem(
       SwerveDriveSubsystem.initializeHardware(),
-      PearceConstants.DriveConstants.DRIVE_ROTATE_PID,
-      PearceConstants.DriveConstants.DRIVE_CONTROL_CENTRICITY,
-      PearceConstants.DriveConstants.DRIVE_THROTTLE_INPUT_CURVE,
-      PearceConstants.DriveConstants.DRIVE_TURN_INPUT_CURVE,
-      Angle.ofRelativeUnits(PearceConstants.DriveConstants.DRIVE_TURN_SCALAR, Units.Degree),
+          PIDConstants.of(4.0, 0.0, 0.05, 0.0, 0.0),
+          FIELD_CENTRIC,
+      CommonConstants.DriveConstants.BASIC_DRIVE_THROTTLE_INPUT_CURVE,
+      CommonConstants.DriveConstants.BASIC_DRIVE_TURN_INPUT_CURVE,
+      Angle.ofRelativeUnits(CommonConstants.DriveConstants.DRIVE_TURN_SCALAR, Units.Degree),
       Dimensionless.ofRelativeUnits(CommonConstants.HIDConstants.CONTROLLER_DEADBAND, Units.Value),
-      Time.ofRelativeUnits(PearceConstants.DriveConstants.DRIVE_LOOKAHEAD, Units.Second));
+      Time.ofRelativeUnits(CommonConstants.DriveConstants.DRIVE_LOOKAHEAD, Units.Second));
 
   public static final ElevatorSubsystem ELEVATOR_SUBSYSTEM = new ElevatorSubsystem(9);
   public static final DeepClimbSubsystem DEEP_CLIMB_SUBSYSTEM = new DeepClimbSubsystem(13, 14);
@@ -50,7 +52,7 @@ public class PearceContainer implements IRobotContainer {
   public static final CBSSubsystem COAXIAL_BOOM_STICK = new CBSSubsystem(17);
 
 
-  private static SendableChooser<Command> automodeChooser; 
+  private static SendableChooser<Command> automodeChooser;
 
   public static IRobotContainer createContainer(){
         // Set drive command

@@ -6,7 +6,9 @@ import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 
 /**
  * A SubsystemBase that automatically registers its instance
- * for @DashboardVariable tracking.
+ * for @DashboardVariable and @NamedAuto tracking.
+ * <br>
+ * All subsystems should extend from this
  *
  * @author Hudson Strub
  * @since 2025 Offseason
