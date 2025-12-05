@@ -1,4 +1,4 @@
-package frc.robot.common.gryo;
+package frc.robot.common.gyro;
 
 import java.time.Duration;
 import java.time.Instant;

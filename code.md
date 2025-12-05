@@ -31,7 +31,7 @@ flowchart TD
         DefaultContainer[DefaultContainer]
         LocalADStarAK[LocalADStarAK]
     end
-    subgraph frc_robot_common_gryo[frc.robot.common.gryo]
+    subgraph frc_robot_common_gyro[frc.robot.common.gyro]
         RAWRNavX2[RAWRNavX2]
         RAWRQuestNav[RAWRQuestNav]
     end
@@ -52,7 +52,7 @@ flowchart TD
         RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
-        CommonConstants[CommonConstants]
+        PearceConstants[PearceConstants]
         PearceContainer[PearceContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
@@ -114,7 +114,7 @@ flowchart TD
     style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style PearceContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff

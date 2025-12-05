@@ -48,7 +48,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.common.components.RobotUtils;
-import frc.robot.common.gryo.RAWRNavX2;
+import frc.robot.common.gyro.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
 import frc.robot.common.components.hardware.SwerveHardware;
 
