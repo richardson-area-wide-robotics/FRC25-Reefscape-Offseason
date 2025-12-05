@@ -88,7 +88,7 @@ public class RobotUtils  {
    */
   public static void moveToPosition(SparkBase motor, double targetPosition) {
       // Set the target position using the built-in PID controller
-      motor.getClosedLoopController().setReference(targetPosition, ControlType.kPosition);
+      motor.getClosedLoopController().setSetpoint(targetPosition, ControlType.kPosition);
   }
 
   /**

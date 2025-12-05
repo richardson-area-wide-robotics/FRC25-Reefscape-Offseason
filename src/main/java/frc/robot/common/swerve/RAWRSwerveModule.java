@@ -243,11 +243,10 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
     driveMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     // Set gains for drive PID
-    driveMotorConfig.closedLoop.pidf(
+    driveMotorConfig.closedLoop.pid(
       drivePID.kP,
       drivePID.kI,
-      drivePID.kD,
-      drivePID.kF
+      drivePID.kD
     );
 
     // Set drive motor to coast
