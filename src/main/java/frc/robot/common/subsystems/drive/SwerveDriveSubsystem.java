@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.CommonConstants;
+import frc.robot.common.components.hardware.SwerveHardware;
 import frc.robot.common.subsystems.DashboardSubsystem;
 import lombok.Getter;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -50,7 +51,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.common.components.RobotUtils;
 import frc.robot.common.gyro.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
-import frc.robot.common.components.hardware.SwerveHardware;
 
 /**
  * Drive Subsystem for Swerve Drive bots with 4 motors in each corner

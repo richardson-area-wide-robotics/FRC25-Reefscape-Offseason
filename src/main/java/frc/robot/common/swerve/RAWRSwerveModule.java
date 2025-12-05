@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import frc.robot.CommonConstants;
+import frc.robot.common.components.hardware.SwerveModuleHardware;
 import org.lasarobotics.drive.TractionControlController;
 import org.lasarobotics.drive.swerve.DriveWheel;
 import org.lasarobotics.drive.swerve.SwerveModule;
@@ -57,18 +58,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.common.components.RobotUtils;
-import lombok.AllArgsConstructor;
 
 /** REV MAXSwerve module */
 public class RAWRSwerveModule extends SwerveModule implements Sendable {
-  /**
-   * REV swerve module hardware
-   */
-  @AllArgsConstructor
-  public static class Hardware {
-    Spark driveMotor;
-    Spark rotateMotor;
-  }
 
   private final double DRIVE_TICKS_PER_METER;
   private final double DRIVE_METERS_PER_TICK;
@@ -113,14 +105,14 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
      */
     public static RAWRSwerveModule createSwerve(Spark.ID driveMotor, Spark.ID rotateMotor, SwerveModule.Location location){
       
-      RAWRSwerveModule.Hardware hardware = new RAWRSwerveModule.Hardware(
+      SwerveModuleHardware swerveModuleHardware = new SwerveModuleHardware(
                     new Spark(driveMotor, Spark.MotorKind.NEO_VORTEX),
                     new Spark(rotateMotor, Spark.MotorKind.NEO_550)
             );
     
       
       RAWRSwerveModule swerveModule = new RAWRSwerveModule(
-            hardware,
+            swerveModuleHardware,
             location,
             SwerveModule.MountOrientation.STANDARD,
             SwerveModule.MountOrientation.INVERTED,
@@ -164,34 +156,34 @@ public class RAWRSwerveModule extends SwerveModule implements Sendable {
    * @param trackWidth Robot track width
    * @param autoLockTime Time before automatically rotating module to locked position (10 seconds max)
    */
-  private RAWRSwerveModule(Hardware swerveHardware,
-                         SwerveModule.Location location,
-                         SwerveModule.MountOrientation motorOrientation,
-                         SwerveModule.MountOrientation encoderOrientation,
-                         SwerveModule.GearRatio gearRatio,
-                         DriveWheel driveWheel, Angle zeroOffset,
-                         PIDConstants drivePID, FFConstants driveFF,
-                         PIDConstants rotatePID, FFConstants rotateFF,
-                         Dimensionless slipRatio, Mass mass,
-                         Distance wheelbase, Distance trackWidth,
-                         Time autoLockTime) {
-    super(location, gearRatio, driveWheel, zeroOffset, wheelbase, trackWidth, swerveHardware.driveMotor.getID().name);
+  private RAWRSwerveModule(SwerveModuleHardware swerveHardware,
+                           SwerveModule.Location location,
+                           SwerveModule.MountOrientation motorOrientation,
+                           SwerveModule.MountOrientation encoderOrientation,
+                           SwerveModule.GearRatio gearRatio,
+                           DriveWheel driveWheel, Angle zeroOffset,
+                           PIDConstants drivePID, FFConstants driveFF,
+                           PIDConstants rotatePID, FFConstants rotateFF,
+                           Dimensionless slipRatio, Mass mass,
+                           Distance wheelbase, Distance trackWidth,
+                           Time autoLockTime) {
+    super(location, gearRatio, driveWheel, zeroOffset, wheelbase, trackWidth, swerveHardware.driveMotor().getID().name);
 
     //Get the encoder ticks per rotation for the drive motor
-    int encoderTicksPerRotation = RobotUtils.getEncoderTicksPerRotation(swerveHardware.driveMotor);
+    int encoderTicksPerRotation = RobotUtils.getEncoderTicksPerRotation(swerveHardware.driveMotor());
 
     DRIVE_TICKS_PER_METER =
       (encoderTicksPerRotation * gearRatio.getDriveRatio())
       * (1 / (driveWheel.diameter.in(Units.Meters) * Math.PI));
     DRIVE_METERS_PER_TICK = 1 / DRIVE_TICKS_PER_METER;
     DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * encoderTicksPerRotation;
-    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor.getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * CommonConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
+    DRIVE_MAX_LINEAR_SPEED = (swerveHardware.driveMotor().getKind().getMaxRPM() / 60) * DRIVE_METERS_PER_ROTATION * CommonConstants.DriveConstants.DRIVETRAIN_EFFICIENCY;
 
     // Set traction control controller
     super.setTractionControlController(new TractionControlController(driveWheel, slipRatio, mass, Units.MetersPerSecond.of(DRIVE_MAX_LINEAR_SPEED)));
 
-    this.driveMotor = swerveHardware.driveMotor;
-    this.rotateMotor = swerveHardware.rotateMotor;
+    this.driveMotor = swerveHardware.driveMotor();
+    this.rotateMotor = swerveHardware.rotateMotor();
     this.moduleSim = new SwerveModuleSim(
       driveMotor.getKind().motor,
       driveFF.withKA((driveFF.kA <= 0.0) ? SwerveModule.MIN_SIM_kA : driveFF.kA),
