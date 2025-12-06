@@ -19,6 +19,8 @@ import frc.robot.CommonConstants;
 import frc.robot.CommonConstants.HIDConstants;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.hardware.SwerveHardwareParams;
+import frc.robot.common.gyro.RAWRNavX2;
 import frc.robot.common.interfaces.IRobotContainer;
 import frc.robot.pearce.subsystems.CBSSubsystem;
 import frc.robot.pearce.subsystems.DeepClimbSubsystem;
@@ -37,7 +39,23 @@ import static org.lasarobotics.drive.swerve.AdvancedSwerveKinematics.ControlCent
 public class PearceContainer implements IRobotContainer {
 
   public static final SwerveDriveSubsystem DRIVE_SUBSYSTEM = new SwerveDriveSubsystem(
-      SwerveDriveSubsystem.initializeHardware(),
+          SwerveDriveSubsystem.initializeHardware(
+                  new SwerveHardwareParams(
+                          new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_ID),
+
+                          CommonConstants.DriveHardwareConstants.LEFT_FRONT_DRIVE_MOTOR_ID,
+                          CommonConstants.DriveHardwareConstants.LEFT_FRONT_ROTATE_MOTOR_ID,
+
+                          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_DRIVE_MOTOR_ID,
+                          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_ROTATE_MOTOR_ID,
+
+                          CommonConstants.DriveHardwareConstants.LEFT_REAR_DRIVE_MOTOR_ID,
+                          CommonConstants.DriveHardwareConstants.LEFT_REAR_ROTATE_MOTOR_ID,
+
+                          CommonConstants.DriveHardwareConstants.RIGHT_REAR_DRIVE_MOTOR_ID,
+                          CommonConstants.DriveHardwareConstants.RIGHT_REAR_ROTATE_MOTOR_ID
+                  )
+          ),
           PIDConstants.of(4.0, 0.0, 0.05, 0.0, 0.0),
           FIELD_CENTRIC,
       CommonConstants.DriveConstants.BASIC_DRIVE_THROTTLE_INPUT_CURVE,

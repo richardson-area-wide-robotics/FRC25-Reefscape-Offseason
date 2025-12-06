@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import frc.robot.CommonConstants;
 import frc.robot.common.components.hardware.SwerveHardware;
+import frc.robot.common.components.hardware.SwerveHardwareParams;
 import frc.robot.common.subsystems.DashboardSubsystem;
 import lombok.Getter;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -191,31 +192,35 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
  *
  * @return A Hardware object containing all necessary devices for this subsystem
  */
-public static SwerveHardware initializeHardware() {
-  RAWRNavX2 navx = new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_ID);
+public static SwerveHardware initializeHardware(SwerveHardwareParams params) {
 
   RAWRSwerveModule lFrontModule = RAWRSwerveModule.createSwerve(
-          CommonConstants.DriveHardwareConstants.LEFT_FRONT_DRIVE_MOTOR_ID,
-          CommonConstants.DriveHardwareConstants.LEFT_FRONT_ROTATE_MOTOR_ID,
-          SwerveModule.Location.LeftFront);
+          params.leftFrontDriveId(),
+          params.leftFrontRotateId(),
+          SwerveModule.Location.LeftFront
+  );
 
   RAWRSwerveModule rFrontModule = RAWRSwerveModule.createSwerve(
-          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_DRIVE_MOTOR_ID,
-          CommonConstants.DriveHardwareConstants.RIGHT_FRONT_ROTATE_MOTOR_ID,
-          SwerveModule.Location.RightFront);
+          params.rightFrontDriveId(),
+          params.rightFrontRotateId(),
+          SwerveModule.Location.RightFront
+  );
 
   RAWRSwerveModule lRearModule = RAWRSwerveModule.createSwerve(
-          CommonConstants.DriveHardwareConstants.LEFT_REAR_DRIVE_MOTOR_ID,
-          CommonConstants.DriveHardwareConstants.LEFT_REAR_ROTATE_MOTOR_ID,
-          SwerveModule.Location.LeftRear);
+          params.leftRearDriveId(),
+          params.leftRearRotateId(),
+          SwerveModule.Location.LeftRear
+  );
 
   RAWRSwerveModule rRearModule = RAWRSwerveModule.createSwerve(
-          CommonConstants.DriveHardwareConstants.RIGHT_REAR_DRIVE_MOTOR_ID,
-          CommonConstants.DriveHardwareConstants.RIGHT_REAR_ROTATE_MOTOR_ID,
-          SwerveModule.Location.RightRear);
+          params.rightRearDriveId(),
+          params.rightRearRotateId(),
+          SwerveModule.Location.RightRear
+  );
 
-    return new SwerveHardware(navx, lFrontModule, rFrontModule, lRearModule, rRearModule);
+  return new SwerveHardware(params.imu(), lFrontModule, rFrontModule, lRearModule, rRearModule);
 }
+
 
 
 
