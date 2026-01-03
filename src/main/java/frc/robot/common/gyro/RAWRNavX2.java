@@ -32,6 +32,11 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
 /**
  * NavX2 implementation of the IMU interface
+ *
+ * @author PurpleLib
+ * @author Hudson Strub
+ *
+ * @since 2025
  */
 @SuppressWarnings("unused")
 public class RAWRNavX2 extends LoggableHardware implements IMU {

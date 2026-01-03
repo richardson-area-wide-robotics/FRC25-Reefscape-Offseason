@@ -6,13 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.common.LocalADStarAK;
+import frc.robot.common.components.TeamUtils;
 import frc.robot.common.components.dashboard.DashboardAutoUpdater;
 import frc.robot.common.components.RobotContainerRegistry;
 import frc.robot.common.components.RobotExceptionHandler;
 import frc.robot.common.components.RobotUtils;
 import java.nio.file.Path;
 
-import frc.robot.common.components.diagnostics.CANDiagnostics;
+import frc.robot.common.components.dashboard.diagnostics.CANDiagnostics;
 import org.lasarobotics.hardware.PurpleManager;
 import org.littletonrobotics.junction.LoggedRobot;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -62,9 +63,9 @@ public class Robot extends LoggedRobot {
     // Set pathfinding algorithm to be AdvantageKit compatible
     Pathfinding.setPathfinder(new LocalADStarAK());
 
-    System.out.println("Starting with team: " + RobotUtils.getTeamNumber());
+    System.out.println("Starting with team: " + TeamUtils.getTeamNumber());
     RobotUtils.loadRobotConfig();
-    robotContainer = RobotContainerRegistry.createContainerForTeam(RobotUtils.getTeamNumber());
+    robotContainer = RobotContainerRegistry.createContainerForTeam(TeamUtils.getTeamNumber());
 }
 
 

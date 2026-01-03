@@ -32,22 +32,6 @@ public class RobotUtils  {
     control.whileTrue(command).whileFalse(stopCommand);
   }
 
-  /**
-   * Helper method to get the team number, the same as {@link HALUtil#getTeamNumber}
-   * Only added because I can never remember the import
-   *
-   * @author Hudson Strub
-   * @since 2025
-   */
-  public static int getTeamNumber() {
-    if (RobotBase.isSimulation()) {
-      // Override in sim since HALUtil returns 0
-      return TeamUtils.getTeamNumber(); // e.g. 1745
-    }
-    return HALUtil.getTeamNumber();
-  }
-
-
    /**
    * Load the robot config used for pathplanner, 
    *

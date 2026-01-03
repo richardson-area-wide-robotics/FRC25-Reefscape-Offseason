@@ -8,7 +8,7 @@ import frc.robot.common.swerve.RAWRSwerveModule;
 
 
 /**
- * Drive hardware for a robot with swerve drive
+ * Drive hardware for a full robot with swerve drive
  *
  * @author PurpleLib
  * @author Alan Trinh

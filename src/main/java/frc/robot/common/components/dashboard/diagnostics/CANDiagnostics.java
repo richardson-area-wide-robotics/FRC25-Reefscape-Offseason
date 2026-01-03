@@ -1,4 +1,4 @@
-package frc.robot.common.components.diagnostics;
+package frc.robot.common.components.dashboard.diagnostics;
 
 import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.RobotController;

@@ -19,8 +19,10 @@ import gg.questnav.questnav.QuestNav;
 import gg.questnav.questnav.PoseFrame;
 
 /**
- * QuestNav-based IMU implementation.
- * Uses QuestNav vendor dependency to pull headset pose and expose it as IMU data.
+ * QuestNav implementation of the IMU interface.
+ *
+ * @author Hudson Strub
+ * @since 2025 Offseason
  */
 public class RAWRQuestNav implements IMU {
     private final QuestNav questNav;

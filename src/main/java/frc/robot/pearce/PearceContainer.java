@@ -19,6 +19,7 @@ import frc.robot.CommonConstants;
 import frc.robot.CommonConstants.HIDConstants;
 import frc.robot.common.annotations.Robot;
 import frc.robot.common.components.RobotUtils;
+import frc.robot.common.components.TeamUtils;
 import frc.robot.common.components.hardware.SwerveHardwareParams;
 import frc.robot.common.gyro.RAWRNavX2;
 import frc.robot.common.interfaces.IRobotContainer;
@@ -104,7 +105,7 @@ public class PearceContainer implements IRobotContainer {
     // Driver Right Stick Button - Reset heading
     RobotUtils.bindControl(HIDConstants.DRIVER_CONTROLLER.rightStick(), Commands.runOnce(DRIVE_SUBSYSTEM.DRIVETRAIN_HARDWARE.gyro()::reset, DRIVE_SUBSYSTEM), Commands.none());
 
-    if (RobotUtils.getTeamNumber() == 8874) {
+    if (TeamUtils.getTeamNumber() == 8874) {
       RobotUtils.bindControl(HIDConstants.DRIVER_CONTROLLER.rightTrigger(), SCORING_SUBSYSTEM.outtake(), SCORING_SUBSYSTEM.outtakeStop());
       RobotUtils.bindControl(HIDConstants.DRIVER_CONTROLLER.leftTrigger(), SCORING_SUBSYSTEM.intake(), SCORING_SUBSYSTEM.outtakeStop());
       RobotUtils.bindControl(HIDConstants.DRIVER_CONTROLLER.rightBumper(), ELEVATOR_SUBSYSTEM.up(), ELEVATOR_SUBSYSTEM.stop());
