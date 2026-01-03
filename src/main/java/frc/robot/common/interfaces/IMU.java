@@ -1,7 +1,5 @@
 package frc.robot.common.interfaces;
 
-// General-purpose IMU/Gyro abstraction for swerve or other subsystems
-
 import org.lasarobotics.drive.swerve.AdvancedSwerveKinematics.ControlCentricity;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

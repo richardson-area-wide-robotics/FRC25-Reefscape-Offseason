@@ -16,7 +16,7 @@ flowchart TD
     subgraph frc_robot_common_components_dashboard[frc.robot.common.components.dashboard]
         DashboardAutoUpdater[DashboardAutoUpdater]
     end
-    subgraph frc_robot_common_components_diagnostics[frc.robot.common.components.diagnostics]
+    subgraph frc_robot_common_components_dashboard_diagnostics[frc.robot.common.components.dashboard.diagnostics]
         CANDiagnostics[CANDiagnostics]
     end
     subgraph frc_robot_common_components[frc.robot.common.components]
