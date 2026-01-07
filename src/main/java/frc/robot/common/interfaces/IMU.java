@@ -15,36 +15,37 @@ public interface IMU extends AutoCloseable {
     /** Periodically update the IMU sensor inputs */
     void updateInputs();
 
-    /** @return Update frequency of the sensor */
+    /** {@return Update frequency of the sensor} */
     Frequency getUpdateRate();
 
     /** Reset gyro/IMU readings */
     void reset();
 
-    /** @return Whether sensor is currently connected */
+    /** {@return Whether sensor is currently connected} */
     boolean isConnected();
 
+    /** {@return Whether sensor is currently calibrating} */
     boolean isCalibrating();
 
-    /** @return Roll angle */
+    /** {@return Roll angle} */
     Angle getRoll();
 
-    /** @return Pitch angle */
+    /** {@return Pitch angle} */
     Angle getPitch();
 
-    /** @return Yaw angle */
+    /** {@return Yaw angle} */
     Angle getYaw();
 
-    /** @return Yaw rate */
+    /** {@return Yaw rate} */
     AngularVelocity getYawRate();
 
-    /** @return Rotation as WPILib Rotation2d */
+    /** {@return Rotation as Rotation2d} */
     Rotation2d getRotation2d();
 
-    /** @return X-axis velocity */
+    /** {@return X-axis velocity} */
     LinearVelocity getVelocityX();
 
-    /** @return Y-axis velocity */
+    /** {@return Y-axis velocity} */
     LinearVelocity getVelocityY();
 
     /** Update simulated device values */

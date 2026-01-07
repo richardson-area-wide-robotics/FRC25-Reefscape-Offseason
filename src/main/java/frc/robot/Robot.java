@@ -73,7 +73,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     PurpleManager.update();
     DashboardAutoUpdater.updateAll();
-    CANDiagnostics.checkHealth();
+    CANDiagnostics.getInstance().checkHealth();
     CommandScheduler.getInstance().run();
   }
 
