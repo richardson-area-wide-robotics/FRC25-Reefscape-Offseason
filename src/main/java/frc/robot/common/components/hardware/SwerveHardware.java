@@ -1,6 +1,7 @@
 package frc.robot.common.components.hardware;
 
 
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.common.interfaces.IMU;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -18,6 +19,14 @@ import frc.robot.common.swerve.RAWRSwerveModule;
  */
 public record SwerveHardware(IMU gyro, RAWRSwerveModule lFrontModule, RAWRSwerveModule rFrontModule,
                              RAWRSwerveModule lRearModule, RAWRSwerveModule rRearModule) {
+
+    public SwerveHardware {
+        while (gyro.isCalibrating()) {
+            stop(); // Stops all modules while gyro calibrates
+        }
+        gyro.reset();
+    }
+
     public void lock() {
         lFrontModule.lock();
         rFrontModule.lock();
@@ -100,5 +109,14 @@ public record SwerveHardware(IMU gyro, RAWRSwerveModule lFrontModule, RAWRSwerve
         rFrontModule.close();
         lRearModule.close();
         rRearModule.close();
+    }
+
+    public Translation2d[] getModuleCoordinates() {
+        return new Translation2d[]{
+                lFrontModule.getModuleCoordinate(),
+                rFrontModule.getModuleCoordinate(),
+                lRearModule.getModuleCoordinate(),
+                rRearModule.getModuleCoordinate()
+        };
     }
 }

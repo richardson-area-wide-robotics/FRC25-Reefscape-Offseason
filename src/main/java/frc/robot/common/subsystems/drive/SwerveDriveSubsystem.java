@@ -50,7 +50,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.common.components.RobotUtils;
-import frc.robot.common.gyro.RAWRNavX2;
 import frc.robot.common.swerve.RAWRSwerveModule;
 
 /**
@@ -86,7 +85,7 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
 
   private ControlCentricity controlCentricity;
   private ChassisSpeeds desiredChassisSpeeds;
-  private Pose2d m_previousPose;
+  private Pose2d previousPose;
   private Rotation2d currentHeading;
   private final Field2d FIELD;
 
@@ -132,23 +131,10 @@ public class SwerveDriveSubsystem extends DashboardSubsystem implements AutoClos
             DRIVE_MAX_LINEAR_SPEED.in(Units.MetersPerSecond)
         );
 
-        // NavX calibration
-        while (DRIVETRAIN_HARDWARE.gyro().isCalibrating()) DRIVETRAIN_HARDWARE.stop();
-
-        DRIVETRAIN_HARDWARE.gyro().reset();
-
         // Swerve drive kinematics and pose estimator
-        KINEMATICS = new SwerveDriveKinematics(
-            DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.rFrontModule().getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.lRearModule().getModuleCoordinate(),
-            DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate()
-        );
+        KINEMATICS = new SwerveDriveKinematics(DRIVETRAIN_HARDWARE.getModuleCoordinates());
 
-        ADVANCED_KINEMATICS = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.lFrontModule().getModuleCoordinate(),
-                                DRIVETRAIN_HARDWARE.rFrontModule().getModuleCoordinate(),
-                                DRIVETRAIN_HARDWARE.lRearModule().getModuleCoordinate(),
-                                DRIVETRAIN_HARDWARE.rRearModule().getModuleCoordinate());
+        ADVANCED_KINEMATICS = new AdvancedSwerveKinematics(DRIVETRAIN_HARDWARE.getModuleCoordinates());
 
       POSE_ESTIMATOR = new SwerveDrivePoseEstimator(
           KINEMATICS,
@@ -221,9 +207,6 @@ public static SwerveHardware initializeHardware(SwerveHardwareParams params) {
   return new SwerveHardware(params.imu(), lFrontModule, rFrontModule, lRearModule, rRearModule);
 }
 
-
-
-
   /**
    * Drive the robot
    *
@@ -267,14 +250,14 @@ public static SwerveHardware initializeHardware(SwerveHardwareParams params) {
    */
   private void updatePose() {
     // Save previous pose
-    m_previousPose = getPose();
+    previousPose = getPose();
 
     // Update pose based on odometry
     POSE_ESTIMATOR.update(DRIVETRAIN_HARDWARE.gyro().getRotation2d(),  DRIVETRAIN_HARDWARE.getModulePositions());
 
     // Update current heading
-    double dx = getPose().getX() - m_previousPose.getX();
-    double dy = getPose().getY() - m_previousPose.getY();
+    double dx = getPose().getX() - previousPose.getX();
+    double dy = getPose().getY() - previousPose.getY();
 
     if (dx == 0 && dy == 0) {
       // No movement, keep previous heading
@@ -296,9 +279,28 @@ public static SwerveHardware initializeHardware(SwerveHardwareParams params) {
    * SmartDashboard indicators
    */
   private void smartDashboard() {
+    // Update the robot pose normally
     FIELD.setRobotPose(getPose());
+
+    // Get the robot's current position
+    Translation2d robotPos = getPose().getTranslation();
+
+    // Use currentHeading if you want motion-based heading, else gyro heading
+    Rotation2d heading = currentHeading != null ? currentHeading : DRIVETRAIN_HARDWARE.gyro().getRotation2d();
+
+    // Create a small square offset from robot to indicate heading
+    double squareSize = 0.5; // meters, adjust as needed
+    Translation2d squarePos = robotPos.plus(
+            new Translation2d(Math.cos(heading.getRadians()), Math.sin(heading.getRadians())).times(squareSize)
+    );
+
+    // Draw a red square at that position
+    FIELD.getObject("HeadingSquare").setPose(new Pose2d(squarePos, heading));
+
+    // Field-centric indicator
     SmartDashboard.putBoolean("FC", controlCentricity.equals(ControlCentricity.FIELD_CENTRIC));
   }
+
 
   /**
    * Start calling this repeatedly when robot is in danger of tipping over
