@@ -40,11 +40,6 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
  */
 @SuppressWarnings("unused")
 public class RAWRNavX2 extends LoggableHardware implements IMU {
-  /** NavX2 ID */
-  public static class ID {
-    public final String name;
-    public ID(String name) { this.name = name; }
-  }
 
   /** NavX sensor inputs */
   @AutoLog
@@ -75,8 +70,8 @@ public class RAWRNavX2 extends LoggableHardware implements IMU {
   private final boolean fieldCentricVelocities;
 
   /** Construct NavX2 with logging */
-  public RAWRNavX2(ID id) {
-    this.name = id.name;
+  public RAWRNavX2(String name) {
+    this.name = name;
     this.navx = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k200Hz);
     this.inputs = new NavX2InputsAutoLogged();
     this.fieldCentricVelocities = false;

@@ -79,7 +79,7 @@ public final class CommonConstants {
    * @since 2024
    */
   public static class DriveHardwareConstants {
-    public static final RAWRNavX2.ID NAVX_ID = new RAWRNavX2.ID("DriveHardware/NavX2");
+    public static final String NAVX_NAME = "DriveHardware/NavX2";
 
     public static final Spark.ID LEFT_FRONT_DRIVE_MOTOR_ID = new Spark.ID("DriveHardware/Swerve/LeftFront/Drive", 5);
     public static final Spark.ID LEFT_FRONT_ROTATE_MOTOR_ID = new Spark.ID("DriveHardware/Swerve/LeftFront/Rotate", 6);

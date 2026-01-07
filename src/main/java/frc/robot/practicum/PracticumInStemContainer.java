@@ -22,7 +22,7 @@ public class PracticumInStemContainer implements IRobotContainer {
 
   public static final TankDriveSubsystem DRIVE_SUBSYSTEM = new TankDriveSubsystem(
           new TankHardware(
-                  new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_ID),
+                  new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_NAME),
                   Collections.singletonList(EasyMotor.createEasySparkMax(1, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast)),
                   Collections.singletonList(EasyMotor.createEasySparkMax(2, SparkLowLevel.MotorType.kBrushless, SparkBaseConfig.IdleMode.kCoast))));
 

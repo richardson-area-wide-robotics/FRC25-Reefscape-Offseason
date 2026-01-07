@@ -42,7 +42,7 @@ public class PearceContainer implements IRobotContainer {
   public static final SwerveDriveSubsystem DRIVE_SUBSYSTEM = new SwerveDriveSubsystem(
           SwerveDriveSubsystem.initializeHardware(
                   new SwerveHardwareParams(
-                          new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_ID),
+                          new RAWRNavX2(CommonConstants.DriveHardwareConstants.NAVX_NAME),
 
                           CommonConstants.DriveHardwareConstants.LEFT_FRONT_DRIVE_MOTOR_ID,
                           CommonConstants.DriveHardwareConstants.LEFT_FRONT_ROTATE_MOTOR_ID,
