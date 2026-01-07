@@ -1,6 +1,7 @@
 package frc.robot.common.gyro;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -64,7 +65,7 @@ public class RAWRQuestNav implements IMU {
     @Override
     public void reset() {
         // Reset pose to zero (field origin) — adjust if you need field-relative reset
-        questNav.setPose(new Pose2d());
+        questNav.setPose(new Pose3d());
     }
 
     /** Latest robot pose (after applying ROBOT_TO_QUEST transform). */
@@ -73,7 +74,7 @@ public class RAWRQuestNav implements IMU {
         if (frames.length == 0) {
             return lastPose;
         }
-        Pose2d questPose = frames[frames.length - 1].questPose();
+        Pose2d questPose = frames[frames.length - 1].questPose3d().toPose2d();
         Pose2d robotPose = questPose.transformBy(ROBOT_TO_QUEST.inverse());
         lastPose = robotPose;
         lastTime = Instant.now();
