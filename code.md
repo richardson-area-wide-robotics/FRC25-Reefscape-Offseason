@@ -64,6 +64,7 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
+    CANDiagnostics -->|extends| BaseInstanceable
     RAWRNavX2 -->|extends| LoggableHardware
     IMU -->|extends| AutoCloseable
     DashboardSubsystem -->|extends| SubsystemBase
@@ -76,7 +77,6 @@ flowchart TD
     ElevatorSubsystem -->|extends| DashboardSubsystem
     ScoringSubsystem -->|extends| DashboardSubsystem
     Robot -->|extends| LoggedRobot
-    CANDiagnostics -.implements.-> IDiagnostic
     DefaultContainer -.implements.-> IRobotContainer
     RAWRNavX2 -.implements.-> IMU
     RAWRQuestNav -.implements.-> IMU

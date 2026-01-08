@@ -1,0 +1,147 @@
+tasks.named("build") {
+    dependsOn("exportMermaidGraph")
+}
+
+tasks.register("exportMermaidGraph") {
+    group = "documentation"
+    description = "Exports a Mermaid flowchart of the project's Java code."
+
+    doLast {
+        def srcDir = file("src/main/java")
+        def outFile = file("code.md")
+
+        def classInfo = [:]  // fqcn -> [name, pkg, type, annotations, extends, implements, associations]
+
+        srcDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".java")) {
+                def text = f.text
+
+                def pkgMatch = (text =~ /package\s+([\w\.]+);/)
+                def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
+
+                // Match class, interface, record, or annotation definition (@interface)
+                def match = (text =~ /\b(class|interface|record|@interface)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
+                if (match.find()) {
+                    def type = match[0][1]
+                    def name = match[0][2]
+                    def ext = match[0][3]
+                    def impls = match[0][4]?.split(",")*.trim() ?: []
+
+                    // Collect annotations applied to this class/interface
+                    def annotatedMatch = (text =~ /(@\w+(?:\([^)]*\))?\s*)*(class|interface|record|@interface)\s+\w+/)
+                    def annotations = []
+                    if (annotatedMatch.find()) {
+                        def raw = annotatedMatch[0][1] ?: ""
+                        annotations = (raw =~ /@(\w+)/).collect { it[1] }
+                    }
+
+                    def fqcn = pkg ? "${pkg}.${name}" : name
+                    classInfo[fqcn] = [
+                            name        : (type == "@interface" ? "@${name}" : name),
+                            pkg         : pkg,
+                            type        : type,
+                            annotations : annotations,
+                            extends     : ext,
+                            implements  : impls,
+                            associations: []
+                    ]
+
+                    // Associations: detect field types
+                    def fieldMatches = (text =~ /\b(\w+)\s+\w+\s*;/)
+                    fieldMatches.each { m ->
+                        def refType = m[1]
+                        classInfo[fqcn].associations << refType
+                    }
+                }
+            }
+        }
+
+        def grouped = [:].withDefault { [] }
+        classInfo.each { fqcn, meta ->
+            grouped[meta.pkg] << meta
+        }
+
+        // --- Write Mermaid Flowchart ---
+        outFile.parentFile.mkdirs()
+        outFile.withWriter { writer ->
+            writer.writeLine("# Code Structure Flowchart\n")
+            writer.writeLine("```mermaid")
+            writer.writeLine("flowchart TD")
+
+            // Group classes in subgraphs per package
+            grouped.each { pkg, classes ->
+                if (pkg) {
+                    def safePkg = pkg.replaceAll("\\.", "_")
+                    writer.writeLine("    subgraph ${safePkg}[${pkg}]")
+                    classes.each { c ->
+                        def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
+                        writer.writeLine("        ${c.name}[${label}]")
+                    }
+                    writer.writeLine("    end")
+                } else {
+                    classes.each { c ->
+                        def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
+                        writer.writeLine("    ${c.name}[${label}]")
+                    }
+                }
+            }
+
+            // Inheritance
+            classInfo.each { fqcn, meta ->
+                if (meta.extends) {
+                    writer.writeLine("    ${meta.name} -->|extends| ${meta.extends}")
+                }
+            }
+
+            // Interfaces (class → interface)
+            classInfo.each { fqcn, meta ->
+                meta.implements.each { impl ->
+                    writer.writeLine("    ${meta.name} -.implements.-> ${impl}")
+                }
+            }
+
+            // Associations (fields)
+            classInfo.each { fqcn, meta ->
+                meta.associations.each { assoc ->
+                    if (classInfo.values().any { it.name == assoc }) {
+                        writer.writeLine("    ${meta.name} --> ${assoc}")
+                    }
+                }
+            }
+
+            // Annotation usage edges (optional)
+            classInfo.each { fqcn, meta ->
+                meta.annotations.each { ann ->
+                    def annNode = "@${ann}"
+                    if (classInfo.values().any { it.name == annNode }) {
+                        writer.writeLine("    ${meta.name} -.annotated with.-> ${annNode}")
+                    }
+                }
+            }
+
+            // --- Styles ---
+            classInfo.each { fqcn, meta ->
+                def node = meta.name
+                def baseColor
+                switch (meta.type) {
+                    case "interface":
+                        baseColor = "#66bb6a" // green
+                        break
+                    case "record":
+                        baseColor = "#ba68c8" // purple
+                        break
+                    case "@interface":
+                        baseColor = "#fbc02d" // gold
+                        break
+                    default:
+                        baseColor = "#42a5f5" // blue
+                }
+                writer.writeLine("    style ${node} fill:${baseColor},stroke:#333,stroke-width:2px,color:#fff")
+            }
+
+            writer.writeLine("```")
+        }
+
+        println "Mermaid flowchart written to ${outFile}"
+    }
+}
