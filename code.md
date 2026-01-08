@@ -4,7 +4,7 @@
 flowchart TD
     subgraph frc_robot[frc.robot]
         BuildConstants[BuildConstants]
-        CommonConstants[CommonConstants]
+        provides[provides]
         Main[Main]
         Robot[Robot]
     end
@@ -17,18 +17,26 @@ flowchart TD
         DashboardAutoUpdater[DashboardAutoUpdater]
     end
     subgraph frc_robot_common_components_dashboard_diagnostics[frc.robot.common.components.dashboard.diagnostics]
-        CANDiagnostics[CANDiagnostics]
+        for[for]
     end
     subgraph frc_robot_common_components[frc.robot.common.components]
         EasyBreakBeam[EasyBreakBeam]
         EasyMotor[EasyMotor]
         NamedAutoRegistry[NamedAutoRegistry]
         RobotContainerRegistry[RobotContainerRegistry]
+        RobotExceptionHandler[RobotExceptionHandler]
         RobotUtils[RobotUtils]
         TeamUtils[TeamUtils]
     end
+    subgraph frc_robot_common_components_hardware[frc.robot.common.components.hardware]
+        SwerveHardware[SwerveHardware]
+        SwerveHardwareParams[SwerveHardwareParams]
+        SwerveModuleHardware[SwerveModuleHardware]
+        TankHardware[TankHardware]
+    end
     subgraph frc_robot_common[frc.robot.common]
-        DefaultContainer[DefaultContainer]
+        is[is]
+        GurtContainer[GurtContainer]
         LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_gyro[frc.robot.common.gyro]
@@ -52,7 +60,7 @@ flowchart TD
         RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
-        PearceConstants[PearceConstants]
+        provides[provides]
         PearceContainer[PearceContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
@@ -64,28 +72,42 @@ flowchart TD
     subgraph frc_robot_practicum[frc.robot.practicum]
         PracticumInStemContainer[PracticumInStemContainer]
     end
-    CANDiagnostics -->|extends| BaseInstanceable
+    BaseInstanceable_CANDiagnostics[BaseInstanceable<CANDiagnostics]
+    for -->|extends| BaseInstanceable_CANDiagnostics
+    LoggableHardware[LoggableHardware]
     RAWRNavX2 -->|extends| LoggableHardware
+    AutoCloseable[AutoCloseable]
     IMU -->|extends| AutoCloseable
+    SubsystemBase[SubsystemBase]
     DashboardSubsystem -->|extends| SubsystemBase
     SwerveDriveSubsystem -->|extends| DashboardSubsystem
     TankDriveSubsystem -->|extends| SubsystemBase
     SingleMotorSubsystem -->|extends| DashboardSubsystem
+    SwerveModule[SwerveModule]
     RAWRSwerveModule -->|extends| SwerveModule
     CBSSubsystem -->|extends| DashboardSubsystem
     DeepClimbSubsystem -->|extends| DashboardSubsystem
     ElevatorSubsystem -->|extends| DashboardSubsystem
     ScoringSubsystem -->|extends| DashboardSubsystem
+    LoggedRobot[LoggedRobot]
     Robot -->|extends| LoggedRobot
-    DefaultContainer -.implements.-> IRobotContainer
+    for -.implements.-> IDiagnostic
+    Thread_UncaughtExceptionHandler[Thread.UncaughtExceptionHandler]
+    RobotExceptionHandler -.implements.-> Thread_UncaughtExceptionHandler
+    is -.implements.-> IRobotContainer
+    GurtContainer -.implements.-> IRobotContainer
     RAWRNavX2 -.implements.-> IMU
     RAWRQuestNav -.implements.-> IMU
+    Pathfinder[Pathfinder]
     LocalADStarAK -.implements.-> Pathfinder
     SwerveDriveSubsystem -.implements.-> AutoCloseable
     TankDriveSubsystem -.implements.-> AutoCloseable
+    Sendable[Sendable]
     RAWRSwerveModule -.implements.-> Sendable
     PearceContainer -.implements.-> IRobotContainer
     PracticumInStemContainer -.implements.-> IRobotContainer
+    SwerveDriveSubsystem --> SwerveHardware
+    TankDriveSubsystem --> TankHardware
     ScoringSubsystem --> EasyBreakBeam
     Robot --> IRobotContainer
     style BuildConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
@@ -93,14 +115,20 @@ flowchart TD
     style NamedAuto fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style CANDiagnostics fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style for fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style SwerveHardware fill:#ba68c8,stroke:#333,stroke-width:2px,color:#fff
+    style SwerveHardwareParams fill:#ba68c8,stroke:#333,stroke-width:2px,color:#fff
+    style SwerveModuleHardware fill:#ba68c8,stroke:#333,stroke-width:2px,color:#fff
+    style TankHardware fill:#ba68c8,stroke:#333,stroke-width:2px,color:#fff
     style NamedAutoRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotContainerRegistry fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style RobotExceptionHandler fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style is fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style GurtContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRQuestNav fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
@@ -112,9 +140,9 @@ flowchart TD
     style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style provides fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style provides fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style PearceContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
@@ -122,4 +150,13 @@ flowchart TD
     style ScoringSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style PracticumInStemContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style BaseInstanceable_CANDiagnostics fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style LoggableHardware fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style AutoCloseable fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style SubsystemBase fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style SwerveModule fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style LoggedRobot fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style Thread_UncaughtExceptionHandler fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style Pathfinder fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
+    style Sendable fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5
 ```

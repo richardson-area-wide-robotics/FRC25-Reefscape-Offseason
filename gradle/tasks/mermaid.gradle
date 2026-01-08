@@ -10,133 +10,178 @@ tasks.register("exportMermaidGraph") {
         def srcDir = file("src/main/java")
         def outFile = file("code.md")
 
-        def classInfo = [:]  // fqcn -> [name, pkg, type, annotations, extends, implements, associations]
+        def classInfo = [:]  // fqcn -> metadata
+
+        // Helper to make node names safe for Mermaid
+        def sanitizeNodeName = { raw ->
+            raw.replaceAll(/[<>]/, "_").replaceAll("\\.", "_")
+        }
 
         srcDir.eachFileRecurse { f ->
-            if (f.name.endsWith(".java")) {
-                def text = f.text
+            if (!f.name.endsWith(".java")) return
 
-                def pkgMatch = (text =~ /package\s+([\w\.]+);/)
-                def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
+            def text = f.text
 
-                // Match class, interface, record, or annotation definition (@interface)
-                def match = (text =~ /\b(class|interface|record|@interface)\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w\s,]+))?\s*[{<]/)
-                if (match.find()) {
-                    def type = match[0][1]
-                    def name = match[0][2]
-                    def ext = match[0][3]
-                    def impls = match[0][4]?.split(",")*.trim() ?: []
+            // ---- Package ----
+            def pkgMatch = (text =~ /package\s+([\w\.]+);/)
+            def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
 
-                    // Collect annotations applied to this class/interface
-                    def annotatedMatch = (text =~ /(@\w+(?:\([^)]*\))?\s*)*(class|interface|record|@interface)\s+\w+/)
-                    def annotations = []
-                    if (annotatedMatch.find()) {
-                        def raw = annotatedMatch[0][1] ?: ""
-                        annotations = (raw =~ /@(\w+)/).collect { it[1] }
-                    }
+            // ---- Type + Name ----
+            def headerMatch = (text =~ /\b(class|interface|record|@interface)\s+(\w+)\b/)
+            if (!headerMatch.find()) return
 
-                    def fqcn = pkg ? "${pkg}.${name}" : name
-                    classInfo[fqcn] = [
-                            name        : (type == "@interface" ? "@${name}" : name),
-                            pkg         : pkg,
-                            type        : type,
-                            annotations : annotations,
-                            extends     : ext,
-                            implements  : impls,
-                            associations: []
-                    ]
+            def type = headerMatch[0][1]
+            def name = headerMatch[0][2]
 
-                    // Associations: detect field types
-                    def fieldMatches = (text =~ /\b(\w+)\s+\w+\s*;/)
-                    fieldMatches.each { m ->
-                        def refType = m[1]
-                        classInfo[fqcn].associations << refType
-                    }
-                }
+            // ---- Extends ----
+            def extendsMatch = (text =~ /\bextends\s+([\w\.<>]+)\b/)
+            def ext = extendsMatch.find() ? extendsMatch[0][1] : null
+
+            // ---- Implements ----
+            def implMatch = (text =~ /\bimplements\s+([\w\.,\s<>]+)\b/)
+            def impls = implMatch.find() ? implMatch[0][1].split(",")*.trim() : []
+
+            // ---- Annotations ----
+            def annotatedMatch = (text =~ /((?:@\w+(?:\([^)]*\))?\s*)*)(class|interface|record|@interface)\s+\w+/)
+            def annotations = []
+            if (annotatedMatch.find()) {
+                def raw = annotatedMatch[0][1] ?: ""
+                annotations = (raw =~ /@(\w+)/).collect { it[1] }
+            }
+
+            def fqcn = pkg ? "${pkg}.${name}" : name
+
+            classInfo[fqcn] = [
+                    name        : (type == "@interface" ? "@${name}" : name),
+                    pkg         : pkg,
+                    type        : type,
+                    annotations : annotations,
+                    extends     : ext,
+                    implements  : impls,
+                    associations: []
+            ]
+
+            // ---- Associations (fields) ----
+            def fieldMatches = (text =~ /\b([\w<>]+)\s+\w+\s*;/)
+            fieldMatches.each { m ->
+                classInfo[fqcn].associations << m[1]
             }
         }
 
+        // ---- Group by package ----
         def grouped = [:].withDefault { [] }
         classInfo.each { fqcn, meta ->
             grouped[meta.pkg] << meta
         }
 
-        // --- Write Mermaid Flowchart ---
+        // ---- Track declared nodes ----
+        def declaredNodes = [] as Set
+        def externalNodes = [] as Set
+
+        // ---- Write Mermaid ----
         outFile.parentFile.mkdirs()
         outFile.withWriter { writer ->
             writer.writeLine("# Code Structure Flowchart\n")
             writer.writeLine("```mermaid")
             writer.writeLine("flowchart TD")
 
-            // Group classes in subgraphs per package
+            // ---- Subgraphs per package ----
             grouped.each { pkg, classes ->
                 if (pkg) {
                     def safePkg = pkg.replaceAll("\\.", "_")
                     writer.writeLine("    subgraph ${safePkg}[${pkg}]")
                     classes.each { c ->
+                        def nodeName = sanitizeNodeName(c.name)
                         def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
-                        writer.writeLine("        ${c.name}[${label}]")
+                        writer.writeLine("        ${nodeName}[${label}]")
+                        declaredNodes << nodeName
                     }
                     writer.writeLine("    end")
                 } else {
                     classes.each { c ->
+                        def nodeName = sanitizeNodeName(c.name)
                         def label = c.annotations ? "${c.name} «${c.annotations.join(', ')}»" : c.name
-                        writer.writeLine("    ${c.name}[${label}]")
+                        writer.writeLine("    ${nodeName}[${label}]")
+                        declaredNodes << nodeName
                     }
                 }
             }
 
-            // Inheritance
+            // ---- Inheritance ----
             classInfo.each { fqcn, meta ->
                 if (meta.extends) {
-                    writer.writeLine("    ${meta.name} -->|extends| ${meta.extends}")
+                    def parentLabel = meta.extends  // preserve generics for label
+                    def parentNode = sanitizeNodeName(meta.extends.replaceAll(/<.*>/, "")) // node id
+                    if (!declaredNodes.contains(parentNode)) {
+                        writer.writeLine("    ${parentNode}[${parentLabel}]")
+                        declaredNodes << parentNode
+                        externalNodes << parentNode
+                    }
+                    def nodeName = sanitizeNodeName(meta.name)
+                    writer.writeLine("    ${nodeName} -->|extends| ${parentNode}")
                 }
             }
 
-            // Interfaces (class → interface)
+            // ---- Implements ----
             classInfo.each { fqcn, meta ->
                 meta.implements.each { impl ->
-                    writer.writeLine("    ${meta.name} -.implements.-> ${impl}")
+                    def ifaceLabel = impl
+                    def ifaceNode = sanitizeNodeName(impl.replaceAll(/<.*>/, ""))
+                    if (!declaredNodes.contains(ifaceNode)) {
+                        writer.writeLine("    ${ifaceNode}[${ifaceLabel}]")
+                        declaredNodes << ifaceNode
+                        externalNodes << ifaceNode
+                    }
+                    def nodeName = sanitizeNodeName(meta.name)
+                    writer.writeLine("    ${nodeName} -.implements.-> ${ifaceNode}")
                 }
             }
 
-            // Associations (fields)
+            // ---- Associations ----
             classInfo.each { fqcn, meta ->
                 meta.associations.each { assoc ->
-                    if (classInfo.values().any { it.name == assoc }) {
-                        writer.writeLine("    ${meta.name} --> ${assoc}")
+                    def clean = assoc.replaceAll(/<.*>/, "")
+                    def assocNode = sanitizeNodeName(clean)
+                    if (classInfo.values().any { it.name == clean }) {
+                        def nodeName = sanitizeNodeName(meta.name)
+                        writer.writeLine("    ${nodeName} --> ${assocNode}")
                     }
                 }
             }
 
-            // Annotation usage edges (optional)
+            // ---- Annotation usage ----
             classInfo.each { fqcn, meta ->
                 meta.annotations.each { ann ->
-                    def annNode = "@${ann}"
-                    if (classInfo.values().any { it.name == annNode }) {
-                        writer.writeLine("    ${meta.name} -.annotated with.-> ${annNode}")
+                    def annNode = sanitizeNodeName("@${ann}")
+                    if (classInfo.values().any { it.name == "@${ann}" }) {
+                        def nodeName = sanitizeNodeName(meta.name)
+                        writer.writeLine("    ${nodeName} -.annotated with.-> ${annNode}")
                     }
                 }
             }
 
-            // --- Styles ---
+            // ---- Styles ----
             classInfo.each { fqcn, meta ->
-                def node = meta.name
                 def baseColor
                 switch (meta.type) {
                     case "interface":
-                        baseColor = "#66bb6a" // green
+                        baseColor = "#66bb6a"
                         break
                     case "record":
-                        baseColor = "#ba68c8" // purple
+                        baseColor = "#ba68c8"
                         break
                     case "@interface":
-                        baseColor = "#fbc02d" // gold
+                        baseColor = "#fbc02d"
                         break
                     default:
-                        baseColor = "#42a5f5" // blue
+                        baseColor = "#42a5f5"
                 }
-                writer.writeLine("    style ${node} fill:${baseColor},stroke:#333,stroke-width:2px,color:#fff")
+                writer.writeLine("    style ${sanitizeNodeName(meta.name)} fill:${baseColor},stroke:#333,stroke-width:2px,color:#fff")
+            }
+
+            // ---- External nodes style ----
+            externalNodes.each { n ->
+                writer.writeLine("    style ${n} fill:#eeeeee,stroke:#999,color:#333,stroke-dasharray: 5 5")
             }
 
             writer.writeLine("```")
