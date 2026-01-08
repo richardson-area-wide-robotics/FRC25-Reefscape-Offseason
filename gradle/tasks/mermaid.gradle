@@ -22,27 +22,32 @@ tasks.register("exportMermaidGraph") {
 
             def text = f.text
 
+            // ---- Strip comments to avoid Javadoc parsing ----
+            def code = text
+                    .replaceAll(/\/\*[\s\S]*?\*\//, "")   // remove /* ... */
+                    .replaceAll(/\/\/.*$/, "")             // remove // ...
+
             // ---- Package ----
-            def pkgMatch = (text =~ /package\s+([\w\.]+);/)
+            def pkgMatch = (code =~ /package\s+([\w\.]+);/)
             def pkg = pkgMatch.find() ? pkgMatch[0][1] : ""
 
             // ---- Type + Name ----
-            def headerMatch = (text =~ /\b(class|interface|record|@interface)\s+(\w+)\b/)
+            def headerMatch = (code =~ /\b(class|interface|record|@interface)\s+(\w+)\b/)
             if (!headerMatch.find()) return
 
             def type = headerMatch[0][1]
             def name = headerMatch[0][2]
 
             // ---- Extends ----
-            def extendsMatch = (text =~ /\bextends\s+([\w\.<>]+)\b/)
+            def extendsMatch = (code =~ /\bextends\s+([\w\.<>]+)\b/)
             def ext = extendsMatch.find() ? extendsMatch[0][1] : null
 
             // ---- Implements ----
-            def implMatch = (text =~ /\bimplements\s+([\w\.,\s<>]+)\b/)
+            def implMatch = (code =~ /\bimplements\s+([\w\.,\s<>]+)\b/)
             def impls = implMatch.find() ? implMatch[0][1].split(",")*.trim() : []
 
             // ---- Annotations ----
-            def annotatedMatch = (text =~ /((?:@\w+(?:\([^)]*\))?\s*)*)(class|interface|record|@interface)\s+\w+/)
+            def annotatedMatch = (code =~ /((?:@\w+(?:\([^)]*\))?\s*)*)(class|interface|record|@interface)\s+\w+/)
             def annotations = []
             if (annotatedMatch.find()) {
                 def raw = annotatedMatch[0][1] ?: ""
@@ -62,7 +67,7 @@ tasks.register("exportMermaidGraph") {
             ]
 
             // ---- Associations (fields) ----
-            def fieldMatches = (text =~ /\b([\w<>]+)\s+\w+\s*;/)
+            def fieldMatches = (code =~ /\b([\w<>]+)\s+\w+\s*;/)
             fieldMatches.each { m ->
                 classInfo[fqcn].associations << m[1]
             }
@@ -110,8 +115,8 @@ tasks.register("exportMermaidGraph") {
             // ---- Inheritance ----
             classInfo.each { fqcn, meta ->
                 if (meta.extends) {
-                    def parentLabel = meta.extends  // preserve generics for label
-                    def parentNode = sanitizeNodeName(meta.extends.replaceAll(/<.*>/, "")) // node id
+                    def parentLabel = meta.extends
+                    def parentNode = sanitizeNodeName(meta.extends.replaceAll(/<.*>/, ""))
                     if (!declaredNodes.contains(parentNode)) {
                         writer.writeLine("    ${parentNode}[${parentLabel}]")
                         declaredNodes << parentNode

@@ -4,7 +4,7 @@
 flowchart TD
     subgraph frc_robot[frc.robot]
         BuildConstants[BuildConstants]
-        provides[provides]
+        CommonConstants[CommonConstants]
         Main[Main]
         Robot[Robot]
     end
@@ -17,7 +17,7 @@ flowchart TD
         DashboardAutoUpdater[DashboardAutoUpdater]
     end
     subgraph frc_robot_common_components_dashboard_diagnostics[frc.robot.common.components.dashboard.diagnostics]
-        for[for]
+        CANDiagnostics[CANDiagnostics]
     end
     subgraph frc_robot_common_components[frc.robot.common.components]
         EasyBreakBeam[EasyBreakBeam]
@@ -36,7 +36,6 @@ flowchart TD
     end
     subgraph frc_robot_common[frc.robot.common]
         is[is]
-        GurtContainer[GurtContainer]
         LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_gyro[frc.robot.common.gyro]
@@ -60,7 +59,7 @@ flowchart TD
         RAWRSwerveModule[RAWRSwerveModule]
     end
     subgraph frc_robot_pearce[frc.robot.pearce]
-        provides[provides]
+        PearceConstants[PearceConstants]
         PearceContainer[PearceContainer]
     end
     subgraph frc_robot_pearce_subsystems[frc.robot.pearce.subsystems]
@@ -73,7 +72,7 @@ flowchart TD
         PracticumInStemContainer[PracticumInStemContainer]
     end
     BaseInstanceable_CANDiagnostics[BaseInstanceable<CANDiagnostics]
-    for -->|extends| BaseInstanceable_CANDiagnostics
+    CANDiagnostics -->|extends| BaseInstanceable_CANDiagnostics
     LoggableHardware[LoggableHardware]
     RAWRNavX2 -->|extends| LoggableHardware
     AutoCloseable[AutoCloseable]
@@ -91,11 +90,10 @@ flowchart TD
     ScoringSubsystem -->|extends| DashboardSubsystem
     LoggedRobot[LoggedRobot]
     Robot -->|extends| LoggedRobot
-    for -.implements.-> IDiagnostic
+    CANDiagnostics -.implements.-> IDiagnostic
     Thread_UncaughtExceptionHandler[Thread.UncaughtExceptionHandler]
     RobotExceptionHandler -.implements.-> Thread_UncaughtExceptionHandler
     is -.implements.-> IRobotContainer
-    GurtContainer -.implements.-> IRobotContainer
     RAWRNavX2 -.implements.-> IMU
     RAWRQuestNav -.implements.-> IMU
     Pathfinder[Pathfinder]
@@ -115,7 +113,7 @@ flowchart TD
     style NamedAuto fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style Robot fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
     style DashboardAutoUpdater fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style for fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CANDiagnostics fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyBreakBeam fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style EasyMotor fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SwerveHardware fill:#ba68c8,stroke:#333,stroke-width:2px,color:#fff
@@ -128,7 +126,6 @@ flowchart TD
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style is fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style GurtContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRQuestNav fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
@@ -140,9 +137,9 @@ flowchart TD
     style TankDriveSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style SingleMotorSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRSwerveModule fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style provides fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style CommonConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style Main fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style provides fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style PearceConstants fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style PearceContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style CBSSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style DeepClimbSubsystem fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
