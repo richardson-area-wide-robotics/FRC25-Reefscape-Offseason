@@ -35,7 +35,7 @@ flowchart TD
         TankHardware[TankHardware]
     end
     subgraph frc_robot_common[frc.robot.common]
-        is[is]
+        DefaultContainer[DefaultContainer]
         LocalADStarAK[LocalADStarAK]
     end
     subgraph frc_robot_common_gyro[frc.robot.common.gyro]
@@ -93,7 +93,7 @@ flowchart TD
     CANDiagnostics -.implements.-> IDiagnostic
     Thread_UncaughtExceptionHandler[Thread.UncaughtExceptionHandler]
     RobotExceptionHandler -.implements.-> Thread_UncaughtExceptionHandler
-    is -.implements.-> IRobotContainer
+    DefaultContainer -.implements.-> IRobotContainer
     RAWRNavX2 -.implements.-> IMU
     RAWRQuestNav -.implements.-> IMU
     Pathfinder[Pathfinder]
@@ -125,7 +125,7 @@ flowchart TD
     style RobotExceptionHandler fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RobotUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style TeamUtils fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
-    style is fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
+    style DefaultContainer fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRNavX2 fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style RAWRQuestNav fill:#42a5f5,stroke:#333,stroke-width:2px,color:#fff
     style IDiagnostic fill:#66bb6a,stroke:#333,stroke-width:2px,color:#fff
